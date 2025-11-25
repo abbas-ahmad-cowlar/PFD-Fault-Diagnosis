@@ -453,19 +453,19 @@ X_raw_norm = zscore(X_raw);
 featureNamesFormatted = cellfun(@(name) strrep(name, '_', ' '), fullFeatureNames, 'UniformOutput', false);
 
 % ========================================================================
-% FIG 0: RAW SIGNAL EXAMPLES
+% FIG 1-2: RAW SIGNAL EXAMPLES
 % ========================================================================
-fprintf('\nStep 3.2: Generating Fig0 (Raw Signal Examples)...\n');
+fprintf('\nStep 3.2: Generating Fig1-2 (Raw Signal Examples)...\n');
 
 % --- Define Fault Groups ---
 % We split the classes to make the plots less cluttered
 basicFaults = {'cavitation', 'desalignement', 'desequilibre', 'jeu', ...
                 'lubrication', 'oilwhirl', 'sain', 'usure'};
-            
+
 mixedFaults = {'mixed_cavit_jeu', 'mixed_misalign_imbalance', 'mixed_wear_lube'};
 
 % --- Figure 1: Basic Faults ---
-fprintf('  Generating Fig0a (Basic Faults)...\n');
+fprintf('  Generating Fig1 (Basic Faults)...\n');
 fig1 = figure('Name', 'PFD Basic Fault Signal Examples', 'Position', [100, 100, 1600, 900]);
 t_sig1 = tiledlayout(length(basicFaults), 3, 'Padding', 'compact', 'TileSpacing', 'compact');
 
@@ -519,14 +519,14 @@ for k = 1:length(basicFaults)
     end
 end
 
-title(t_sig1, 'Fig 0a: Time, Frequency, and Spectrogram Analysis (Basic Faults)', ...
+title(t_sig1, 'Fig 1: Time, Frequency, and Spectrogram Analysis (Basic Faults)', ...
     'FontSize', 16, 'FontWeight', 'bold', 'Interpreter', 'none');
-saveas(fig1, fullfile(CONFIG.outputDir, 'Fig0a_Basic_Faults.png'));
-fprintf('✓ Saved: Fig0a_Basic_Faults.png\n');
+saveas(fig1, fullfile(CONFIG.outputDir, 'Fig1_Basic_Faults.png'));
+fprintf('✓ Saved: Fig1_Basic_Faults.png\n');
 
 
 % --- Figure 2: Mixed Faults ---
-fprintf('  Generating Fig0b (Mixed Faults)...\n');
+fprintf('  Generating Fig2 (Mixed Faults)...\n');
 fig2 = figure('Name', 'PFD Mixed Fault Signal Examples', 'Position', [100, 100, 1600, 500]);
 t_sig2 = tiledlayout(length(mixedFaults), 3, 'Padding', 'compact', 'TileSpacing', 'compact');
 
@@ -580,15 +580,15 @@ for k = 1:length(mixedFaults)
     end
 end
 
-title(t_sig2, 'Fig 0b: Time, Frequency, and Spectrogram Analysis (Mixed Faults)', ...
+title(t_sig2, 'Fig 2: Time, Frequency, and Spectrogram Analysis (Mixed Faults)', ...
     'FontSize', 16, 'FontWeight', 'bold', 'Interpreter', 'none');
-saveas(fig2, fullfile(CONFIG.outputDir, 'Fig0b_Mixed_Faults.png'));
-fprintf('✓ Saved: Fig0b_Mixed_Faults.png\n');
+saveas(fig2, fullfile(CONFIG.outputDir, 'Fig2_Mixed_Faults.png'));
+fprintf('✓ Saved: Fig2_Mixed_Faults.png\n');
 % ========================================================================
-% FIG 1: FEATURE CORRELATION MATRIX
+% FIG 3: FEATURE CORRELATION MATRIX
 % ========================================================================
 
-fprintf('\nStep 3.3: Generating Fig1 (Feature Correlation)...\n');
+fprintf('\nStep 3.3: Generating Fig3 (Feature Correlation)...\n');
 corrMatrix = corr(X_raw, 'rows', 'complete');
 
 fig1 = figure('Position', [100, 100, 1000, 900]);
@@ -597,19 +597,19 @@ colormap(jet);
 cb = colorbar;
 cb.Label.String = 'Correlation Coefficient';
 clim([-1, 1]);
-title('Fig 1: Feature Correlation Matrix', 'FontSize', 14, 'FontWeight', 'bold', 'Interpreter', 'none');
+title('Fig 3: Feature Correlation Matrix', 'FontSize', 14, 'FontWeight', 'bold', 'Interpreter', 'none');
 set(gca, 'XTick', 1:length(fullFeatureNames), 'XTickLabel', featureNamesFormatted, ...
     'XTickLabelRotation', 45, 'YTick', 1:length(fullFeatureNames), ...
     'YTickLabel', featureNamesFormatted, 'FontSize', 10);
 grid on;
-saveas(fig1, fullfile(CONFIG.outputDir, 'Fig1_Feature_Correlation.png'));
-fprintf('✓ Saved: Fig1_Feature_Correlation.png\n');
+saveas(fig1, fullfile(CONFIG.outputDir, 'Fig3_Feature_Correlation.png'));
+fprintf('✓ Saved: Fig3_Feature_Correlation.png\n');
 
 % ========================================================================
-% FIG 2: FEATURE DISTRIBUTIONS BY CLASS
+% FIG 4: FEATURE DISTRIBUTIONS BY CLASS
 % ========================================================================
 
-fprintf('\nStep 3.4: Generating Fig2 (Feature Distributions)...\n');
+fprintf('\nStep 3.4: Generating Fig4 (Feature Distributions)...\n');
 
 numFeaturesToPlot = min(length(fullFeatureNames), 12);
 if numFeaturesToPlot <= 6
@@ -635,16 +635,16 @@ for i = 1:numFeaturesToPlot
 end
 warning(warnState);
 
-title(t2, 'Fig 2: Feature Distributions by Fault Class (First 12 Features)', ...
+title(t2, 'Fig 4: Feature Distributions by Fault Class (First 12 Features)', ...
     'FontSize', 14, 'FontWeight', 'bold', 'Interpreter', 'none');
-saveas(fig2, fullfile(CONFIG.outputDir, 'Fig2_Feature_Distributions.png'));
-fprintf('✓ Saved: Fig2_Feature_Distributions.png\n');
+saveas(fig2, fullfile(CONFIG.outputDir, 'Fig4_Feature_Distributions.png'));
+fprintf('✓ Saved: Fig4_Feature_Distributions.png\n');
 
 % ========================================================================
-% FIG 3: t-SNE CLUSTER VISUALIZATION
+% FIG 5: t-SNE CLUSTER VISUALIZATION
 % ========================================================================
 
-fprintf('\nStep 3.5: Generating Fig3 (t-SNE Plot)...\n');
+fprintf('\nStep 3.5: Generating Fig5 (t-SNE Plot)...\n');
 
 if CONFIG.generateTSNEPlot
     fprintf('  Running t-SNE dimensionality reduction...\n');
@@ -654,18 +654,18 @@ if CONFIG.generateTSNEPlot
         
         fig3 = figure('Position', [100, 100, 1000, 800]);
         gscatter(Y_tsne(:,1), Y_tsne(:,2), Y_raw, lines(length(classNames)), '.', 15);
-        title('Fig 3: t-SNE Visualization of Feature Clusters', ...
+        title('Fig 5: t-SNE Visualization of Feature Clusters', ...
             'FontSize', 14, 'FontWeight', 'bold', 'Interpreter', 'none');
         xlabel('t-SNE Dimension 1', 'FontSize', 12);
         ylabel('t-SNE Dimension 2', 'FontSize', 12);
         legend('Location', 'best', 'Interpreter', 'none');
         grid on;
-        
-        saveas(fig3, fullfile(CONFIG.outputDir, 'Fig3_tSNE_Clusters.png'));
-        fprintf('✓ Saved: Fig3_tSNE_Clusters.png\n');
-        
+
+        saveas(fig3, fullfile(CONFIG.outputDir, 'Fig5_tSNE_Clusters.png'));
+        fprintf('✓ Saved: Fig5_tSNE_Clusters.png\n');
+
     catch ME
-        fprintf('!! Warning: t-SNE plot failed: %s. Skipping Fig3.\n', ME.message);
+        fprintf('!! Warning: t-SNE plot failed: %s. Skipping Fig5.\n', ME.message);
     end
 else
     fprintf('  Skipping t-SNE plot (disabled in CONFIG).\n');
@@ -1929,10 +1929,14 @@ confMat = confusionmat(Y_test, Y_test_pred, 'Order', classNames);
 confMatNorm = confMat ./ sum(confMat, 2);  % Normalize by row (true class)
 
 % ========================================================================
-% STEP 5A.4: FIG 4 - CONFUSION MATRIX
+% STEP 5A.4: FIG 4 - CONFUSION MATRIX (LEGACY - BEST MODEL ONLY)
+% ========================================================================
+% NOTE: This figure shows only the best-performing model's confusion matrix.
+% Individual model-specific confusion matrices (Fig7, Fig9, Fig11) are now
+% generated in Step 5A.6B. This legacy figure can be optionally removed.
 % ========================================================================
 
-fprintf('\nStep 5A.4: Generating Fig 4 (Confusion Matrix)...\n');
+fprintf('\nStep 5A.4: Generating Fig 4 (Confusion Matrix - Best Model Only - Legacy)...\n');
 
 try
     fig4 = figure('Position', [100, 100, 1600, 700], 'Name', 'Confusion Matrix');
@@ -2200,10 +2204,14 @@ try
     end
     
     % ====================================================================
-    % FIG 5: ROC CURVES
+    % FIG 5: ROC CURVES (LEGACY - BEST MODEL ONLY)
     % ====================================================================
-    
-    fprintf('\nGenerating Fig 5 (ROC Curves)...\n');
+    % NOTE: This figure shows only the best-performing model's ROC curves.
+    % Individual model-specific ROC curves (Fig8, Fig10, Fig12) are now
+    % generated in Step 5A.6B. This legacy figure can be optionally removed.
+    % ====================================================================
+
+    fprintf('\nGenerating Fig 5 (ROC Curves - Best Model Only - Legacy)...\n');
     
     fig5 = figure('Position', [100, 100, 1200, 900], 'Name', 'ROC Curves');
     
@@ -2283,6 +2291,13 @@ trainedModelFields = fieldnames(modelResults);
 
 fprintf('\nFound %d trained models: %s\n', length(trainedModelFields), ...
     strjoin(trainedModelFields, ', '));
+
+% Create figure number mapping for consistent sequential naming
+% Fig7-8: SVM, Fig9-10: RandomForest, Fig11-12: NeuralNetwork
+modelFigureMap = struct();
+modelFigureMap.SVM = struct('confusionMatrix', 7, 'rocCurves', 8);
+modelFigureMap.RandomForest = struct('confusionMatrix', 9, 'rocCurves', 10);
+modelFigureMap.NeuralNetwork = struct('confusionMatrix', 11, 'rocCurves', 12);
 
 % ========================================================================
 % LOOP THROUGH ALL TRAINED MODELS
@@ -2374,7 +2389,13 @@ for modelIdx = 1:length(trainedModelFields)
 
         fprintf('  Generating confusion matrix figure...\n');
 
-        figNum = 4;
+        % Get figure number from mapping (default to 4 if model not in map)
+        if isfield(modelFigureMap, modelFieldName)
+            figNum = modelFigureMap.(modelFieldName).confusionMatrix;
+        else
+            figNum = 4; % fallback for unexpected models
+        end
+
         figCM = figure('Position', [100, 100, 1600, 700], ...
             'Name', sprintf('%s Confusion Matrix', modelFieldName), ...
             'Visible', 'off');
@@ -2447,7 +2468,7 @@ for modelIdx = 1:length(trainedModelFields)
             'FontSize', 16, 'FontWeight', 'bold');
 
         % Save figure
-        figFilename = sprintf('Fig4_%s_Confusion_Matrix.png', modelFieldName);
+        figFilename = sprintf('Fig%d_%s_Confusion_Matrix.png', figNum, modelFieldName);
         saveas(figCM, fullfile(CONFIG.outputDir, figFilename));
         close(figCM);
         fprintf('  ✓ Saved: %s\n', figFilename);
@@ -2523,7 +2544,13 @@ for modelIdx = 1:length(trainedModelFields)
 
         fprintf('  Generating ROC curves figure...\n');
 
-        figNum = 5;
+        % Get figure number from mapping (default to 5 if model not in map)
+        if isfield(modelFigureMap, modelFieldName)
+            figNum = modelFigureMap.(modelFieldName).rocCurves;
+        else
+            figNum = 5; % fallback for unexpected models
+        end
+
         figROC = figure('Position', [100, 100, 1200, 900], ...
             'Name', sprintf('%s ROC Curves', modelFieldName), ...
             'Visible', 'off');
@@ -2565,7 +2592,7 @@ for modelIdx = 1:length(trainedModelFields)
             'FontSize', 16, 'FontWeight', 'bold');
 
         % Save figure
-        figFilename = sprintf('Fig5_%s_ROC_Curves.png', modelFieldName);
+        figFilename = sprintf('Fig%d_%s_ROC_Curves.png', figNum, modelFieldName);
         saveas(figROC, fullfile(CONFIG.outputDir, figFilename));
         close(figROC);
         fprintf('  ✓ Saved: %s\n', figFilename);
@@ -2717,13 +2744,13 @@ try
             'Location', 'southeast', 'FontSize', 10);
 
         % Add super title
-        sgtitle('Fig 11: Comprehensive Performance Comparison Across All Models', ...
+        sgtitle('Fig 14: Comprehensive Performance Comparison Across All Models', ...
             'FontSize', 18, 'FontWeight', 'bold');
 
         % Save figure
-        saveas(figComp, fullfile(CONFIG.outputDir, 'Fig11_All_Models_Performance_Comparison.png'));
+        saveas(figComp, fullfile(CONFIG.outputDir, 'Fig14_All_Models_Comparison.png'));
         close(figComp);
-        fprintf('  ✓ Saved: Fig11_All_Models_Performance_Comparison.png\n');
+        fprintf('  ✓ Saved: Fig14_All_Models_Comparison.png\n');
     end
 
 catch ME
@@ -2865,7 +2892,7 @@ try
         barh(importanceMatrix, 'grouped');
 
         % Format
-        title('Fig 12: Feature Importance Comparison Across Models', ...
+        title('Fig 15: Feature Importance Comparison Across Models', ...
             'FontSize', 16, 'FontWeight', 'bold');
         xlabel('Relative Importance', 'FontSize', 12);
         ylabel('Feature', 'FontSize', 12);
@@ -2883,9 +2910,9 @@ try
         grid on;
 
         % Save figure
-        saveas(figFI, fullfile(CONFIG.outputDir, 'Fig12_Feature_Importance_Comparison.png'));
+        saveas(figFI, fullfile(CONFIG.outputDir, 'Fig15_Feature_Importance.png'));
         close(figFI);
-        fprintf('  ✓ Saved: Fig12_Feature_Importance_Comparison.png\n');
+        fprintf('  ✓ Saved: Fig15_Feature_Importance.png\n');
     else
         fprintf('  ⚠️  No feature importance data available.\n');
     end
@@ -3325,11 +3352,11 @@ if CONFIG.generateRealLearningCurve
             end
             
             % ============================================================
-            % FIG 6: LEARNING CURVES
+            % FIG 16: LEARNING CURVES
             % ============================================================
-            
-            fprintf('\nGenerating Fig 6 (Learning Curves)...\n');
-            
+
+            fprintf('\nGenerating Fig 16 (Learning Curves)...\n');
+
             fig6 = figure('Position', [100, 100, 1000, 600], 'Name', 'Learning Curves');
             
             plot(trainingSizes, trainAccuracies, 'b-o', 'LineWidth', 2, 'MarkerSize', 8);
@@ -3343,16 +3370,16 @@ if CONFIG.generateRealLearningCurve
             
             xlabel('Training Set Size', 'FontSize', 12);
             ylabel('Accuracy (%)', 'FontSize', 12);
-            title(sprintf('Fig 6: Learning Curves - %s', bestModelName), ...
+            title(sprintf('Fig 16: Learning Curves - %s', bestModelName), ...
                 'FontSize', 14, 'FontWeight', 'bold', 'Interpreter', 'none');
             legend({'Training Accuracy', 'Validation Accuracy', 'Train-Val Gap'}, ...
                 'Location', 'southeast', 'FontSize', 11);
             grid on;
             xlim([trainingSizes(1), trainingSizes(end)]);
             ylim([max(0, min([trainAccuracies; valAccuracies]) - 5), 100]);
-            
-            saveas(fig6, fullfile(CONFIG.outputDir, 'Fig6_Learning_Curves.png'));
-            fprintf('✓ Saved: Fig6_Learning_Curves.png\n');
+
+            saveas(fig6, fullfile(CONFIG.outputDir, 'Fig16_Learning_Curves.png'));
+            fprintf('✓ Saved: Fig16_Learning_Curves.png\n');
             
         else
             trainingSizes = [];
@@ -3481,13 +3508,13 @@ if CONFIG.generateFeatureImportance
                 end
                 
                 % ========================================================
-                % FIG 9: FEATURE IMPORTANCE
+                % FIG 17: FEATURE IMPORTANCE (LEGACY - RF ONLY)
                 % ========================================================
-                
-                fprintf('\nGenerating Fig 9 (Feature Importance)...\n');
-                
+
+                fprintf('\nGenerating Fig 17 (Feature Importance - Legacy RF)...\n');
+
                 num_features_to_plot = min(20, length(featureNames));
-                
+
                 fig9 = figure('Position', [100, 100, 1000, 700], 'Name', 'Feature Importance');
                 
                 barh(sorted_importance(num_features_to_plot:-1:1));
@@ -3499,12 +3526,12 @@ if CONFIG.generateFeatureImportance
                     'YTickLabel', featureNamesFormatted, 'FontSize', 10);
                 xlabel('Out-of-Bag Predictor Importance', 'FontSize', 12);
                 ylabel('Features', 'FontSize', 12);
-                title('Fig 9: Feature Importance (Random Forest OOB)', ...
+                title('Fig 17: Feature Importance (Random Forest OOB - Legacy)', ...
                     'FontSize', 14, 'FontWeight', 'bold', 'Interpreter', 'none');
                 grid on;
-                
-                saveas(fig9, fullfile(CONFIG.outputDir, 'Fig9_Feature_Importance.png'));
-                fprintf('✓ Saved: Fig9_Feature_Importance.png\n');
+
+                saveas(fig9, fullfile(CONFIG.outputDir, 'Fig17_Feature_Importance_Legacy.png'));
+                fprintf('✓ Saved: Fig17_Feature_Importance_Legacy.png\n');
                 
                 featureImportance = struct('features', featureNames(sort_idx), ...
                     'importance', sorted_importance);
@@ -3682,10 +3709,10 @@ catch ME
 end
 
 % ========================================================================
-% STEP 5C.2: FIG 7 - CLASS DISTRIBUTION VISUALIZATION
+% STEP 5C.2: FIG 6 - CLASS DISTRIBUTION VISUALIZATION
 % ========================================================================
 
-fprintf('\nStep 5C.2: Generating Fig 7 (Class Distribution)...\n');
+fprintf('\nStep 5C.2: Generating Fig 6 (Class Distribution)...\n');
 
 try
     % Get class counts from each split
@@ -3709,23 +3736,23 @@ try
         'XTickLabelRotation', 45, 'FontSize', 10);
     ylabel('Number of Samples', 'FontSize', 12);
     xlabel('Fault Class', 'FontSize', 12);
-    title('Fig 7: Class Distribution Across Data Splits', ...
+    title('Fig 6: Class Distribution Across Data Splits', ...
         'FontSize', 14, 'FontWeight', 'bold', 'Interpreter', 'none');
     legend({'Training', 'Validation', 'Test'}, 'Location', 'best', 'FontSize', 11);
     grid on;
-    
-    saveas(fig7, fullfile(CONFIG.outputDir, 'Fig7_Class_Distribution.png'));
-    fprintf('✓ Saved: Fig7_Class_Distribution.png\n');
+
+    saveas(fig7, fullfile(CONFIG.outputDir, 'Fig6_Class_Distribution.png'));
+    fprintf('✓ Saved: Fig6_Class_Distribution.png\n');
     
 catch ME
     fprintf('!! Error generating class distribution: %s\n', ME.message);
 end
 
 % ========================================================================
-% STEP 5C.3: FIG 8 - PERFORMANCE COMPARISON
+% STEP 5C.3: FIG 13 - PERFORMANCE COMPARISON
 % ========================================================================
 
-fprintf('\nStep 5C.3: Generating Fig 8 (Model Performance Comparison)...\n');
+fprintf('\nStep 5C.3: Generating Fig 13 (Model Performance Comparison)...\n');
 
 try
     fig8 = figure('Position', [100, 100, 1000, 600], 'Name', 'Model Comparison');
@@ -3754,12 +3781,12 @@ try
         'XTickLabelRotation', 45, 'FontSize', 11);
     ylabel('Validation Accuracy (%)', 'FontSize', 12);
     xlabel('Model', 'FontSize', 12);
-    title('Fig 8: Model Performance Comparison', 'FontSize', 14, 'FontWeight', 'bold');
+    title('Fig 13: Model Performance Comparison', 'FontSize', 14, 'FontWeight', 'bold');
     ylim([max(0, min(modelAccuracies) - 10), 100]);
     grid on;
-    
-    saveas(fig8, fullfile(CONFIG.outputDir, 'Fig8_Performance_Comparison.png'));
-    fprintf('✓ Saved: Fig8_Performance_Comparison.png\n');
+
+    saveas(fig8, fullfile(CONFIG.outputDir, 'Fig13_Performance_Comparison.png'));
+    fprintf('✓ Saved: Fig13_Performance_Comparison.png\n');
     
 catch ME
     fprintf('!! Error generating performance comparison: %s\n', ME.message);

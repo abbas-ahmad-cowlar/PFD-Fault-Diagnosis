@@ -1100,7 +1100,7 @@ Figure \ref{fig:class_distribution} demonstrates perfect stratification across t
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.9\textwidth]{Fig7_Class_Distribution.png}
+\includegraphics[width=0.9\textwidth]{Fig6_Class_Distribution.png}
 \caption{Class distribution across data splits showing perfect balance: 91 training samples (blue), 20 validation samples (orange), and 19 test samples (yellow) per fault class, maintaining 70/15/15 proportions with  $<$ 1\% deviation. Stratified sampling ensures no class is over/under-represented in any subset.}
 \label{fig:class_distribution}
 \end{figure}
@@ -1109,14 +1109,14 @@ Figure \ref{fig:class_distribution} demonstrates perfect stratification across t
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=\textwidth]{Fig0a_Basic_Faults.png}
+\includegraphics[width=\textwidth]{Fig1_Basic_Faults.png}
 \caption{Time-domain (left), frequency-domain (center), and time-frequency (right) representations of 7 basic single fault types. Cavitation exhibits high-frequency burst content (1.5-2.5 kHz); misalignment shows elevated 2X harmonic; imbalance produces dominant 1X component; clearance (jeu) and oil whirl display sub-synchronous energy (0.4-0.48X); wear manifests as broadband noise; healthy signals show minimal frequency content beyond fundamental.}
 \label{fig:basic_faults}
 \end{figure}
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=\textwidth]{Fig0b_Mixed_Faults.png}
+\includegraphics[width=\textwidth]{Fig2_Mixed_Faults.png}
 \caption{Mixed fault signal characteristics demonstrating non-additive superposition effects. Mixed cavitation+clearance combines high-frequency bursts with sub-synchronous modulation; mixed misalignment+imbalance shows complex harmonic structure beyond simple sum; mixed wear+lubrication exhibits elevated broadband noise with thermal drift components. Spectrograms reveal time-evolving frequency content characteristic of compound failures.}
 \label{fig:mixed_faults}
 \end{figure}
@@ -1147,7 +1147,7 @@ Figure \ref{fig:feature_correlation} reveals substantial correlation among time-
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.95\textwidth]{Fig1_Feature_Correlation.png}
+\includegraphics[width=0.95\textwidth]{Fig3_Feature_Correlation.png}
 \caption{Feature correlation heatmap for all 36 extracted features. High correlation (dark red,  $>$ 0.8) appears among time-domain energy metrics (RMS, STD, Energy) and harmonic ratios, indicating redundancy. Envelope features, spectral entropy, and cepstral characteristics show lower correlation (cyan/green, 0.2-0.5), suggesting orthogonal information. This pattern motivates feature selection to eliminate redundancy while preserving discriminative power.}
 \label{fig:feature_correlation}
 \end{figure}
@@ -1156,7 +1156,7 @@ Figure \ref{fig:feature_correlation} reveals substantial correlation among time-
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=\textwidth]{Fig2_Feature_Distributions.png}
+\includegraphics[width=\textwidth]{Fig4_Feature_Distributions.png}
 \caption{Distribution of first 12 features across 11 fault classes. Boxplots show median (red line), quartiles (box edges), and outliers (red crosses). Envelope modulation frequency discriminates oil whirl (elevated values) from other faults; RMS separates high-energy faults (imbalance, mixed misalignment+imbalance) from low-energy faults (healthy, cavitation); kurtosis identifies impulsive cavitation events (high values). Notable overlap exists for mixed faults, particularly mixed\_misalign\_imbalance and its constituent single faults.}
 \label{fig:feature_distributions}
 \end{figure}
@@ -1165,7 +1165,7 @@ Figure \ref{fig:feature_correlation} reveals substantial correlation among time-
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.85\textwidth]{Fig3_tSNE_Clusters.png}
+\includegraphics[width=0.85\textwidth]{Fig5_tSNE_Clusters.png}
 \caption{t-SNE visualization projecting 15-dimensional feature space to 2D for interpretability. Each point represents one signal, colored by fault class. Single faults form distinct clusters (cavitation: blue lower-left; oil whirl: purple right; jeu: green mid-right; usure: purple upper-right). Mixed faults (mixed\_misalign\_imbalance: dark red; mixed\_cavit\_jeu: cyan; mixed\_wear\_lube: orange) overlap with constituent faults, explaining lower classification accuracy for compound failures. Healthy baseline (sain: yellow) forms tight cluster, indicating clear separability from faulty conditions.}
 \label{fig:tsne}
 \end{figure}
@@ -1201,7 +1201,7 @@ Figure \ref{fig:model_comparison} visualizes validation accuracies with the test
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.7\textwidth]{Fig8_Performance_Comparison.png}
+\includegraphics[width=0.7\textwidth]{Fig13_Performance_Comparison.png}
 \caption{Validation accuracy comparison across three trained models. Random Forest (red bar) achieves 95.81\%, surpassing Neural Network (94.88\%, blue) and SVM (92.56\%, blue). Green dashed line indicates final test accuracy (95.33\%), demonstrating Random Forest's generalization: validation and test performance differ by only 0.48\%, suggesting no overfitting. SVM's 3.25\% gap to Random Forest motivates ensemble method preference for this problem.}
 \label{fig:model_comparison}
 \end{figure}
