@@ -116,15 +116,33 @@ Replace all `\includegraphics{}` and `\ref{fig:...}` with new names:
 
 ## 🔍 Implementation Checklist
 
+### Phase 1: Figure Naming & Visualization (✅ COMPLETED)
 - [x] Update pipeline.m static figure names (11 replacements) - **COMPLETED**
 - [x] Update pipeline.m dynamic figure names (add figNum mapping) - **COMPLETED**
 - [x] Mark old Fig4 and Fig5 as legacy (best model only) - **COMPLETED**
 - [x] Update Technical_report.tex \includegraphics paths - **COMPLETED**
-- [ ] Update Technical_report.tex figure labels and references - **DEFERRED TO PHASE 2**
-- [ ] Add NEW figure sections in Technical Report for model-specific figures - **PHASE 2 TASK**
-- [ ] Verify no broken references in LaTeX - **PENDING**
-- [ ] Test pipeline run (optional - figures can be renamed manually) - **USER TASK**
-- [x] Commit and push changes - **NEXT STEP**
+- [x] Commit and push Phase 1 changes - **COMPLETED**
+
+### Phase 2: Documentation Enhancement (✅ COMPLETED)
+- [x] Add SVM detailed analysis subsection with Fig7-8 references - **COMPLETED**
+- [x] Add Neural Network detailed analysis subsection with Fig11-12 references - **COMPLETED**
+- [x] Add Comparative Analysis subsection with Fig14-15 references - **COMPLETED**
+- [x] Update Technical_report.tex figure labels and references - **COMPLETED**
+- [x] Commit and push Phase 2 changes - **COMPLETED**
+
+### Phase 3: Per-Class Tables & Error Analysis (✅ COMPLETED)
+- [x] Add per-class performance table for SVM (with XX.XX placeholders) - **COMPLETED**
+- [x] Add per-class performance table for Neural Network (with XX.XX placeholders) - **COMPLETED**
+- [x] Add systematic error pattern analysis comparing all models - **COMPLETED**
+- [x] Add cross-model error consensus table - **COMPLETED**
+- [x] Add practical deployment recommendations - **COMPLETED**
+- [x] Commit and push Phase 3 changes - **NEXT STEP**
+
+### User Tasks (Pending Pipeline Execution)
+- [ ] Run pipeline.m to generate all figures (Fig1-17) - **USER TASK**
+- [ ] Search for "XX" or "XX.XX" in Technical_report.tex and replace with actual values - **USER TASK**
+- [ ] Verify no broken references in LaTeX compilation - **USER TASK AFTER PIPELINE RUN**
+- [ ] Copy generated figures to LaTeX directory for compilation - **USER TASK**
 
 ---
 
