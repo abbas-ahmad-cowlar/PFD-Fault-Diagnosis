@@ -75,31 +75,24 @@ Run the pipeline in sequence:
 
 ```matlab
 % Step 1: Generate training data
-run('data_generator_v4.m')          % ~3-5 minutes, creates 1100-1500 samples
+run('generator.m')          % ~3-5 minutes, creates 1100-1500 samples
 
 % Step 2-3: Feature extraction & exploration
-run('pipeline_v4_1_2_3.m')          % ~2-3 minutes
-
 % Step 4: Model training
-run('pipeline_v4_4.m')              % ~10-12 minutes (with hyperparameter optimization)
-
 % Step 5A: Evaluation
-run('pipeline_v4_5A.m')             % ~1 minute
-
 % Step 5B: Advanced validation
-run('pipeline_v4_5B.m')             % ~2-3 minutes
-
 % Step 5C: Production deployment
-run('pipeline_v4_5C.m')             % ~30 seconds
+run('pipeline.m')          % ~30-40 minutes (with hyperparameter optimization)
+
 ```
 
-**Total Time:** 15-25 minutes for complete pipeline execution
+**Total Time:** 30-45 minutes for complete pipeline execution
 
 ---
 
 ## 3. KEY CONFIGURATIONS
 
-### Data Generator Configuration (`data_generator_v4.m`)
+### Data Generator Configuration (`generator.m`)
 
 #### Essential Settings
 
@@ -163,7 +156,7 @@ CONFIG.noise.impulse = true;          % Sporadic impulses
 
 ---
 
-### Pipeline Configuration (`pipeline_v4_1_2_3.m`)
+### Pipeline Configuration (`pipeline.m`)
 
 #### Model Selection
 
