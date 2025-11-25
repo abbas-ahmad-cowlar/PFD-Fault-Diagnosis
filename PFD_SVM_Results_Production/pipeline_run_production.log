@@ -1,0 +1,530 @@
+Pipeline started: 04-Nov-2025 13:21:04
+Full log saved to: PFD_SVM_Results_Production\pipeline_run_production.log
+----------------------------------
+Step 1: Setup and Configuration
+----------------------------------
+Validating required toolboxes...
+✓ All required toolboxes are present.
+✓ Found input signal directory: data_signaux_sep_production
+✓ Configuration loaded and validated.
+✓ Advanced features: DISABLED (fast)
+✓ ML Models enabled: SVM, RF, GBT, NN
+✓ Ready to proceed to Step 2.
+
+========================================================================
+Step 2: Advanced Feature Engineering & Extraction
+========================================================================
+Using BASE feature set: 36 features
+  (Advanced features disabled for speed)
+
+Step 2.1: Loading signal files...
+Found 1430 signal files to process...
+
+Validating dataset configuration...
+✓ Dataset contains metadata (generator version: Production_v2.0)
+  Found 330 augmented samples (23.1% of dataset)
+  Severity levels detected: incipient
+  Noise sources enabled: 7 types
+
+Detecting fault classes in dataset...
+✓ Detected 11 fault classes:
+  - cavitation
+  - desalignement
+  - desequilibre
+  - jeu
+  - lubrification
+  - mixed_cavit_jeu
+  - mixed_misalign_imbalance
+  - mixed_wear_lube
+  - oilwhirl
+  - sain
+  - usure
+
+Step 2.2: Extracting features from signals...
+Using parallel processing...
+Starting parallel pool (parpool) using the 'Processes' profile ...
+Connected to parallel pool with 4 workers.
+✓ Feature extraction complete: 1430 signals processed successfully.
+
+Step 2.3: Creating feature table...
+✓ Feature table saved: PFD_SVM_Results_Production\features_pfd_production.csv
+  - Samples: 1430
+  - Features: 36
+✓ Metadata saved: dataset_metadata.mat
+
+========================================================================
+Step 3: Data Exploration & Visualization
+========================================================================
+
+Step 3.1: Loading feature data for visualization...
+✓ Loaded 1430 samples with 36 features across 11 classes.
+
+Step 3.2: Generating Fig0 (Raw Signal Examples)...
+  Generating Fig0a (Basic Faults)...
+  Warning: Could not find data_signaux_sep_production\lubrication_001.mat. Skipping.
+✓ Saved: Fig0a_Basic_Faults.png
+  Generating Fig0b (Mixed Faults)...
+✓ Saved: Fig0b_Mixed_Faults.png
+
+Step 3.3: Generating Fig1 (Feature Correlation)...
+✓ Saved: Fig1_Feature_Correlation.png
+
+Step 3.4: Generating Fig2 (Feature Distributions)...
+[Warning: boxplot might not be displayed properly in the tiled chart layout.] 
+[> In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot>renderLabels/setLabelappdata', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 3039)" style="font-weight:bold">boxplot>renderLabels/setLabelappdata</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',3039,0)">line 3039</a>)
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot>renderLabels', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 2942)" style="font-weight:bold">boxplot>renderLabels</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',2942,0)">line 2942</a>)
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 428)" style="font-weight:bold">boxplot</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',428,0)">line 428</a>)
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('pipeline', 'C:\Users\COWLAR\Downloads\MATLAB\SVM project 2_v9\pipeline.m', 630)" style="font-weight:bold">pipeline</a> (<a href="matlab: opentoline('C:\Users\COWLAR\Downloads\MATLAB\SVM project 2_v9\pipeline.m',630,0)">line 630</a>)] 
+[Warning: boxplot might not be displayed properly in the tiled chart layout.] 
+[> In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot>renderLabels/setLabelappdata', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 3039)" style="font-weight:bold">boxplot>renderLabels/setLabelappdata</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',3039,0)">line 3039</a>)
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot>renderLabels', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 2942)" style="font-weight:bold">boxplot>renderLabels</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',2942,0)">line 2942</a>)
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 428)" style="font-weight:bold">boxplot</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',428,0)">line 428</a>)
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('pipeline', 'C:\Users\COWLAR\Downloads\MATLAB\SVM project 2_v9\pipeline.m', 630)" style="font-weight:bold">pipeline</a> (<a href="matlab: opentoline('C:\Users\COWLAR\Downloads\MATLAB\SVM project 2_v9\pipeline.m',630,0)">line 630</a>)] 
+[Warning: boxplot might not be displayed properly in the tiled chart layout.] 
+[> In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot>renderLabels/setLabelappdata', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 3039)" style="font-weight:bold">boxplot>renderLabels/setLabelappdata</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',3039,0)">line 3039</a>)
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot>renderLabels', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 2942)" style="font-weight:bold">boxplot>renderLabels</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',2942,0)">line 2942</a>)
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 428)" style="font-weight:bold">boxplot</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',428,0)">line 428</a>)
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('pipeline', 'C:\Users\COWLAR\Downloads\MATLAB\SVM project 2_v9\pipeline.m', 630)" style="font-weight:bold">pipeline</a> (<a href="matlab: opentoline('C:\Users\COWLAR\Downloads\MATLAB\SVM project 2_v9\pipeline.m',630,0)">line 630</a>)] 
+[Warning: boxplot might not be displayed properly in the tiled chart layout.] 
+[> In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot>renderLabels/setLabelappdata', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 3039)" style="font-weight:bold">boxplot>renderLabels/setLabelappdata</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',3039,0)">line 3039</a>)
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot>renderLabels', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 2942)" style="font-weight:bold">boxplot>renderLabels</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',2942,0)">line 2942</a>)
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 428)" style="font-weight:bold">boxplot</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',428,0)">line 428</a>)
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('pipeline', 'C:\Users\COWLAR\Downloads\MATLAB\SVM project 2_v9\pipeline.m', 630)" style="font-weight:bold">pipeline</a> (<a href="matlab: opentoline('C:\Users\COWLAR\Downloads\MATLAB\SVM project 2_v9\pipeline.m',630,0)">line 630</a>)] 
+[Warning: boxplot might not be displayed properly in the tiled chart layout.] 
+[> In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot>renderLabels/setLabelappdata', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 3039)" style="font-weight:bold">boxplot>renderLabels/setLabelappdata</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',3039,0)">line 3039</a>)
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot>renderLabels', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 2942)" style="font-weight:bold">boxplot>renderLabels</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',2942,0)">line 2942</a>)
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 428)" style="font-weight:bold">boxplot</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',428,0)">line 428</a>)
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('pipeline', 'C:\Users\COWLAR\Downloads\MATLAB\SVM project 2_v9\pipeline.m', 630)" style="font-weight:bold">pipeline</a> (<a href="matlab: opentoline('C:\Users\COWLAR\Downloads\MATLAB\SVM project 2_v9\pipeline.m',630,0)">line 630</a>)] 
+[Warning: boxplot might not be displayed properly in the tiled chart layout.] 
+[> In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot>renderLabels/setLabelappdata', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 3039)" style="font-weight:bold">boxplot>renderLabels/setLabelappdata</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',3039,0)">line 3039</a>)
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot>renderLabels', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 2942)" style="font-weight:bold">boxplot>renderLabels</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',2942,0)">line 2942</a>)
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 428)" style="font-weight:bold">boxplot</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',428,0)">line 428</a>)
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('pipeline', 'C:\Users\COWLAR\Downloads\MATLAB\SVM project 2_v9\pipeline.m', 630)" style="font-weight:bold">pipeline</a> (<a href="matlab: opentoline('C:\Users\COWLAR\Downloads\MATLAB\SVM project 2_v9\pipeline.m',630,0)">line 630</a>)] 
+[Warning: boxplot might not be displayed properly in the tiled chart layout.] 
+[> In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot>renderLabels/setLabelappdata', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 3039)" style="font-weight:bold">boxplot>renderLabels/setLabelappdata</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',3039,0)">line 3039</a>)
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot>renderLabels', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 2942)" style="font-weight:bold">boxplot>renderLabels</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',2942,0)">line 2942</a>)
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 428)" style="font-weight:bold">boxplot</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',428,0)">line 428</a>)
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('pipeline', 'C:\Users\COWLAR\Downloads\MATLAB\SVM project 2_v9\pipeline.m', 630)" style="font-weight:bold">pipeline</a> (<a href="matlab: opentoline('C:\Users\COWLAR\Downloads\MATLAB\SVM project 2_v9\pipeline.m',630,0)">line 630</a>)] 
+[Warning: boxplot might not be displayed properly in the tiled chart layout.] 
+[> In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot>renderLabels/setLabelappdata', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 3039)" style="font-weight:bold">boxplot>renderLabels/setLabelappdata</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',3039,0)">line 3039</a>)
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot>renderLabels', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 2942)" style="font-weight:bold">boxplot>renderLabels</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',2942,0)">line 2942</a>)
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 428)" style="font-weight:bold">boxplot</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',428,0)">line 428</a>)
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('pipeline', 'C:\Users\COWLAR\Downloads\MATLAB\SVM project 2_v9\pipeline.m', 630)" style="font-weight:bold">pipeline</a> (<a href="matlab: opentoline('C:\Users\COWLAR\Downloads\MATLAB\SVM project 2_v9\pipeline.m',630,0)">line 630</a>)] 
+[Warning: boxplot might not be displayed properly in the tiled chart layout.] 
+[> In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot>renderLabels/setLabelappdata', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 3039)" style="font-weight:bold">boxplot>renderLabels/setLabelappdata</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',3039,0)">line 3039</a>)
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot>renderLabels', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 2942)" style="font-weight:bold">boxplot>renderLabels</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',2942,0)">line 2942</a>)
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 428)" style="font-weight:bold">boxplot</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',428,0)">line 428</a>)
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('pipeline', 'C:\Users\COWLAR\Downloads\MATLAB\SVM project 2_v9\pipeline.m', 630)" style="font-weight:bold">pipeline</a> (<a href="matlab: opentoline('C:\Users\COWLAR\Downloads\MATLAB\SVM project 2_v9\pipeline.m',630,0)">line 630</a>)] 
+[Warning: boxplot might not be displayed properly in the tiled chart layout.] 
+[> In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot>renderLabels/setLabelappdata', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 3039)" style="font-weight:bold">boxplot>renderLabels/setLabelappdata</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',3039,0)">line 3039</a>)
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot>renderLabels', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 2942)" style="font-weight:bold">boxplot>renderLabels</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',2942,0)">line 2942</a>)
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 428)" style="font-weight:bold">boxplot</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',428,0)">line 428</a>)
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('pipeline', 'C:\Users\COWLAR\Downloads\MATLAB\SVM project 2_v9\pipeline.m', 630)" style="font-weight:bold">pipeline</a> (<a href="matlab: opentoline('C:\Users\COWLAR\Downloads\MATLAB\SVM project 2_v9\pipeline.m',630,0)">line 630</a>)] 
+[Warning: boxplot might not be displayed properly in the tiled chart layout.] 
+[> In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot>renderLabels/setLabelappdata', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 3039)" style="font-weight:bold">boxplot>renderLabels/setLabelappdata</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',3039,0)">line 3039</a>)
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot>renderLabels', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 2942)" style="font-weight:bold">boxplot>renderLabels</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',2942,0)">line 2942</a>)
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 428)" style="font-weight:bold">boxplot</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',428,0)">line 428</a>)
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('pipeline', 'C:\Users\COWLAR\Downloads\MATLAB\SVM project 2_v9\pipeline.m', 630)" style="font-weight:bold">pipeline</a> (<a href="matlab: opentoline('C:\Users\COWLAR\Downloads\MATLAB\SVM project 2_v9\pipeline.m',630,0)">line 630</a>)] 
+[Warning: boxplot might not be displayed properly in the tiled chart layout.] 
+[> In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot>renderLabels/setLabelappdata', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 3039)" style="font-weight:bold">boxplot>renderLabels/setLabelappdata</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',3039,0)">line 3039</a>)
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot>renderLabels', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 2942)" style="font-weight:bold">boxplot>renderLabels</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',2942,0)">line 2942</a>)
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 428)" style="font-weight:bold">boxplot</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',428,0)">line 428</a>)
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('pipeline', 'C:\Users\COWLAR\Downloads\MATLAB\SVM project 2_v9\pipeline.m', 630)" style="font-weight:bold">pipeline</a> (<a href="matlab: opentoline('C:\Users\COWLAR\Downloads\MATLAB\SVM project 2_v9\pipeline.m',630,0)">line 630</a>)] 
+✓ Saved: Fig2_Feature_Distributions.png
+
+Step 3.5: Generating Fig3 (t-SNE Plot)...
+  Running t-SNE dimensionality reduction...
+✓ Saved: Fig3_tSNE_Clusters.png
+
+✓ Step 3 complete: Data exploration and visualization finished.
+  Generated figures: Fig0, Fig1, Fig2, Fig3
+
+========================================================================
+Step 4: Multi-Model ML Pipeline & Optimization
+========================================================================
+
+Step 4.1: Loading feature data for modeling...
+✓ Loaded feature data:
+  - Samples: 1430
+  - Features: 36
+  - Classes: 11
+
+Step 4.2: Data Quality Assessment
+✓ No missing or infinite values found.
+✓ No duplicate samples found.
+
+Checking for outliers (|z-score| > 3)...
+✓ Outliers detected: 718 (1.39% of data points)
+  Note: Outliers retained (may represent genuine fault characteristics).
+
+Step 4.3: Class Imbalance Analysis
+Class distribution:
+  cavitation                    :  130 samples (9.1%)
+  desalignement                 :  130 samples (9.1%)
+  desequilibre                  :  130 samples (9.1%)
+  jeu                           :  130 samples (9.1%)
+  lubrification                 :  130 samples (9.1%)
+  mixed_cavit_jeu               :  130 samples (9.1%)
+  mixed_misalign_imbalance      :  130 samples (9.1%)
+  mixed_wear_lube               :  130 samples (9.1%)
+  oilwhirl                      :  130 samples (9.1%)
+  sain                          :  130 samples (9.1%)
+  usure                         :  130 samples (9.1%)
+Imbalance ratio: 1.00:1
+✓ Classes are balanced (imbalance handling disabled).
+
+Step 4.4: Stratified Data Splitting (70% / 15% / 15%)
+Loading dataset metadata...
+  Severity distribution:
+    incipient   : 348 samples (24.3%)
+    mild        : 339 samples (23.7%)
+    moderate    : 304 samples (21.3%)
+    nominal     : 130 samples (9.1%)
+    severe      : 309 samples (21.6%)
+  Augmented samples: 330 (23.1%)
+✓ Metadata loaded and analyzed.
+✓ Data split completed:
+  - Training:   1001 samples (70.0%)
+  - Validation: 215 samples (15.0%)
+  - Test:       214 samples (15.0%)
+
+Verifying stratification:
+  cavitation: Train=9.1%, Overall=9.1% (diff: 0.0%)
+  desalignement: Train=9.1%, Overall=9.1% (diff: 0.0%)
+  desequilibre: Train=9.1%, Overall=9.1% (diff: 0.0%)
+✓ Stratification verified (proportions preserved).
+
+Step 4.5: Additional Holdout Set for Generalization Testing
+Creating separate validation set (10% of data)...
+✓ Additional holdout set: 143 samples
+  (Simulates different operating session for robustness testing)
+
+Step 4.6: Feature Selection (Post-Split)
+Running feature selection on TRAINING SET ONLY...
+Method: MRMR (Minimum Redundancy Maximum Relevance)
+✓ Feature selection complete.
+  Selected 15 features (from 36 available):
+   1. Envelope_ModulationFreq        (score: 0.0000)
+   2. SpectralCentroid               (score: 0.0776)
+   3. BandEnergy_Misalign            (score: 0.1359)
+   4. BandEnergy_Oilwhirl            (score: 0.2869)
+   5. Envelope_PeakFactor            (score: 0.2572)
+   6. Bispectrum_Peak                (score: 0.1591)
+   7. Wavelet_Kurtosis               (score: 0.0776)
+   8. Kurtosis                       (score: 0.0958)
+   9. Skewness                       (score: 0.1455)
+  10. Cepstral_Peak_Ratio            (score: 0.5475)
+  ... and 5 more features
+✓ Feature selection applied to all data splits.
+✓ Final feature count: 15
+
+Step 4.7: Feature Normalization
+✓ Normalization complete (z-score using training statistics).
+  Training mean range: [-0.0063, 16735879227.8713]
+  Training std range:  [0.0011, 54986626813.0235]
+  Verification: Training data mean=0.000000, std=0.9995
+
+========================================================================
+Step 4.8: Model Training & Hyperparameter Optimization
+========================================================================
+
+--- Training SVM (Baseline Model) ---
+  Running Bayesian optimization (50 iterations)...
+✓ SVM training complete in 108.45 seconds.
+► SVM Validation Accuracy: 92.56%
+
+--- Training Random Forest ---
+  Running Bayesian optimization (50 iterations)...
+✓ Random Forest training complete in 664.76 seconds.
+► Random Forest Validation Accuracy: 95.81%
+
+--- Training Gradient Boosting ---
+  Running Bayesian optimization (50 iterations)...
+!! Error training Gradient Boosting: Unable to train model on full data set.
+  Skipping Gradient Boosting model.
+
+--- Training Neural Network (3-layer MLP with dropout) ---
+✓ Neural Network training complete in 1.11 seconds.
+► Neural Network Validation Accuracy: 94.88%
+
+--- Stacked Ensemble: DISABLED ---
+  (Enable in CONFIG.models.trainStackedEnsemble if needed)
+
+========================================================================
+Step 4.9: Final Model Selection
+========================================================================
+
+►► Model Comparison:
+   SVM                      : 92.56%
+   Random Forest            : 95.81%
+   Neural Network           : 94.88%
+
+►► WINNER: Random Forest (Validation Accuracy: 95.81%)
+
+✓ Step 4 complete: Model training and selection finished.
+  Best model: Random Forest with 95.81% validation accuracy.
+
+✓ Step 4 results saved to: step4_results.mat
+
+========================================================================
+STEP 5A: MODEL EVALUATION & CALIBRATION
+========================================================================
+
+Step 5A.1: Loading Step 4 results...
+✓ Successfully loaded Step 4 results:
+  - Best model: Random Forest
+  - Validation accuracy: 95.81%
+  - Feature count: 15
+  - Classes: 11
+✓ Data integrity verified.
+
+Step 5A.2: Model Probability Calibration
+Method: sigmoid scaling
+  Computing uncalibrated scores on validation set...
+  Calibrating probabilities using validation set...
+  Applying calibration to test set...
+  Evaluating calibration quality...
+✓ Calibration complete.
+  Expected Calibration Error (ECE): 0.1267
+  ⚠️  Poor calibration (ECE > 0.10) - confidence scores may be unreliable
+
+Step 5A.3: Final Model Evaluation on Test Set
+►► FINAL TEST ACCURACY: 95.33%
+✓ Test performance consistent with validation (difference: 0.49%)
+
+Generating confusion matrix...
+
+Step 5A.4: Generating Fig 4 (Confusion Matrix)...
+✓ Saved: Fig4_Confusion_Matrix.png
+
+Step 5A.5: Computing Per-Class Metrics
+
+--- Macro-Averaged Metrics (Equal Weight per Class) ---
+  Precision: 95.66%
+  Recall:    95.29%
+  F1-Score:  95.37%
+
+--- Weighted Metrics (Weighted by Class Support) ---
+  Precision: 95.64%
+  Recall:    95.33%
+  F1-Score:  95.37%
+
+--- Per-Class Performance ---
+Class                           Prec    Recall   F1     Support
+----------------------------------------------------------------------
+cavitation                      100.00%  94.74%   97.30%  19
+desalignement                   90.00%  90.00%   90.00%  20
+desequilibre                    100.00%  89.47%   94.44%  19
+jeu                             100.00%  100.00%   100.00%  19
+lubrification                   100.00%  100.00%   100.00%  19
+mixed_cavit_jeu                 100.00%  95.00%   97.44%  20
+mixed_misalign_imbalance        78.95%  78.95%   78.95%  19
+mixed_wear_lube                 100.00%  100.00%   100.00%  19
+oilwhirl                        100.00%  100.00%   100.00%  20
+sain                            83.33%  100.00%   90.91%  20
+usure                           100.00%  100.00%   100.00%  20
+
+--- Performance Analysis ---
+  ⚠️  Classes with low recall (<90%):
+    - desequilibre: 89.47% (2 false negatives)
+    - mixed_misalign_imbalance: 78.95% (4 false negatives)
+  ⚠️  Classes with low precision (<90%):
+    - mixed_misalign_imbalance: 78.95% (high false positive rate)
+    - sain: 83.33% (high false positive rate)
+
+Step 5A.6: Computing ROC Curves and AUC
+✓ ROC analysis complete.
+  Mean AUC: 0.9970
+  ✓ Excellent discrimination (AUC > 0.99)
+
+Generating Fig 5 (ROC Curves)...
+✓ Saved: Fig5_ROC_Curves.png
+
+Step 5A.7: Saving evaluation results...
+✓ Step 5A results saved to: step5a_results.mat
+
+========================================================================
+✅ STEP 5A COMPLETE: Model Evaluation & Calibration
+========================================================================
+Summary:
+  - Test Accuracy:     95.33%
+  - Macro F1-Score:    95.37%
+  - Mean AUC:          0.9970
+  - Calibrated:        Yes
+  - Figures generated: Fig4 (Confusion Matrix), Fig5 (ROC Curves)
+
+✓ Ready to proceed to Step 5B (Advanced Validation).
+========================================================================
+
+========================================================================
+STEP 5B: ADVANCED VALIDATION & ANALYSIS
+========================================================================
+
+Step 5B.1: Loading previous results...
+✓ Successfully loaded all required data.
+
+Step 5B.2: Additional Holdout Set Validation
+Testing model generalization on separate holdout data...
+►► Additional Holdout Accuracy: 97.20%
+   (Test Set Accuracy: 95.33%)
+✓ Performance consistent between test sets (diff: 1.88%)
+  Model shows good generalization.
+
+Per-class performance on holdout set:
+  cavitation                    : 92.3% (13 samples)
+  desalignement                 : 100.0% (13 samples)
+  desequilibre                  : 100.0% (13 samples)
+  jeu                           : 100.0% (13 samples)
+  lubrification                 : 100.0% (13 samples)
+
+Step 5B.3: Adversarial Robustness Testing
+Testing model resilience to realistic perturbations...
+
+Test 1: Sensor Noise Injection (+10% RMS)...
+  Accuracy: 78.50% (drop: 16.82%)
+  ⚠️  Poor robustness to sensor noise
+
+Test 2: Missing Features (15% random dropout)...
+  Accuracy: 88.79% (drop: 6.54%)
+  ⚠️  Moderate robustness to missing features
+
+Test 3: Temporal Drift (simulated sensor aging)...
+  Accuracy: 92.06% (drop: 3.27%)
+  ✓ Excellent robustness to temporal drift
+
+--- Robustness Summary ---
+  Average performance degradation: 8.88%
+  ⚠️  Moderate robustness - acceptable for production
+     Consider monitoring predictions in production
+
+Step 5B.4: Generating Learning Curves
+Analyzing bias-variance tradeoff...
+  Training models with varying data sizes:
+    Size 110/1001: Training... Train: 100.0%, Val: 86.5%
+    Size 237/1001: Training... Train: 100.0%, Val: 93.0%
+    Size 365/1001: Training... Train: 100.0%, Val: 91.6%
+    Size 492/1001: Training... Train: 100.0%, Val: 93.5%
+    Size 619/1001: Training... Train: 100.0%, Val: 94.4%
+    Size 746/1001: Training... Train: 100.0%, Val: 95.8%
+    Size 874/1001: Training... Train: 100.0%, Val: 97.7%
+!! Error generating learning curves: For holdout, the third input must be either a scalar in the range of (0,1) or a positive integer.
+
+Step 5B.5: Misclassification Analysis
+Total misclassified: 10 out of 214 (Error rate: 4.67%)
+
+--- Misclassification Patterns ---
+
+Most common confusion patterns:
+   1. desalignement →mixed_misalign_imbalance           : 2 occurrences
+   2. desequilibre →mixed_misalign_imbalance            : 2 occurrences
+   3. mixed_misalign_imbalance →desalignement           : 2 occurrences
+   4. mixed_misalign_imbalance →sain                    : 2 occurrences
+   5. cavitation →sain                                  : 1 occurrences
+
+Sample misclassifications (first 10):
+   1. True=cavitation                    , Predicted=sain                          
+   2. True=desalignement                 , Predicted=mixed_misalign_imbalance      
+   3. True=desalignement                 , Predicted=mixed_misalign_imbalance      
+   4. True=desequilibre                  , Predicted=mixed_misalign_imbalance      
+   5. True=desequilibre                  , Predicted=mixed_misalign_imbalance      
+   6. True=mixed_cavit_jeu               , Predicted=sain                          
+   7. True=mixed_misalign_imbalance      , Predicted=sain                          
+   8. True=mixed_misalign_imbalance      , Predicted=desalignement                 
+   9. True=mixed_misalign_imbalance      , Predicted=sain                          
+  10. True=mixed_misalign_imbalance      , Predicted=desalignement                 
+
+--- Error Analysis ---
+  Errors involving mixed faults: 9 out of 10 (90.0%)
+  ⚠️  Over 50% of errors involve mixed faults.
+     Mixed faults are most challenging for the classifier.
+     Recommendations:
+     - Collect more mixed fault training samples
+     - Engineer features specific to fault combinations
+     - Consider hierarchical classification
+
+Step 5B.6: Feature Importance Analysis
+Extracting feature importance from Random Forest...
+  ⚠️  OOB importance not available for this model.
+
+Step 5B.7: Saving advanced validation results...
+✓ Step 5B results saved to: step5b_results.mat
+
+========================================================================
+✅ STEP 5B COMPLETE: Advanced Validation & Analysis
+========================================================================
+Summary:
+  - Additional Holdout Acc: 97.20%
+  - Avg Robustness Drop:    8.88%
+  - Misclassifications:     10 analyzed
+
+✓ Ready to proceed to Step 5C (Production Deployment).
+========================================================================
+
+========================================================================
+STEP 5C: PRODUCTION DEPLOYMENT
+========================================================================
+
+Step 5C.1: Loading all results for deployment...
+✓ Successfully loaded all deployment data.
+
+Step 5C.2: Generating Fig 7 (Class Distribution)...
+✓ Saved: Fig7_Class_Distribution.png
+
+Step 5C.3: Generating Fig 8 (Model Performance Comparison)...
+✓ Saved: Fig8_Performance_Comparison.png
+
+Step 5C.4: Saving final model and metadata...
+✓ Model package saved to: PFD_SVM_Results_Production\Best_PFD_Model_Production.mat
+  Model type: RandomForest
+  Features: 15
+  Classes: 11
+  Test accuracy: 95.33%
+
+Step 5C.5: Generating production inference function...
+✓ Inference function generated: PFD_SVM_Results_Production\predictPFDFault_Production.m
+  ⚠️  NOTE: Feature extraction function needs to be completed.
+     Copy extractFeatures function from training pipeline into inference file.
+
+Step 5C.6: Generating comprehensive production report...
+✓ Production report saved: PFD_SVM_Results_Production\PFD_Analysis_Report_Production.txt
+
+========================================================================
+✅ STEP 5C COMPLETE: Production Deployment
+========================================================================
+
+Deployment Package Contents:
+  1. Model Package:          Best_PFD_Model_Production.mat
+  2. Inference Function:     predictPFDFault_Production.m
+  3. Production Report:      PFD_Analysis_Report_Production.txt
+  4. Visualizations:         Fig0-Fig9 (9 figures)
+
+Model Performance Summary:
+  - Best Model:              Random Forest
+  - Test Accuracy:           95.33%
+  - Macro F1-Score:          95.37%
+  - Mean AUC:                0.9970
+
+Next Steps for Deployment:
+  1. Complete feature extraction in inference function
+  2. Test inference function with sample signals
+  3. Integrate with production monitoring system
+  4. Establish performance monitoring dashboard
+  5. Train operations team on system usage
+
+========================================================================
+🎉 COMPLETE PIPELINE EXECUTION FINISHED SUCCESSFULLY
+========================================================================
+
+All Steps Completed:
+  ✓ Step 1:  Configuration and Setup
+  ✓ Step 2:  Feature Engineering
+  ✓ Step 3:  Data Exploration
+  ✓ Step 4:  Model Training and Selection
+  ✓ Step 5A: Model Evaluation and Calibration
+  ✓ Step 5B: Advanced Validation
+  ✓ Step 5C: Production Deployment
+
+Total Execution Time: 0.75 minutes
+
+System is ready for production deployment.
+========================================================================
