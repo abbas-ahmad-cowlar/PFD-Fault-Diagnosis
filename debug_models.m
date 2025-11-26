@@ -6,14 +6,23 @@ fprintf('=== DIAGNOSTIC: Checking Model Availability ===\n\n');
 resultFile = 'step5a_results.mat';
 
 % Find the most recent results directory
-dirs = dir('PFD_Results_*');
+dirs = dir('PFD_*Results*');
 if ~isempty(dirs)
+    % Filter to only directories
+    dirs = dirs([dirs.isdir]);
+
+    if isempty(dirs)
+        fprintf('ERROR: No PFD results directory found!\n');
+        return;
+    end
+
     [~, idx] = max([dirs.datenum]);
     latestDir = dirs(idx).name;
     resultFile = fullfile(latestDir, 'step5a_results.mat');
     fprintf('Loading results from: %s\n\n', resultFile);
 else
-    fprintf('ERROR: No PFD_Results_* directory found!\n');
+    fprintf('ERROR: No PFD results directory found!\n');
+    fprintf('Looking for directories matching: PFD_*Results*\n');
     return;
 end
 
