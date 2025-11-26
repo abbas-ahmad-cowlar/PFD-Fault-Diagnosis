@@ -3016,14 +3016,15 @@ try
         rfModel = allModelMetrics.RandomForest.model;
 
         % Extract tree ensemble statistics
-        nTrees = rfModel.NumTrees;
+        % For ClassificationBaggedEnsemble, use NumTrained instead of NumTrees
+        nTrees = rfModel.NumTrained;
         splitFeatures = cell(nTrees, 1);
         splitDepths = cell(nTrees, 1);
         splitThresholds = cell(nTrees, 1);
 
         % Traverse all trees to collect split information
         for t = 1:nTrees
-            tree = rfModel.Trees{t};
+            tree = rfModel.Trained{t};
 
             % Get cut predictor indices (features used for splits)
             cutPredictors = tree.CutPredictor;
@@ -3133,42 +3134,44 @@ try
         axis off;
         hold on;
 
-        % Extract architecture
-        layers = nnModel.Layers;
-        nLayers = length(layers);
+        % Extract architecture from ClassificationNeuralNetwork
+        % This model type has LayerSizes property instead of Layers
+        try
+            layerSizes = nnModel.LayerSizes;
+            nFeatures = size(X_test_norm, 2);
+            nClasses = length(classNames);
+
+            % Build layer array: [input, hidden layers, output]
+            allLayers = [nFeatures, layerSizes, nClasses];
+            nLayers = length(allLayers);
+
+            fprintf('  Network structure: %s\n', mat2str(allLayers));
+        catch
+            % Fallback if LayerSizes not available
+            allLayers = [size(X_test_norm, 2), 50, length(classNames)];
+            nLayers = 3;
+        end
 
         % Calculate positions
         xPositions = linspace(0.1, 0.9, nLayers);
         yCenter = 0.5;
 
         % Draw layers
-        layerInfo = cell(nLayers, 1);
         for i = 1:nLayers
-            layer = layers(i);
-            layerType = class(layer);
-
-            % Simplify layer type name
-            if contains(layerType, 'FullyConnected')
-                layerName = sprintf('FC\n%d', layer.OutputSize);
-            elseif contains(layerType, 'Dropout')
-                layerName = sprintf('Dropout\n%.1f%%', layer.Probability * 100);
-            elseif contains(layerType, 'ReLU')
-                layerName = 'ReLU';
-            elseif contains(layerType, 'Softmax')
-                layerName = 'Softmax';
-            elseif contains(layerType, 'Classification')
-                layerName = 'Output';
-            elseif contains(layerType, 'Feature')
-                layerName = sprintf('Input\n%d', layer.InputSize);
+            if i == 1
+                layerName = sprintf('Input\n%d', allLayers(i));
+                color = [0.9, 0.9, 1];
+            elseif i == nLayers
+                layerName = sprintf('Output\n%d', allLayers(i));
+                color = [1, 0.9, 0.9];
             else
-                layerName = strrep(layerType, 'Layer', '');
+                layerName = sprintf('Hidden\n%d', allLayers(i));
+                color = [0.8, 0.9, 1];
             end
-
-            layerInfo{i} = layerName;
 
             % Draw box
             rectangle('Position', [xPositions(i) - 0.05, yCenter - 0.15, 0.1, 0.3], ...
-                'FaceColor', [0.8, 0.9, 1], 'EdgeColor', 'k', 'LineWidth', 1.5);
+                'FaceColor', color, 'EdgeColor', 'k', 'LineWidth', 1.5);
 
             % Add text
             text(xPositions(i), yCenter, layerName, ...
@@ -3187,6 +3190,17 @@ try
 
         xlim([0, 1]);
         ylim([0, 1]);
+
+        % Add activation function info
+        try
+            activation = nnModel.Activations;
+            text(0.5, 0.15, sprintf('Activation: %s', activation), ...
+                'Units', 'normalized', 'HorizontalAlignment', 'center', ...
+                'FontSize', 10, 'Interpreter', 'none');
+        catch
+            % Ignore if not available
+        end
+
         title('Neural Network Architecture', ...
             'FontSize', 14, 'FontWeight', 'bold', 'Interpreter', 'none');
 
