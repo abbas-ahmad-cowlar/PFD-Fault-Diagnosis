@@ -2618,6 +2618,7 @@ for modelIdx = 1:length(trainedModelFields)
         % ====================================================================
 
         allModelMetrics.(modelFieldName) = struct(...
+            'model', currentModel, ...  % ADDED: Store the actual trained model
             'testAccuracy', currentTestAcc, ...
             'valAccuracy', currentValAcc, ...
             'confMat', confMat_current, ...
@@ -2631,7 +2632,7 @@ for modelIdx = 1:length(trainedModelFields)
             'auc', auc_current, ...
             'meanAUC', meanAUC_current);
 
-        fprintf('  ✓ Metrics stored for %s\n', modelFieldName);
+        fprintf('  ✓ Metrics stored for %s (including trained model)\n', modelFieldName);
 
     catch ME
         fprintf('!! Error processing model %s: %s\n', modelFieldName, ME.message);
