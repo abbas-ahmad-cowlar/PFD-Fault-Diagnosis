@@ -250,7 +250,7 @@ try
     fprintf('  ✓ allModelMetrics.RandomForest.model exists\n');
 
     rfModel = allModelMetrics.RandomForest.model;
-    nTrees = rfModel.NumTrees;
+    nTrees = rfModel.NumTrained;  % For ClassificationBaggedEnsemble
     fprintf('  Random Forest has %d trees\n', nTrees);
 
     fprintf('\n  Analyzing tree structures...\n');
@@ -261,7 +261,7 @@ try
         if mod(t, 20) == 0
             fprintf('    Processing tree %d/%d\n', t, nTrees);
         end
-        tree = rfModel.Trees{t};
+        tree = rfModel.Trained{t};  % For ClassificationBaggedEnsemble
         cutPredictors = tree.CutPredictor;
 
         nodeDepths = zeros(length(cutPredictors), 1);
@@ -381,39 +381,49 @@ try
     axis off;
     hold on;
 
-    layers = nnModel.Layers;
-    nLayers = length(layers);
-    fprintf('  Network has %d layers\n', nLayers);
+    % Extract architecture from ClassificationNeuralNetwork
+    try
+        layerSizes = nnModel.LayerSizes;
+        nFeatures = size(X_test_norm, 2);
+        nClasses = length(classNames);
+
+        % Build layer array: [input, hidden layers, output]
+        allLayers = [nFeatures, layerSizes, nClasses];
+        nLayers = length(allLayers);
+
+        fprintf('  Network structure: %s\n', mat2str(allLayers));
+    catch
+        % Fallback if LayerSizes not available
+        allLayers = [size(X_test_norm, 2), 50, length(classNames)];
+        nLayers = 3;
+    end
 
     xPositions = linspace(0.1, 0.9, nLayers);
     yCenter = 0.5;
 
+    % Draw layers
     for i = 1:nLayers
-        layer = layers(i);
-        layerType = class(layer);
-
-        if contains(layerType, 'FullyConnected')
-            layerName = sprintf('FC\n%d', layer.OutputSize);
-        elseif contains(layerType, 'Dropout')
-            layerName = sprintf('Dropout\n%.1f%%', layer.Probability * 100);
-        elseif contains(layerType, 'ReLU')
-            layerName = 'ReLU';
-        elseif contains(layerType, 'Softmax')
-            layerName = 'Softmax';
-        elseif contains(layerType, 'Classification')
-            layerName = 'Output';
-        elseif contains(layerType, 'Feature')
-            layerName = sprintf('Input\n%d', layer.InputSize);
+        if i == 1
+            layerName = sprintf('Input\n%d', allLayers(i));
+            color = [0.9, 0.9, 1];
+        elseif i == nLayers
+            layerName = sprintf('Output\n%d', allLayers(i));
+            color = [1, 0.9, 0.9];
         else
-            layerName = strrep(layerType, 'Layer', '');
+            layerName = sprintf('Hidden\n%d', allLayers(i));
+            color = [0.8, 0.9, 1];
         end
 
+        % Draw box
         rectangle('Position', [xPositions(i) - 0.05, yCenter - 0.15, 0.1, 0.3], ...
-            'FaceColor', [0.8, 0.9, 1], 'EdgeColor', 'k', 'LineWidth', 1.5);
+            'FaceColor', color, 'EdgeColor', 'k', 'LineWidth', 1.5);
+
+        % Add text
         text(xPositions(i), yCenter, layerName, ...
             'HorizontalAlignment', 'center', 'VerticalAlignment', 'middle', ...
             'FontSize', 9, 'FontWeight', 'bold', 'Interpreter', 'none');
 
+        % Draw arrows between layers
         if i < nLayers
             annotation('arrow', [xPositions(i) + 0.05, xPositions(i+1) - 0.05], ...
                 [yCenter, yCenter], 'LineWidth', 2, 'HeadStyle', 'cback1', ...
@@ -423,6 +433,17 @@ try
 
     xlim([0, 1]);
     ylim([0, 1]);
+
+    % Add activation function info
+    try
+        activation = nnModel.Activations;
+        text(0.5, 0.15, sprintf('Activation: %s', activation), ...
+            'Units', 'normalized', 'HorizontalAlignment', 'center', ...
+            'FontSize', 10, 'Interpreter', 'none');
+    catch
+        % Ignore if not available
+    end
+
     title('Neural Network Architecture', 'FontSize', 14, 'FontWeight', 'bold', 'Interpreter', 'none');
 
     % Panel 2: Activations
@@ -493,3 +514,99 @@ fprintf('  - Fig16_SVM_Decision_Boundaries.png\n');
 fprintf('  - Fig17_RandomForest_Decision_Paths.png\n');
 fprintf('  - Fig18_NeuralNetwork_Architecture.png\n');
 fprintf('========================================================================\n\n');
+
+%% HELPER FUNCTIONS
+
+function plotSVMDecisionBoundary(svmModel, X_data, Y_data, featurePair, featureNames, classNames)
+    % Plot SVM decision boundary for a specific pair of features
+    try
+        % Extract the two features
+        X_pair = X_data(:, featurePair);
+
+        % Create grid for decision boundary
+        x1_range = linspace(min(X_pair(:,1)) - 0.5, max(X_pair(:,1)) + 0.5, 200);
+        x2_range = linspace(min(X_pair(:,2)) - 0.5, max(X_pair(:,2)) + 0.5, 200);
+        [X1_grid, X2_grid] = meshgrid(x1_range, x2_range);
+
+        % Create full feature matrix for prediction (use mean for other features)
+        nFeatures = size(X_data, 2);
+        X_grid_full = zeros(numel(X1_grid), nFeatures);
+
+        % Fill in the two features of interest
+        X_grid_full(:, featurePair(1)) = X1_grid(:);
+        X_grid_full(:, featurePair(2)) = X2_grid(:);
+
+        % Fill other features with their mean values
+        for f = 1:nFeatures
+            if ~ismember(f, featurePair)
+                X_grid_full(:, f) = mean(X_data(:, f));
+            end
+        end
+
+        % Predict on grid
+        Z_grid = predict(svmModel, X_grid_full);
+        Z_grid = reshape(Z_grid, size(X1_grid));
+
+        % Plot decision regions
+        contourf(X1_grid, X2_grid, Z_grid, length(classNames), 'LineStyle', 'none');
+        alpha(0.3); % Make background semi-transparent
+        hold on;
+
+        % Plot data points
+        colormap(gca, jet(length(classNames)));
+        scatter(X_pair(:,1), X_pair(:,2), 50, Y_data, 'filled', ...
+            'MarkerEdgeColor', 'k', 'LineWidth', 1);
+
+        % Format
+        xlabel(strrep(featureNames{featurePair(1)}, '_', ' '), ...
+            'FontSize', 11, 'Interpreter', 'none');
+        ylabel(strrep(featureNames{featurePair(2)}, '_', ' '), ...
+            'FontSize', 11, 'Interpreter', 'none');
+
+        % Add colorbar with class labels
+        cb = colorbar;
+        cb.Ticks = 1:length(classNames);
+        cb.TickLabels = classNames;
+        cb.TickLabelInterpreter = 'none';
+
+        grid on;
+        hold off;
+
+    catch ME
+        % If prediction fails, just plot the data points
+        scatter(X_pair(:,1), X_pair(:,2), 50, Y_data, 'filled', ...
+            'MarkerEdgeColor', 'k', 'LineWidth', 1);
+        xlabel(strrep(featureNames{featurePair(1)}, '_', ' '), ...
+            'FontSize', 11, 'Interpreter', 'none');
+        ylabel(strrep(featureNames{featurePair(2)}, '_', ' '), ...
+            'FontSize', 11, 'Interpreter', 'none');
+        title(sprintf('Error: %s', ME.message), 'FontSize', 10, 'Color', 'r');
+    end
+end
+
+function depth = getNodeDepth(tree, nodeIdx)
+    % Calculate depth of a node in a decision tree
+    % Depth = 0 for root, increases by 1 for each level down
+
+    depth = 0;
+    currentNode = nodeIdx;
+
+    % Walk up the tree to root by finding parent nodes
+    while currentNode ~= 1  % Node 1 is the root
+        % Find parent: node i is a child of floor((i+1)/2)
+        % This works for MATLAB's compact tree representation
+        parentNode = floor(currentNode / 2);
+
+        if parentNode < 1
+            break;  % Safety check
+        end
+
+        depth = depth + 1;
+        currentNode = parentNode;
+
+        % Safety limit to prevent infinite loops
+        if depth > 100
+            break;
+        end
+    end
+end
