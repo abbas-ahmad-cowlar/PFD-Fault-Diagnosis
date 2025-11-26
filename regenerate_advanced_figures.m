@@ -266,8 +266,19 @@ try
         % Get cut predictors (handle both cell and numeric arrays)
         cutPredictors = tree.CutPredictor;
         if iscell(cutPredictors)
-            % Convert cell array to numeric (empty cells become 0)
-            cutPredictors = cellfun(@(x) iif(isempty(x), 0, x), cutPredictors);
+            % Convert cell array to numeric array
+            % Each cell should contain either empty or a feature index
+            cutPredictors_numeric = zeros(length(cutPredictors), 1);
+            for i = 1:length(cutPredictors)
+                if isempty(cutPredictors{i})
+                    cutPredictors_numeric(i) = 0;
+                elseif isnumeric(cutPredictors{i})
+                    cutPredictors_numeric(i) = cutPredictors{i}(1);  % Take first element if array
+                else
+                    cutPredictors_numeric(i) = 0;
+                end
+            end
+            cutPredictors = cutPredictors_numeric;
         end
 
         nodeDepths = zeros(length(cutPredictors), 1);

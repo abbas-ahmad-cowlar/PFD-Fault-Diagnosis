@@ -3032,10 +3032,30 @@ try
 
             % Handle cell arrays (convert to numeric)
             if iscell(cutPredictors)
-                cutPredictors = cellfun(@(x) iif(isempty(x), 0, x), cutPredictors);
+                cutPredictors_numeric = zeros(length(cutPredictors), 1);
+                for i = 1:length(cutPredictors)
+                    if isempty(cutPredictors{i})
+                        cutPredictors_numeric(i) = 0;
+                    elseif isnumeric(cutPredictors{i})
+                        cutPredictors_numeric(i) = cutPredictors{i}(1);
+                    else
+                        cutPredictors_numeric(i) = 0;
+                    end
+                end
+                cutPredictors = cutPredictors_numeric;
             end
             if iscell(cutPoints)
-                cutPoints = cellfun(@(x) iif(isempty(x), 0, x), cutPoints);
+                cutPoints_numeric = zeros(length(cutPoints), 1);
+                for i = 1:length(cutPoints)
+                    if isempty(cutPoints{i})
+                        cutPoints_numeric(i) = 0;
+                    elseif isnumeric(cutPoints{i})
+                        cutPoints_numeric(i) = cutPoints{i}(1);
+                    else
+                        cutPoints_numeric(i) = 0;
+                    end
+                end
+                cutPoints = cutPoints_numeric;
             end
 
             % Get node depths
