@@ -247,8 +247,8 @@ function plotSVMDecisionBoundary(svmModel, X_data, Y_data, featurePair, featureN
     % featurePair: [feature1_idx, feature2_idx] to visualize
     % classNames: cell array of class names
 
-    % Define discrete colors for classes (up to 6 classes) - OUTSIDE try block
-    distinctColors = [
+    % Define base discrete colors - OUTSIDE try block
+    baseColors = [
         0.8, 0.2, 0.2;  % Red
         0.2, 0.4, 0.8;  % Blue
         0.2, 0.7, 0.3;  % Green
@@ -267,7 +267,16 @@ function plotSVMDecisionBoundary(svmModel, X_data, Y_data, featurePair, featureN
         end
 
         nClasses = length(classNames);
-        classColors = distinctColors(1:min(nClasses, 6), :);
+
+        % Generate colors for all classes (repeat base colors if needed)
+        if nClasses <= size(baseColors, 1)
+            classColors = baseColors(1:nClasses, :);
+        else
+            % If more classes than base colors, repeat the pattern
+            numRepeats = ceil(nClasses / size(baseColors, 1));
+            classColors = repmat(baseColors, numRepeats, 1);
+            classColors = classColors(1:nClasses, :);
+        end
 
         % Create grid for decision boundary
         gridResolution = 300;  % Higher resolution for smoother boundaries
@@ -382,7 +391,16 @@ function plotSVMDecisionBoundary(svmModel, X_data, Y_data, featurePair, featureN
         end
 
         nClasses = length(classNames);
-        classColors = distinctColors(1:min(nClasses, 6), :);
+
+        % Generate colors for all classes (repeat base colors if needed)
+        if nClasses <= size(baseColors, 1)
+            classColors = baseColors(1:nClasses, :);
+        else
+            % If more classes than base colors, repeat the pattern
+            numRepeats = ceil(nClasses / size(baseColors, 1));
+            classColors = repmat(baseColors, numRepeats, 1);
+            classColors = classColors(1:nClasses, :);
+        end
 
         hold on;
         for c = 1:nClasses
