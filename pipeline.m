@@ -505,7 +505,7 @@ for k = 1:length(basicFaults)
     ax3 = nexttile;
     spectrogram(x, hann(256), 128, 256, fs, 'yaxis');
     title(ax3, ['Spectrogram: ' fault], 'Interpreter', 'none', 'FontWeight', 'normal');
-    
+
     % --- CLUTTER REDUCTION: Only add labels to outer plots ---
     if k == 1
         % Add Y-labels only to the first row
@@ -516,6 +516,11 @@ for k = 1:length(basicFaults)
         % Add X-labels only to the last row
         xlabel(ax1, 'Time (s)');
         xlabel(ax2, 'Frequency (Hz)');
+        xlabel(ax3, 'Time (s)'); % Spectrogram X-axis
+    else
+        % Remove auto-generated labels from spectrogram for non-last rows
+        xlabel(ax3, '');
+        ylabel(ax3, '');
     end
 end
 
@@ -577,6 +582,11 @@ for k = 1:length(mixedFaults)
         % Add X-labels only to the last row
         xlabel(ax1, 'Time (s)');
         xlabel(ax2, 'Frequency (Hz)');
+        xlabel(ax3, 'Time (s)'); % Spectrogram X-axis
+    else
+        % Remove auto-generated labels from spectrogram for non-last rows
+        xlabel(ax3, '');
+        ylabel(ax3, '');
     end
 end
 
@@ -1950,8 +1960,10 @@ try
     % Add text annotations
     for i = 1:length(classNames)
         for j = 1:length(classNames)
-            textColor = 'white';
+            % With flipud(gray), high values are BLACK, so use WHITE text
             if confMat(i,j) > max(confMat(:))/2
+                textColor = 'white';
+            else
                 textColor = 'black';
             end
             text(j, i, sprintf('%d', confMat(i,j)), ...
@@ -1983,8 +1995,10 @@ try
     % Add text annotations
     for i = 1:length(classNames)
         for j = 1:length(classNames)
-            textColor = 'white';
+            % With flipud(gray), high values are BLACK, so use WHITE text
             if confMatNorm(i,j) > 0.5
+                textColor = 'white';
+            else
                 textColor = 'black';
             end
             text(j, i, sprintf('%.1f%%', 100*confMatNorm(i,j)), ...
@@ -2409,10 +2423,11 @@ for modelIdx = 1:length(trainedModelFields)
         % Add text annotations for raw counts
         for i = 1:length(classNames)
             for j = 1:length(classNames)
+                % With flipud(gray), high values are BLACK, so use WHITE text
                 if confMat_current(i,j) > max(confMat_current(:))/2
-                    textColor = 'black';
-                else
                     textColor = 'white';
+                else
+                    textColor = 'black';
                 end
                 text(j, i, sprintf('%d', confMat_current(i,j)), ...
                     'HorizontalAlignment', 'center', ...
@@ -2442,10 +2457,11 @@ for modelIdx = 1:length(trainedModelFields)
         % Add text annotations for normalized values
         for i = 1:length(classNames)
             for j = 1:length(classNames)
+                % With flipud(gray), high values are BLACK, so use WHITE text
                 if confMatNorm_current(i,j) > 0.5
-                    textColor = 'black';
-                else
                     textColor = 'white';
+                else
+                    textColor = 'black';
                 end
                 text(j, i, sprintf('%.1f%%', 100*confMatNorm_current(i,j)), ...
                     'HorizontalAlignment', 'center', ...
@@ -2893,13 +2909,14 @@ try
 
         % Format
         title('Fig 15: Feature Importance Comparison Across Models', ...
-            'FontSize', 16, 'FontWeight', 'bold');
-        xlabel('Relative Importance', 'FontSize', 12);
-        ylabel('Feature', 'FontSize', 12);
+            'FontSize', 16, 'FontWeight', 'bold', 'Interpreter', 'none');
+        xlabel('Relative Importance', 'FontSize', 12, 'Interpreter', 'none');
+        ylabel('Feature', 'FontSize', 12, 'Interpreter', 'none');
 
         % Set y-axis labels to feature names
         set(gca, 'YTick', 1:length(featureNames), ...
             'YTickLabel', featureNames, ...
+            'TickLabelInterpreter', 'none', ...
             'FontSize', 9);
 
         % Set colors
