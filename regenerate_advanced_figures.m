@@ -181,30 +181,22 @@ function plotEnhancedSVM(svmModel, X_data, Y_data, featurePair, featureNames, cl
         
         % Plot filled contours (The Decision Regions)
         hold on;
-        [~, hContour] = contourf(xx, yy, Z, 'LineColor', 'none'); 
-        
-        % Apply custom colormap to the background
-        colormap(gca, colors(1:nClasses, :));
-        
-        % Add transparency to background so grid lines show slightly
-        hContour.FaceAlpha = 0.2; 
-        
-        % Draw the solid boundary line
-        contour(xx, yy, Z, 'LineColor', 'k', 'LineWidth', 1.5, 'LevelList', uniqueClasses(1:end-1)+0.5);
-        
-    catch
-        warning('Could not generate decision boundary contours (Prediction mismatch).');
-    end
-    
-    hold on;
+        % For discrete classes, specify exact boundaries between classes
+        % Class 1: 0.5 to 1.5, Class 2: 1.5 to 2.5, etc.
+        contourLevels = 0.5:1:(nClasses+0.5);
+        contourf(X1_grid, X2_grid, Z_grid, contourLevels, 'LineStyle', 'none');
+        colormap(gca, classColors);
+        alpha(0.25);  % Semi-transparent background
 
-    % --- 3. Plot Scatter Points with Jitter ---
-    % Jitter prevents points from stacking on top of each other
-    x_range_val = x_max - x_min;
-    jitter_amount = x_range_val * 0.02; % 2% jitter
-    
-    legendHandles = [];
-    legendLabels = {};
+        % Plot decision boundary (contour lines at class transitions)
+        % Draw lines at 1.5, 2.5, 3.5, ... (between classes)
+        boundaryLevels = 1.5:1:(nClasses-0.5);
+        contour(X1_grid, X2_grid, Z_grid, boundaryLevels, 'LineColor', 'k', ...
+            'LineWidth', 2, 'LineStyle', '-');
+
+        % Plot data points for each class with discrete colors and alpha blending
+        legendHandles = [];
+        legendLabels = {};
 
     for i = 1:nClasses
         c = uniqueClasses(i);
