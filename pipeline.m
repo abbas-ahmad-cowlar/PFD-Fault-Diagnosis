@@ -2972,7 +2972,7 @@ try
                 % Pair 1: Features 1 vs 2
                 subplot(1, 2, 1);
                 plotSVMDecisionBoundary(svmModel, X_test_norm, Y_test, pair1, featureNames, classNames);
-                title(sprintf('SVM Decision Boundary: %s vs %s', ...
+                title(sprintf('%s vs %s', ...
                     strrep(featureNames{pair1(1)}, '_', ' '), ...
                     strrep(featureNames{pair1(2)}, '_', ' ')), ...
                     'FontSize', 12, 'FontWeight', 'bold', 'Interpreter', 'none');
@@ -2980,13 +2980,13 @@ try
                 % Pair 2: Features 3 vs 4
                 subplot(1, 2, 2);
                 plotSVMDecisionBoundary(svmModel, X_test_norm, Y_test, pair2, featureNames, classNames);
-                title(sprintf('SVM Decision Boundary: %s vs %s', ...
+                title(sprintf('%s vs %s', ...
                     strrep(featureNames{pair2(1)}, '_', ' '), ...
                     strrep(featureNames{pair2(2)}, '_', ' ')), ...
                     'FontSize', 12, 'FontWeight', 'bold', 'Interpreter', 'none');
 
                 % Overall title
-                sgtitle('Fig 16: SVM Decision Boundaries in Top Feature Pairs', ...
+                sgtitle('Fig 16: SVM Classification Regions for Top Feature Pairs', ...
                     'FontSize', 16, 'FontWeight', 'bold', 'Interpreter', 'none');
 
                 % Save
@@ -4592,19 +4592,34 @@ function result = iif(condition, trueVal, falseVal)
 end
 
 function plotSVMDecisionBoundary(svmModel, X_data, Y_data, featurePair, featureNames, classNames)
-    % Plot SVM decision boundary for a specific pair of features
+    % Plot SVM decision boundary for a specific pair of features with proper visualization
     % svmModel: trained SVM model
     % X_data: full test data (normalized)
     % Y_data: true labels
     % featurePair: [feature1_idx, feature2_idx] to visualize
+    % classNames: cell array of class names
 
     try
         % Extract the two features
         X_pair = X_data(:, featurePair);
 
+        % Define discrete colors for classes (up to 6 classes)
+        distinctColors = [
+            0.8, 0.2, 0.2;  % Red
+            0.2, 0.4, 0.8;  % Blue
+            0.2, 0.7, 0.3;  % Green
+            0.9, 0.6, 0.1;  % Orange
+            0.6, 0.2, 0.8;  % Purple
+            0.9, 0.9, 0.2   % Yellow
+        ];
+
+        nClasses = length(classNames);
+        classColors = distinctColors(1:min(nClasses, 6), :);
+
         % Create grid for decision boundary
-        x1_range = linspace(min(X_pair(:,1)) - 0.5, max(X_pair(:,1)) + 0.5, 200);
-        x2_range = linspace(min(X_pair(:,2)) - 0.5, max(X_pair(:,2)) + 0.5, 200);
+        gridResolution = 300;  % Higher resolution for smoother boundaries
+        x1_range = linspace(min(X_pair(:,1)) - 0.5, max(X_pair(:,1)) + 0.5, gridResolution);
+        x2_range = linspace(min(X_pair(:,2)) - 0.5, max(X_pair(:,2)) + 0.5, gridResolution);
         [X1_grid, X2_grid] = meshgrid(x1_range, x2_range);
 
         % Create full feature matrix for prediction (use mean for other features)
@@ -4626,39 +4641,94 @@ function plotSVMDecisionBoundary(svmModel, X_data, Y_data, featurePair, featureN
         Z_grid = predict(svmModel, X_grid_full);
         Z_grid = reshape(Z_grid, size(X1_grid));
 
-        % Plot decision regions
-        contourf(X1_grid, X2_grid, Z_grid, length(classNames), 'LineStyle', 'none');
-        alpha(0.3); % Make background semi-transparent
+        % Plot decision regions with discrete colors
         hold on;
+        contourf(X1_grid, X2_grid, Z_grid, nClasses, 'LineStyle', 'none');
+        colormap(gca, classColors);
+        alpha(0.25);  % Semi-transparent background
 
-        % Plot data points
-        colormap(gca, jet(length(classNames)));
-        scatter(X_pair(:,1), X_pair(:,2), 50, Y_data, 'filled', ...
-            'MarkerEdgeColor', 'k', 'LineWidth', 1);
+        % Plot decision boundary (contour line where classes change)
+        contour(X1_grid, X2_grid, Z_grid, nClasses-1, 'LineColor', 'k', ...
+            'LineWidth', 2, 'LineStyle', '-');
 
-        % Format
+        % Plot data points for each class with discrete colors and alpha blending
+        legendHandles = [];
+        legendLabels = {};
+
+        for c = 1:nClasses
+            classMask = Y_data == c;
+            if sum(classMask) > 0
+                % Plot regular points with alpha blending
+                h = scatter(X_pair(classMask, 1), X_pair(classMask, 2), 60, ...
+                    classColors(c, :), 'filled', 'MarkerEdgeColor', 'k', ...
+                    'LineWidth', 0.5, 'MarkerFaceAlpha', 0.7);
+                legendHandles(end+1) = h;
+                legendLabels{end+1} = classNames{c};
+            end
+        end
+
+        % Highlight support vectors if available
+        try
+            if isprop(svmModel, 'IsSupportVector') || isfield(svmModel, 'IsSupportVector')
+                % For binary SVM
+                svIndices = svmModel.IsSupportVector;
+                if any(svIndices)
+                    X_pair_sv = X_pair(svIndices, :);
+                    Y_sv = Y_data(svIndices);
+
+                    % Plot support vectors with special markers
+                    for c = 1:nClasses
+                        svClassMask = Y_sv == c;
+                        if sum(svClassMask) > 0
+                            scatter(X_pair_sv(svClassMask, 1), X_pair_sv(svClassMask, 2), ...
+                                120, classColors(c, :), 'o', 'LineWidth', 2.5, ...
+                                'MarkerEdgeColor', 'k');
+                        end
+                    end
+
+                    % Add support vector to legend
+                    h_sv = scatter(NaN, NaN, 120, [0.5, 0.5, 0.5], 'o', ...
+                        'LineWidth', 2.5, 'MarkerEdgeColor', 'k');
+                    legendHandles(end+1) = h_sv;
+                    legendLabels{end+1} = 'Support Vectors';
+                end
+            end
+        catch
+            % Support vectors not available or error accessing them
+        end
+
+        % Format axes
         xlabel(strrep(featureNames{featurePair(1)}, '_', ' '), ...
-            'FontSize', 11, 'Interpreter', 'none');
+            'FontSize', 11, 'FontWeight', 'bold', 'Interpreter', 'none');
         ylabel(strrep(featureNames{featurePair(2)}, '_', ' '), ...
-            'FontSize', 11, 'Interpreter', 'none');
+            'FontSize', 11, 'FontWeight', 'bold', 'Interpreter', 'none');
 
-        % Add colorbar with class labels
-        cb = colorbar;
-        cb.Ticks = 1:length(classNames);
-        cb.TickLabels = classNames;
-        cb.TickLabelInterpreter = 'none';
+        % Add legend
+        if ~isempty(legendHandles)
+            legend(legendHandles, legendLabels, 'Location', 'best', ...
+                'Interpreter', 'none', 'FontSize', 9);
+        end
 
         grid on;
+        box on;
         hold off;
 
     catch ME
-        % If prediction fails, just plot the data points
-        scatter(X_pair(:,1), X_pair(:,2), 50, Y_data, 'filled', ...
-            'MarkerEdgeColor', 'k', 'LineWidth', 1);
+        % If prediction fails, plot data points with discrete colors
+        hold on;
+        for c = 1:length(classNames)
+            classMask = Y_data == c;
+            if sum(classMask) > 0
+                scatter(X_pair(classMask, 1), X_pair(classMask, 2), 60, ...
+                    distinctColors(c, :), 'filled', 'MarkerEdgeColor', 'k', ...
+                    'LineWidth', 0.5, 'MarkerFaceAlpha', 0.7);
+            end
+        end
         xlabel(strrep(featureNames{featurePair(1)}, '_', ' '), ...
             'FontSize', 11, 'Interpreter', 'none');
         ylabel(strrep(featureNames{featurePair(2)}, '_', ' '), ...
             'FontSize', 11, 'Interpreter', 'none');
         title(sprintf('Error: %s', ME.message), 'FontSize', 10, 'Color', 'r');
+        hold off;
     end
 end
