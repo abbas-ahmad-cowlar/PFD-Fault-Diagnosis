@@ -247,6 +247,16 @@ function plotSVMDecisionBoundary(svmModel, X_data, Y_data, featurePair, featureN
     % featurePair: [feature1_idx, feature2_idx] to visualize
     % classNames: cell array of class names
 
+    % Define discrete colors for classes (up to 6 classes) - OUTSIDE try block
+    distinctColors = [
+        0.8, 0.2, 0.2;  % Red
+        0.2, 0.4, 0.8;  % Blue
+        0.2, 0.7, 0.3;  % Green
+        0.9, 0.6, 0.1;  % Orange
+        0.6, 0.2, 0.8;  % Purple
+        0.9, 0.9, 0.2   % Yellow
+    ];
+
     try
         % Extract the two features
         X_pair = X_data(:, featurePair);
@@ -255,16 +265,6 @@ function plotSVMDecisionBoundary(svmModel, X_data, Y_data, featurePair, featureN
         if iscategorical(Y_data)
             Y_data = double(Y_data);
         end
-
-        % Define discrete colors for classes (up to 6 classes)
-        distinctColors = [
-            0.8, 0.2, 0.2;  % Red
-            0.2, 0.4, 0.8;  % Blue
-            0.2, 0.7, 0.3;  % Green
-            0.9, 0.6, 0.1;  % Orange
-            0.6, 0.2, 0.8;  % Purple
-            0.9, 0.9, 0.2   % Yellow
-        ];
 
         nClasses = length(classNames);
         classColors = distinctColors(1:min(nClasses, 6), :);
@@ -374,12 +374,22 @@ function plotSVMDecisionBoundary(svmModel, X_data, Y_data, featurePair, featureN
 
     catch ME
         % If prediction fails, plot data points with discrete colors
+        X_pair = X_data(:, featurePair);
+
+        % Convert categorical labels to numeric if needed
+        if iscategorical(Y_data)
+            Y_data = double(Y_data);
+        end
+
+        nClasses = length(classNames);
+        classColors = distinctColors(1:min(nClasses, 6), :);
+
         hold on;
-        for c = 1:length(classNames)
+        for c = 1:nClasses
             classMask = Y_data == c;
             if sum(classMask) > 0
                 scatter(X_pair(classMask, 1), X_pair(classMask, 2), 60, ...
-                    distinctColors(c, :), 'filled', 'MarkerEdgeColor', 'k', ...
+                    classColors(c, :), 'filled', 'MarkerEdgeColor', 'k', ...
                     'LineWidth', 0.5, 'MarkerFaceAlpha', 0.7);
             end
         end
