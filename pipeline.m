@@ -3030,6 +3030,14 @@ try
             cutPredictors = tree.CutPredictor;
             cutPoints = tree.CutPoint;
 
+            % Handle cell arrays (convert to numeric)
+            if iscell(cutPredictors)
+                cutPredictors = cellfun(@(x) iif(isempty(x), 0, x), cutPredictors);
+            end
+            if iscell(cutPoints)
+                cutPoints = cellfun(@(x) iif(isempty(x), 0, x), cutPoints);
+            end
+
             % Get node depths
             nodeDepths = zeros(length(cutPredictors), 1);
             for n = 1:length(cutPredictors)

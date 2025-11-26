@@ -262,7 +262,13 @@ try
             fprintf('    Processing tree %d/%d\n', t, nTrees);
         end
         tree = rfModel.Trained{t};  % For ClassificationBaggedEnsemble
+
+        % Get cut predictors (handle both cell and numeric arrays)
         cutPredictors = tree.CutPredictor;
+        if iscell(cutPredictors)
+            % Convert cell array to numeric (empty cells become 0)
+            cutPredictors = cellfun(@(x) iif(isempty(x), 0, x), cutPredictors);
+        end
 
         nodeDepths = zeros(length(cutPredictors), 1);
         for n = 1:length(cutPredictors)
@@ -608,5 +614,14 @@ function depth = getNodeDepth(tree, nodeIdx)
         if depth > 100
             break;
         end
+    end
+end
+
+function result = iif(condition, trueVal, falseVal)
+    % Inline if-else function
+    if condition
+        result = trueVal;
+    else
+        result = falseVal;
     end
 end
