@@ -23,7 +23,7 @@ function result = predictPFDFault_Production(signalData, varargin)
 %   result = predictPFDFault_Production(x);
 %   fprintf('Detected: %s (Confidence: %.1f%%)\n', result.fault, result.confidence);
 %
-% Generated: 04-Nov-2025 13:38:07
+% Generated: 26-Nov-2025 21:57:40
 % Model: Random Forest
 % Version: Production v2.0
 

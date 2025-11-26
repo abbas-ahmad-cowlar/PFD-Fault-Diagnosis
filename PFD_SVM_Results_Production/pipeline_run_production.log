@@ -1,4 +1,4 @@
-Pipeline started: 04-Nov-2025 13:21:04
+Pipeline started: 26-Nov-2025 21:30:09
 Full log saved to: PFD_SVM_Results_Production\pipeline_run_production.log
 ----------------------------------
 Step 1: Setup and Configuration
@@ -59,82 +59,82 @@ Step 3: Data Exploration & Visualization
 Step 3.1: Loading feature data for visualization...
 ✓ Loaded 1430 samples with 36 features across 11 classes.
 
-Step 3.2: Generating Fig0 (Raw Signal Examples)...
-  Generating Fig0a (Basic Faults)...
+Step 3.2: Generating Fig1-2 (Raw Signal Examples)...
+  Generating Fig1 (Basic Faults)...
   Warning: Could not find data_signaux_sep_production\lubrication_001.mat. Skipping.
-✓ Saved: Fig0a_Basic_Faults.png
-  Generating Fig0b (Mixed Faults)...
-✓ Saved: Fig0b_Mixed_Faults.png
+✓ Saved: Fig1_Basic_Faults.png
+  Generating Fig2 (Mixed Faults)...
+✓ Saved: Fig2_Mixed_Faults.png
 
-Step 3.3: Generating Fig1 (Feature Correlation)...
-✓ Saved: Fig1_Feature_Correlation.png
+Step 3.3: Generating Fig3 (Feature Correlation)...
+✓ Saved: Fig3_Feature_Correlation.png
 
-Step 3.4: Generating Fig2 (Feature Distributions)...
+Step 3.4: Generating Fig4 (Feature Distributions)...
 [Warning: boxplot might not be displayed properly in the tiled chart layout.] 
 [> In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot>renderLabels/setLabelappdata', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 3039)" style="font-weight:bold">boxplot>renderLabels/setLabelappdata</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',3039,0)">line 3039</a>)
 In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot>renderLabels', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 2942)" style="font-weight:bold">boxplot>renderLabels</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',2942,0)">line 2942</a>)
 In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 428)" style="font-weight:bold">boxplot</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',428,0)">line 428</a>)
-In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('pipeline', 'C:\Users\COWLAR\Downloads\MATLAB\SVM project 2_v9\pipeline.m', 630)" style="font-weight:bold">pipeline</a> (<a href="matlab: opentoline('C:\Users\COWLAR\Downloads\MATLAB\SVM project 2_v9\pipeline.m',630,0)">line 630</a>)] 
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('pipeline', 'C:\Users\COWLAR\projects\PFD-Fault-Diagnosis\pipeline.m', 640)" style="font-weight:bold">pipeline</a> (<a href="matlab: opentoline('C:\Users\COWLAR\projects\PFD-Fault-Diagnosis\pipeline.m',640,0)">line 640</a>)] 
 [Warning: boxplot might not be displayed properly in the tiled chart layout.] 
 [> In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot>renderLabels/setLabelappdata', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 3039)" style="font-weight:bold">boxplot>renderLabels/setLabelappdata</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',3039,0)">line 3039</a>)
 In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot>renderLabels', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 2942)" style="font-weight:bold">boxplot>renderLabels</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',2942,0)">line 2942</a>)
 In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 428)" style="font-weight:bold">boxplot</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',428,0)">line 428</a>)
-In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('pipeline', 'C:\Users\COWLAR\Downloads\MATLAB\SVM project 2_v9\pipeline.m', 630)" style="font-weight:bold">pipeline</a> (<a href="matlab: opentoline('C:\Users\COWLAR\Downloads\MATLAB\SVM project 2_v9\pipeline.m',630,0)">line 630</a>)] 
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('pipeline', 'C:\Users\COWLAR\projects\PFD-Fault-Diagnosis\pipeline.m', 640)" style="font-weight:bold">pipeline</a> (<a href="matlab: opentoline('C:\Users\COWLAR\projects\PFD-Fault-Diagnosis\pipeline.m',640,0)">line 640</a>)] 
 [Warning: boxplot might not be displayed properly in the tiled chart layout.] 
 [> In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot>renderLabels/setLabelappdata', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 3039)" style="font-weight:bold">boxplot>renderLabels/setLabelappdata</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',3039,0)">line 3039</a>)
 In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot>renderLabels', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 2942)" style="font-weight:bold">boxplot>renderLabels</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',2942,0)">line 2942</a>)
 In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 428)" style="font-weight:bold">boxplot</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',428,0)">line 428</a>)
-In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('pipeline', 'C:\Users\COWLAR\Downloads\MATLAB\SVM project 2_v9\pipeline.m', 630)" style="font-weight:bold">pipeline</a> (<a href="matlab: opentoline('C:\Users\COWLAR\Downloads\MATLAB\SVM project 2_v9\pipeline.m',630,0)">line 630</a>)] 
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('pipeline', 'C:\Users\COWLAR\projects\PFD-Fault-Diagnosis\pipeline.m', 640)" style="font-weight:bold">pipeline</a> (<a href="matlab: opentoline('C:\Users\COWLAR\projects\PFD-Fault-Diagnosis\pipeline.m',640,0)">line 640</a>)] 
 [Warning: boxplot might not be displayed properly in the tiled chart layout.] 
 [> In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot>renderLabels/setLabelappdata', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 3039)" style="font-weight:bold">boxplot>renderLabels/setLabelappdata</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',3039,0)">line 3039</a>)
 In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot>renderLabels', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 2942)" style="font-weight:bold">boxplot>renderLabels</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',2942,0)">line 2942</a>)
 In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 428)" style="font-weight:bold">boxplot</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',428,0)">line 428</a>)
-In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('pipeline', 'C:\Users\COWLAR\Downloads\MATLAB\SVM project 2_v9\pipeline.m', 630)" style="font-weight:bold">pipeline</a> (<a href="matlab: opentoline('C:\Users\COWLAR\Downloads\MATLAB\SVM project 2_v9\pipeline.m',630,0)">line 630</a>)] 
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('pipeline', 'C:\Users\COWLAR\projects\PFD-Fault-Diagnosis\pipeline.m', 640)" style="font-weight:bold">pipeline</a> (<a href="matlab: opentoline('C:\Users\COWLAR\projects\PFD-Fault-Diagnosis\pipeline.m',640,0)">line 640</a>)] 
 [Warning: boxplot might not be displayed properly in the tiled chart layout.] 
 [> In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot>renderLabels/setLabelappdata', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 3039)" style="font-weight:bold">boxplot>renderLabels/setLabelappdata</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',3039,0)">line 3039</a>)
 In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot>renderLabels', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 2942)" style="font-weight:bold">boxplot>renderLabels</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',2942,0)">line 2942</a>)
 In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 428)" style="font-weight:bold">boxplot</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',428,0)">line 428</a>)
-In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('pipeline', 'C:\Users\COWLAR\Downloads\MATLAB\SVM project 2_v9\pipeline.m', 630)" style="font-weight:bold">pipeline</a> (<a href="matlab: opentoline('C:\Users\COWLAR\Downloads\MATLAB\SVM project 2_v9\pipeline.m',630,0)">line 630</a>)] 
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('pipeline', 'C:\Users\COWLAR\projects\PFD-Fault-Diagnosis\pipeline.m', 640)" style="font-weight:bold">pipeline</a> (<a href="matlab: opentoline('C:\Users\COWLAR\projects\PFD-Fault-Diagnosis\pipeline.m',640,0)">line 640</a>)] 
 [Warning: boxplot might not be displayed properly in the tiled chart layout.] 
 [> In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot>renderLabels/setLabelappdata', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 3039)" style="font-weight:bold">boxplot>renderLabels/setLabelappdata</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',3039,0)">line 3039</a>)
 In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot>renderLabels', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 2942)" style="font-weight:bold">boxplot>renderLabels</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',2942,0)">line 2942</a>)
 In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 428)" style="font-weight:bold">boxplot</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',428,0)">line 428</a>)
-In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('pipeline', 'C:\Users\COWLAR\Downloads\MATLAB\SVM project 2_v9\pipeline.m', 630)" style="font-weight:bold">pipeline</a> (<a href="matlab: opentoline('C:\Users\COWLAR\Downloads\MATLAB\SVM project 2_v9\pipeline.m',630,0)">line 630</a>)] 
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('pipeline', 'C:\Users\COWLAR\projects\PFD-Fault-Diagnosis\pipeline.m', 640)" style="font-weight:bold">pipeline</a> (<a href="matlab: opentoline('C:\Users\COWLAR\projects\PFD-Fault-Diagnosis\pipeline.m',640,0)">line 640</a>)] 
 [Warning: boxplot might not be displayed properly in the tiled chart layout.] 
 [> In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot>renderLabels/setLabelappdata', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 3039)" style="font-weight:bold">boxplot>renderLabels/setLabelappdata</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',3039,0)">line 3039</a>)
 In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot>renderLabels', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 2942)" style="font-weight:bold">boxplot>renderLabels</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',2942,0)">line 2942</a>)
 In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 428)" style="font-weight:bold">boxplot</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',428,0)">line 428</a>)
-In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('pipeline', 'C:\Users\COWLAR\Downloads\MATLAB\SVM project 2_v9\pipeline.m', 630)" style="font-weight:bold">pipeline</a> (<a href="matlab: opentoline('C:\Users\COWLAR\Downloads\MATLAB\SVM project 2_v9\pipeline.m',630,0)">line 630</a>)] 
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('pipeline', 'C:\Users\COWLAR\projects\PFD-Fault-Diagnosis\pipeline.m', 640)" style="font-weight:bold">pipeline</a> (<a href="matlab: opentoline('C:\Users\COWLAR\projects\PFD-Fault-Diagnosis\pipeline.m',640,0)">line 640</a>)] 
 [Warning: boxplot might not be displayed properly in the tiled chart layout.] 
 [> In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot>renderLabels/setLabelappdata', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 3039)" style="font-weight:bold">boxplot>renderLabels/setLabelappdata</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',3039,0)">line 3039</a>)
 In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot>renderLabels', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 2942)" style="font-weight:bold">boxplot>renderLabels</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',2942,0)">line 2942</a>)
 In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 428)" style="font-weight:bold">boxplot</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',428,0)">line 428</a>)
-In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('pipeline', 'C:\Users\COWLAR\Downloads\MATLAB\SVM project 2_v9\pipeline.m', 630)" style="font-weight:bold">pipeline</a> (<a href="matlab: opentoline('C:\Users\COWLAR\Downloads\MATLAB\SVM project 2_v9\pipeline.m',630,0)">line 630</a>)] 
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('pipeline', 'C:\Users\COWLAR\projects\PFD-Fault-Diagnosis\pipeline.m', 640)" style="font-weight:bold">pipeline</a> (<a href="matlab: opentoline('C:\Users\COWLAR\projects\PFD-Fault-Diagnosis\pipeline.m',640,0)">line 640</a>)] 
 [Warning: boxplot might not be displayed properly in the tiled chart layout.] 
 [> In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot>renderLabels/setLabelappdata', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 3039)" style="font-weight:bold">boxplot>renderLabels/setLabelappdata</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',3039,0)">line 3039</a>)
 In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot>renderLabels', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 2942)" style="font-weight:bold">boxplot>renderLabels</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',2942,0)">line 2942</a>)
 In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 428)" style="font-weight:bold">boxplot</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',428,0)">line 428</a>)
-In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('pipeline', 'C:\Users\COWLAR\Downloads\MATLAB\SVM project 2_v9\pipeline.m', 630)" style="font-weight:bold">pipeline</a> (<a href="matlab: opentoline('C:\Users\COWLAR\Downloads\MATLAB\SVM project 2_v9\pipeline.m',630,0)">line 630</a>)] 
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('pipeline', 'C:\Users\COWLAR\projects\PFD-Fault-Diagnosis\pipeline.m', 640)" style="font-weight:bold">pipeline</a> (<a href="matlab: opentoline('C:\Users\COWLAR\projects\PFD-Fault-Diagnosis\pipeline.m',640,0)">line 640</a>)] 
 [Warning: boxplot might not be displayed properly in the tiled chart layout.] 
 [> In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot>renderLabels/setLabelappdata', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 3039)" style="font-weight:bold">boxplot>renderLabels/setLabelappdata</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',3039,0)">line 3039</a>)
 In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot>renderLabels', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 2942)" style="font-weight:bold">boxplot>renderLabels</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',2942,0)">line 2942</a>)
 In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 428)" style="font-weight:bold">boxplot</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',428,0)">line 428</a>)
-In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('pipeline', 'C:\Users\COWLAR\Downloads\MATLAB\SVM project 2_v9\pipeline.m', 630)" style="font-weight:bold">pipeline</a> (<a href="matlab: opentoline('C:\Users\COWLAR\Downloads\MATLAB\SVM project 2_v9\pipeline.m',630,0)">line 630</a>)] 
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('pipeline', 'C:\Users\COWLAR\projects\PFD-Fault-Diagnosis\pipeline.m', 640)" style="font-weight:bold">pipeline</a> (<a href="matlab: opentoline('C:\Users\COWLAR\projects\PFD-Fault-Diagnosis\pipeline.m',640,0)">line 640</a>)] 
 [Warning: boxplot might not be displayed properly in the tiled chart layout.] 
 [> In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot>renderLabels/setLabelappdata', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 3039)" style="font-weight:bold">boxplot>renderLabels/setLabelappdata</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',3039,0)">line 3039</a>)
 In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot>renderLabels', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 2942)" style="font-weight:bold">boxplot>renderLabels</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',2942,0)">line 2942</a>)
 In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 428)" style="font-weight:bold">boxplot</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',428,0)">line 428</a>)
-In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('pipeline', 'C:\Users\COWLAR\Downloads\MATLAB\SVM project 2_v9\pipeline.m', 630)" style="font-weight:bold">pipeline</a> (<a href="matlab: opentoline('C:\Users\COWLAR\Downloads\MATLAB\SVM project 2_v9\pipeline.m',630,0)">line 630</a>)] 
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('pipeline', 'C:\Users\COWLAR\projects\PFD-Fault-Diagnosis\pipeline.m', 640)" style="font-weight:bold">pipeline</a> (<a href="matlab: opentoline('C:\Users\COWLAR\projects\PFD-Fault-Diagnosis\pipeline.m',640,0)">line 640</a>)] 
 [Warning: boxplot might not be displayed properly in the tiled chart layout.] 
 [> In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot>renderLabels/setLabelappdata', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 3039)" style="font-weight:bold">boxplot>renderLabels/setLabelappdata</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',3039,0)">line 3039</a>)
 In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot>renderLabels', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 2942)" style="font-weight:bold">boxplot>renderLabels</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',2942,0)">line 2942</a>)
 In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('boxplot', 'C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m', 428)" style="font-weight:bold">boxplot</a> (<a href="matlab: opentoline('C:\Program Files\MATLAB\R2024b\toolbox\stats\stats\boxplot.m',428,0)">line 428</a>)
-In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('pipeline', 'C:\Users\COWLAR\Downloads\MATLAB\SVM project 2_v9\pipeline.m', 630)" style="font-weight:bold">pipeline</a> (<a href="matlab: opentoline('C:\Users\COWLAR\Downloads\MATLAB\SVM project 2_v9\pipeline.m',630,0)">line 630</a>)] 
-✓ Saved: Fig2_Feature_Distributions.png
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('pipeline', 'C:\Users\COWLAR\projects\PFD-Fault-Diagnosis\pipeline.m', 640)" style="font-weight:bold">pipeline</a> (<a href="matlab: opentoline('C:\Users\COWLAR\projects\PFD-Fault-Diagnosis\pipeline.m',640,0)">line 640</a>)] 
+✓ Saved: Fig4_Feature_Distributions.png
 
-Step 3.5: Generating Fig3 (t-SNE Plot)...
+Step 3.5: Generating Fig5 (t-SNE Plot)...
   Running t-SNE dimensionality reduction...
-✓ Saved: Fig3_tSNE_Clusters.png
+✓ Saved: Fig5_tSNE_Clusters.png
 
 ✓ Step 3 complete: Data exploration and visualization finished.
   Generated figures: Fig0, Fig1, Fig2, Fig3
@@ -230,12 +230,12 @@ Step 4.8: Model Training & Hyperparameter Optimization
 
 --- Training SVM (Baseline Model) ---
   Running Bayesian optimization (50 iterations)...
-✓ SVM training complete in 108.45 seconds.
+✓ SVM training complete in 131.94 seconds.
 ► SVM Validation Accuracy: 92.56%
 
 --- Training Random Forest ---
   Running Bayesian optimization (50 iterations)...
-✓ Random Forest training complete in 664.76 seconds.
+✓ Random Forest training complete in 1111.03 seconds.
 ► Random Forest Validation Accuracy: 95.81%
 
 --- Training Gradient Boosting ---
@@ -244,7 +244,7 @@ Step 4.8: Model Training & Hyperparameter Optimization
   Skipping Gradient Boosting model.
 
 --- Training Neural Network (3-layer MLP with dropout) ---
-✓ Neural Network training complete in 1.11 seconds.
+✓ Neural Network training complete in 1.26 seconds.
 ► Neural Network Validation Accuracy: 94.88%
 
 --- Stacked Ensemble: DISABLED ---
@@ -294,7 +294,7 @@ Step 5A.3: Final Model Evaluation on Test Set
 
 Generating confusion matrix...
 
-Step 5A.4: Generating Fig 4 (Confusion Matrix)...
+Step 5A.4: Generating Fig 4 (Confusion Matrix - Best Model Only - Legacy)...
 ✓ Saved: Fig4_Confusion_Matrix.png
 
 Step 5A.5: Computing Per-Class Metrics
@@ -337,22 +337,106 @@ Step 5A.6: Computing ROC Curves and AUC
   Mean AUC: 0.9970
   ✓ Excellent discrimination (AUC > 0.99)
 
-Generating Fig 5 (ROC Curves)...
+Generating Fig 5 (ROC Curves - Best Model Only - Legacy)...
 ✓ Saved: Fig5_ROC_Curves.png
 
+========================================================================
+STEP 5A.6B: Individual Model Performance Visualizations
+========================================================================
+Generating detailed figures for ALL trained models...
+
+Found 3 trained models: SVM, RandomForest, NeuralNetwork
+
+--- Processing Model: SVM ---
+  Generating predictions on test set...
+  SVM Test Accuracy: 92.06%
+  Generating confusion matrix figure...
+  ✓ Saved: Fig7_SVM_Confusion_Matrix.png
+  Computing ROC curves...
+  Mean AUC: 0.9908
+  Generating ROC curves figure...
+  ✓ Saved: Fig8_SVM_ROC_Curves.png
+  ✓ Metrics stored for SVM (including trained model)
+
+--- Processing Model: RandomForest ---
+  Generating predictions on test set...
+  RandomForest Test Accuracy: 95.79%
+  Generating confusion matrix figure...
+  ✓ Saved: Fig9_RandomForest_Confusion_Matrix.png
+  Computing ROC curves...
+  Mean AUC: 0.9969
+  Generating ROC curves figure...
+  ✓ Saved: Fig10_RandomForest_ROC_Curves.png
+  ✓ Metrics stored for RandomForest (including trained model)
+
+--- Processing Model: NeuralNetwork ---
+  Generating predictions on test set...
+  NeuralNetwork Test Accuracy: 93.46%
+  Generating confusion matrix figure...
+  ✓ Saved: Fig11_NeuralNetwork_Confusion_Matrix.png
+  Computing ROC curves...
+  Mean AUC: 0.9962
+  Generating ROC curves figure...
+  ✓ Saved: Fig12_NeuralNetwork_ROC_Curves.png
+  ✓ Metrics stored for NeuralNetwork (including trained model)
+
+✅ Individual model visualizations complete!
+Generated confusion matrices and ROC curves for all trained models.
+
+========================================================================
+STEP 5A.6C: Generating Comparative Performance Figure
+========================================================================
+  Creating comparison for 3 models...
+  ✓ Saved: Fig14_All_Models_Comparison.png
+
+========================================================================
+STEP 5A.6D: Generating Feature Importance Comparison
+========================================================================
+  Extracting feature importance from trained models...
+  - Random Forest: Using OOB predictor importance
+  - SVM: Computing feature importance from model coefficients
+    Using permutation-based importance for SVM...
+  - Neural Network: Computing gradient-based feature importance
+  Creating feature importance comparison figure...
+  ✓ Saved: Fig15_Feature_Importance.png
+
+========================================================================
+Step 5A.6E: Generating Advanced Model Visualizations...
+========================================================================
+Generating Fig16: SVM Decision Boundaries...
+  ✓ Saved: Fig16_SVM_Decision_Boundaries.png
+Generating Fig17: Random Forest Decision Path Analysis...
+!! Error generating Fig17: Unrecognized method, property, or field 'NumTrees' for class 'classreg.learning.classif.ClassificationBaggedEnsemble'.
+Generating Fig18: Neural Network Architecture + Activations...
+!! Error generating Fig18: Unrecognized method, property, or field 'Layers' for class 'ClassificationNeuralNetwork'.
+✓ Advanced model visualizations complete.
+
+========================================================================
 Step 5A.7: Saving evaluation results...
+========================================================================
 ✓ Step 5A results saved to: step5a_results.mat
 
 ========================================================================
-✅ STEP 5A COMPLETE: Model Evaluation & Calibration
+✅ STEP 5A COMPLETE: Model Evaluation & Calibration (ENHANCED)
 ========================================================================
 Summary:
+  - Best Model:        Random Forest
   - Test Accuracy:     95.33%
   - Macro F1-Score:    95.37%
   - Mean AUC:          0.9970
   - Calibrated:        Yes
-  - Figures generated: Fig4 (Confusion Matrix), Fig5 (ROC Curves)
 
+Figures Generated:
+  - Fig4 (Confusion Matrix - Best Model)
+  - Fig5 (ROC Curves - Best Model)
+  - Fig7-12 (Model-specific Confusion Matrices & ROC Curves)
+  - Fig14 (Comprehensive Performance Comparison - 4 panels)
+  - Fig15 (Feature Importance Comparison)
+  - Fig16 (SVM Decision Boundaries in Top Feature Pairs)
+  - Fig17 (Random Forest Decision Path Analysis - 3 panels)
+  - Fig18 (Neural Network Architecture & Activation Heatmap)
+
+📊 TOTAL FIGURES: 18 publication-quality visualizations generated!
 ✓ Ready to proceed to Step 5B (Advanced Validation).
 ========================================================================
 
@@ -381,7 +465,7 @@ Step 5B.3: Adversarial Robustness Testing
 Testing model resilience to realistic perturbations...
 
 Test 1: Sensor Noise Injection (+10% RMS)...
-  Accuracy: 78.50% (drop: 16.82%)
+  Accuracy: 78.97% (drop: 16.36%)
   ⚠️  Poor robustness to sensor noise
 
 Test 2: Missing Features (15% random dropout)...
@@ -393,20 +477,20 @@ Test 3: Temporal Drift (simulated sensor aging)...
   ✓ Excellent robustness to temporal drift
 
 --- Robustness Summary ---
-  Average performance degradation: 8.88%
+  Average performance degradation: 8.72%
   ⚠️  Moderate robustness - acceptable for production
      Consider monitoring predictions in production
 
 Step 5B.4: Generating Learning Curves
 Analyzing bias-variance tradeoff...
   Training models with varying data sizes:
-    Size 110/1001: Training... Train: 100.0%, Val: 86.5%
+    Size 110/1001: Training... Train: 100.0%, Val: 89.3%
     Size 237/1001: Training... Train: 100.0%, Val: 93.0%
-    Size 365/1001: Training... Train: 100.0%, Val: 91.6%
-    Size 492/1001: Training... Train: 100.0%, Val: 93.5%
-    Size 619/1001: Training... Train: 100.0%, Val: 94.4%
-    Size 746/1001: Training... Train: 100.0%, Val: 95.8%
-    Size 874/1001: Training... Train: 100.0%, Val: 97.7%
+    Size 365/1001: Training... Train: 100.0%, Val: 94.0%
+    Size 492/1001: Training... Train: 100.0%, Val: 94.9%
+    Size 619/1001: Training... Train: 100.0%, Val: 96.3%
+    Size 746/1001: Training... Train: 100.0%, Val: 97.2%
+    Size 874/1001: Training... Train: 100.0%, Val: 96.7%
 !! Error generating learning curves: For holdout, the third input must be either a scalar in the range of (0,1) or a positive integer.
 
 Step 5B.5: Misclassification Analysis
@@ -454,7 +538,7 @@ Step 5B.7: Saving advanced validation results...
 ========================================================================
 Summary:
   - Additional Holdout Acc: 97.20%
-  - Avg Robustness Drop:    8.88%
+  - Avg Robustness Drop:    8.72%
   - Misclassifications:     10 analyzed
 
 ✓ Ready to proceed to Step 5C (Production Deployment).
@@ -467,11 +551,11 @@ STEP 5C: PRODUCTION DEPLOYMENT
 Step 5C.1: Loading all results for deployment...
 ✓ Successfully loaded all deployment data.
 
-Step 5C.2: Generating Fig 7 (Class Distribution)...
-✓ Saved: Fig7_Class_Distribution.png
+Step 5C.2: Generating Fig 6 (Class Distribution)...
+✓ Saved: Fig6_Class_Distribution.png
 
-Step 5C.3: Generating Fig 8 (Model Performance Comparison)...
-✓ Saved: Fig8_Performance_Comparison.png
+Step 5C.3: Generating Fig 13 (Model Performance Comparison)...
+✓ Saved: Fig13_Performance_Comparison.png
 
 Step 5C.4: Saving final model and metadata...
 ✓ Model package saved to: PFD_SVM_Results_Production\Best_PFD_Model_Production.mat
@@ -524,7 +608,7 @@ All Steps Completed:
   ✓ Step 5B: Advanced Validation
   ✓ Step 5C: Production Deployment
 
-Total Execution Time: 0.75 minutes
+Total Execution Time: 3.17 minutes
 
 System is ready for production deployment.
 ========================================================================
