@@ -311,12 +311,17 @@ function plotSVMDecisionBoundary(svmModel, X_data, Y_data, featurePair, featureN
 
         % Plot decision regions with discrete colors
         hold on;
-        contourf(X1_grid, X2_grid, Z_grid, nClasses, 'LineStyle', 'none');
+        % For discrete classes, specify exact boundaries between classes
+        % Class 1: 0.5 to 1.5, Class 2: 1.5 to 2.5, etc.
+        contourLevels = 0.5:1:(nClasses+0.5);
+        contourf(X1_grid, X2_grid, Z_grid, contourLevels, 'LineStyle', 'none');
         colormap(gca, classColors);
         alpha(0.25);  % Semi-transparent background
 
-        % Plot decision boundary (contour line where classes change)
-        contour(X1_grid, X2_grid, Z_grid, nClasses-1, 'LineColor', 'k', ...
+        % Plot decision boundary (contour lines at class transitions)
+        % Draw lines at 1.5, 2.5, 3.5, ... (between classes)
+        boundaryLevels = 1.5:1:(nClasses-0.5);
+        contour(X1_grid, X2_grid, Z_grid, boundaryLevels, 'LineColor', 'k', ...
             'LineWidth', 2, 'LineStyle', '-');
 
         % Plot data points for each class with discrete colors and alpha blending
