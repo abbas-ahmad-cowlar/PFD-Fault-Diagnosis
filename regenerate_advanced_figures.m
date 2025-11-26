@@ -251,6 +251,11 @@ function plotSVMDecisionBoundary(svmModel, X_data, Y_data, featurePair, featureN
         % Extract the two features
         X_pair = X_data(:, featurePair);
 
+        % Convert categorical labels to numeric if needed
+        if iscategorical(Y_data)
+            Y_data = double(Y_data);
+        end
+
         % Define discrete colors for classes (up to 6 classes)
         distinctColors = [
             0.8, 0.2, 0.2;  % Red
@@ -287,6 +292,12 @@ function plotSVMDecisionBoundary(svmModel, X_data, Y_data, featurePair, featureN
 
         % Predict on grid
         Z_grid = predict(svmModel, X_grid_full);
+
+        % Convert categorical predictions to numeric if needed
+        if iscategorical(Z_grid)
+            Z_grid = double(Z_grid);
+        end
+
         Z_grid = reshape(Z_grid, size(X1_grid));
 
         % Plot decision regions with discrete colors
