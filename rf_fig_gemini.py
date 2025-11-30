@@ -119,9 +119,9 @@ def draw_final_corrected_system(output_filename='Fig_Final_Corrected.png'):
     # Added 'winner_idx' to vary the winning leaf position
     trees = [
         {'name': 'Tree 1',   'y': 8.5, 'pred': 'Cavitation',    'c': COLORS['cavitation'],  'winner_idx': 3}, # Rightmost
-        {'name': 'Tree 2',   'y': 6.3, 'pred': 'Lubrification', 'c': COLORS['lubrication'], 'winner_idx': 1}, # Inner Left
-        {'name': 'Tree 3',   'y': 4.1, 'pred': 'Jeu',           'c': COLORS['jeu'],         'winner_idx': 0}, # Leftmost
-        {'name': 'Tree 395', 'y': 1.9, 'pred': 'Cavitation',    'c': COLORS['cavitation'],  'winner_idx': 3}, # Rightmost
+        {'name': 'Tree 2',   'y': 6.5, 'pred': 'Lubrification', 'c': COLORS['lubrication'], 'winner_idx': 1}, # Inner Left
+        {'name': 'Tree 3',   'y': 4.4, 'pred': 'Jeu',           'c': COLORS['jeu'],         'winner_idx': 0}, # Leftmost
+        {'name': 'Tree 395', 'y': 1.6, 'pred': 'Cavitation',    'c': COLORS['cavitation'],  'winner_idx': 3}, # Rightmost
     ]
 
     vote_x, vote_y = 12.0, 5.0 # Defined here for use in loop
