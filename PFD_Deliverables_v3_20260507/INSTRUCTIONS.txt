@@ -1,0 +1,91 @@
+================================================================
+  PFD Simulink Model v3 — Instructions
+  Date: 2026-05-07
+================================================================
+
+CONTENTS
+--------
+  build_simulink_model.m      Script to build the Simulink model from scratch
+  generate_simulink_signals.m Script to generate 11 signals (one per fault type)
+  run_pfd_simulation.m        Interactive runner (single fault, with plots)
+  run_pfd_batch.m             Batch generator (100 signals per fault)
+  generate_client_report.m    Report generator with figures
+  PFD_Signal_Generator.slx    Pre-built Simulink model (ready to use)
+  data_signaux_simulink/      11 pre-generated signals (3600 RPM, 70%, 60°C)
+
+
+QUICK START
+-----------
+Option A: Use the pre-generated signals directly
+  1. Open MATLAB
+  2. Change to this folder
+  3. The signals are in data_signaux_simulink/
+  4. Update your LiveScript SIGNAL_FILE path:
+       SIGNAL_FILE = 'data_signaux_simulink/sain_001.mat';
+  5. Run the analysis
+
+Option B: Regenerate signals from the Simulink model
+  1. Open MATLAB with Simulink license
+  2. Change to this folder
+  3. Run:  >> generate_simulink_signals
+  4. This will:
+     - Build a fresh Simulink model
+     - Generate 11 signals with fixed parameters
+     - Save them to data_signaux_simulink/
+
+Option C: Run interactively (single fault)
+  1. Run:  >> run_pfd_simulation
+  2. Select fault type, severity, transient behavior
+  3. Signal is displayed and optionally saved
+
+
+SIGNAL PARAMETERS (FIXED)
+--------------------------
+  Speed:        3600 RPM (60 Hz)
+  Load:         70%
+  Temperature:  60°C
+  Severity:     0.7 (moderate)
+  Transient:    None
+  Duration:     5 seconds
+  Sampling:     20480 Hz (102400 samples)
+
+
+SIGNAL FILES
+------------
+  sain_001.mat                    Healthy (no fault)
+  desalignement_001.mat           Misalignment (2X + 3X harmonics)
+  desequilibre_001.mat            Imbalance (dominant 1X)
+  jeu_001.mat                     Clearance (sub-synchronous + harmonics)
+  lubrification_001.mat           Lubrication (stick-slip + impacts)
+  cavitation_001.mat              Cavitation (HF bursts)
+  usure_001.mat                   Wear (broadband noise)
+  oilwhirl_001.mat                Oil Whirl (sub-synchronous 0.45X)
+  mixed_misalign_imbalance_001.mat  Mixed: Misalignment + Imbalance
+  mixed_wear_lube_001.mat           Mixed: Wear + Lubrication
+  mixed_cavit_jeu_001.mat           Mixed: Cavitation + Clearance
+
+Each .mat file contains:
+  x         Signal vector (column)
+  fs        Sampling frequency (20480 Hz)
+  fault     Fault name string
+  metadata  Struct with all parameters (speed_rpm, load_percent, etc.)
+
+
+WHAT CHANGED FROM v2
+---------------------
+  - Fixed speed variation calculation (now depends on actual RPM)
+  - Fixed noise amplitude scaling (was 122x too loud)
+  - Fixed cavitation model (realistic burst events instead of periodic sine)
+  - Added broadband noise to Wear fault
+  - Added metal contact impacts to Lubrication fault
+  - Added amplitude modulation to Oil Whirl
+  - Fixed pink noise integrator (bounded with saturation limits)
+  - All signals now use FIXED parameters (3600 RPM, 70%, 60°C)
+  - Signal metadata matches Simulink model parameters exactly
+
+
+REQUIREMENTS
+------------
+  - MATLAB R2024b or later
+  - Simulink license (for building/running the model)
+  - Signal Processing Toolbox (for pwelch in analysis scripts)
