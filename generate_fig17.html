@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=1.0">
+    <title>Dense Intermediate Random Forest</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600&family=Lato:wght@300;400;700&display=swap');
+
+        body {
+            margin: 0;
+            padding: 40px;
+            background: #fdfbf7;
+            font-family: 'Lato', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            position: relative;
+            width: 1200px;
+            height: 950px;
+            background: white;
+            box-shadow: 0 40px 80px -20px rgba(0,0,0,0.1);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid #efebe9;
+        }
+
+        .header {
+            position: absolute;
+            top: 40px;
+            left: 50px;
+            z-index: 10;
+        }
+        h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 36px;
+            margin: 0;
+            color: #2c1810;
+        }
+        .subtitle {
+            font-size: 13px;
+            color: #8d6e63;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 700;
+            margin-top: 6px;
+        }
+
+        svg { width: 100%; height: 100%; overflow: visible; }
+
+        /* ROOTS & TRUNK */
+        .root-strand {
+            fill: none;
+            stroke: #4e342e;
+            stroke-opacity: 0.15;
+            mix-blend-mode: multiply;
+        }
+        .trunk-base { fill: url(#trunkGradient); }
+
+        /* BRANCHES */
+        .branch {
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* LEAVES */
+        .leaf { opacity: 0.85; mix-blend-mode: multiply; }
+
+        /* LABELS */
+        .label-group { transition: transform 0.3s ease; cursor: default; }
+        .label-group:hover { transform: translateY(-3px); }
+        .label-pill { 
+            fill: #fff; 
+            stroke: #e0e0e0; stroke-width: 1px; 
+            rx: 14; 
+            filter: drop-shadow(0 3px 5px rgba(0,0,0,0.08));
+        }
+        .label-text { font-size: 11px; font-weight: 700; fill: #3e2723; text-anchor: middle; dominant-baseline: middle; }
+        
+        /* CONNECTORS */
+        .connector { stroke: #d7ccc8; stroke-width: 1; stroke-dasharray: 4 4; fill: none; opacity: 0.5; }
+
+        .stats-bar {
+            position: absolute;
+            bottom: 30px;
+            left: 50px;
+            display: flex;
+            gap: 40px;
+        }
+        .stat-val { font-family: 'Cinzel', serif; font-size: 32px; color: #3e2723; display: block; line-height: 1; }
+        .stat-lbl { font-size: 10px; font-weight: 700; color: #a1887f; text-transform: uppercase; letter-spacing: 1px; }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>Random Forest Architecture</h1>
+        <div class="subtitle">Fault Diagnosis: 11 Classes, 395 Decision Paths</div>
+    </div>
+
+    <div class="stats-bar">
+        <div><span class="stat-val">1,001</span><span class="stat-lbl">Roots</span></div>
+        <div><span class="stat-val">395</span><span class="stat-lbl">Branches</span></div>
+        <div><span class="stat-val">11</span><span class="stat-lbl">Classes</span></div>
+    </div>
+
+    <svg id="treeCanvas" viewBox="0 0 1200 950">
+        <defs>
+            <linearGradient id="trunkGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" style="stop-color:#3e2723" />
+                <stop offset="40%" style="stop-color:#5d4037" />
+                <stop offset="60%" style="stop-color:#4e342e" />
+                <stop offset="100%" style="stop-color:#3e2723" />
+            </linearGradient>
+            
+            <linearGradient id="branchGradient" x1="0%" y1="100%" x2="0%" y2="0%">
+                <stop offset="0%" style="stop-color:#3e2723" />
+                <stop offset="100%" style="stop-color:#8d6e63" />
+            </linearGradient>
+        </defs>
+
+        <g id="layer-roots"></g>
+        <g id="layer-trunk"></g>
+        <g id="layer-connectors"></g>
+        <g id="layer-branches"></g>
+        <g id="layer-leaves"></g>
+        <g id="layer-labels"></g>
+    </svg>
+</div>
+
+<script>
+    // --- CONFIG ---
+    const config = {
+        roots: 1001,
+        // We increase internal limit to allow for decorative intermediate branches
+        // but visually it represents the 395 paths.
+        visualBranchLimit: 900, 
+        trunkX: 600,
+        trunkY: 820,
+        trunkHeight: 150,
+        trunkWidthBase: 90,
+        trunkWidthTop: 50,
+        labels: [
+            "Healthy", "Misalignment", "Imbalance", 
+            "Clearance", "Lubrication", "Cavitation", 
+            "Wear", "Oilwhirl", "Mix: Mis+Imb", 
+            "Mix: Wear+Lub", "Mix: Cav+Jeu"
+        ]
+    };
+
+    const gRoots = document.getElementById('layer-roots');
+    const gTrunk = document.getElementById('layer-trunk');
+    const gBranches = document.getElementById('layer-branches');
+    const gLeaves = document.getElementById('layer-leaves');
+    const gLabels = document.getElementById('layer-labels');
+    const gConnectors = document.getElementById('layer-connectors');
+
+    // --- 1. BALANCED TARGET POSITIONS ---
+    const targets = [];
+    const radiusX = 520;
+    const radiusY = 320;
+    const centerY = 500;
+
+    config.labels.forEach((label, i) => {
+        const t = i / (config.labels.length - 1);
+        const startAngle = -Math.PI + 0.15;
+        const endAngle = -0.15;
+        const angle = startAngle + t * (endAngle - startAngle);
+        
+        const x = config.trunkX + radiusX * Math.cos(angle);
+        const y = centerY + radiusY * Math.sin(angle);
+        
+        const magnetX = config.trunkX + (radiusX - 80) * Math.cos(angle);
+        const magnetY = centerY + (radiusY - 40) * Math.sin(angle);
+
+        targets.push({ x, y, magnetX, magnetY, label, branchCount: 0 });
+    });
+
+    // --- 2. ROOTS ---
+    function drawRoots() {
+        for(let i=0; i<config.roots; i++) {
+            const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            const startX = config.trunkX + (Math.random() * 850 - 425);
+            const startY = 950;
+            const endX = config.trunkX + (Math.random() * config.trunkWidthBase - config.trunkWidthBase/2);
+            const endY = config.trunkY;
+
+            const cp1X = startX;
+            const cp1Y = startY - 80;
+            const cp2X = endX;
+            const cp2Y = endY + 60;
+
+            const d = `M ${startX} ${startY} C ${cp1X} ${cp1Y}, ${cp2X} ${cp2Y}, ${endX} ${endY}`;
+            path.setAttribute("d", d);
+            path.setAttribute("class", "root-strand");
+            path.setAttribute("stroke-width", Math.random() * 1.5 + 0.2);
+            gRoots.appendChild(path);
+        }
+    }
+
+    // --- 3. TRUNK ---
+    function drawTrunk() {
+        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        const bW = config.trunkWidthBase/2;
+        const tW = config.trunkWidthTop/2;
+        const topY = config.trunkY - config.trunkHeight;
+
+        const d = `
+            M ${config.trunkX - bW} ${config.trunkY}
+            Q ${config.trunkX - bW + 15} ${config.trunkY - 80} ${config.trunkX - tW} ${topY}
+            L ${config.trunkX + tW} ${topY}
+            Q ${config.trunkX + bW - 15} ${config.trunkY - 80} ${config.trunkX + bW} ${config.trunkY}
+            Z
+        `;
+        path.setAttribute("d", d);
+        path.setAttribute("class", "trunk-base");
+        gTrunk.appendChild(path);
+        
+        return { x: config.trunkX, y: topY };
+    }
+
+    // --- 4. RECURSIVE BRANCHING WITH INTERMEDIATE FILLERS ---
+    
+    let totalSegments = 0;
+
+    function growBranch(x, y, angle, width, depth, targetIdx) {
+        if (depth > 12) return;
+        if (width < 0.4) return;
+        
+        const target = targets[targetIdx];
+
+        // --- STEERING ---
+        const dx = target.magnetX - x;
+        const dy = target.magnetY - y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        const angleToTarget = Math.atan2(dy, dx);
+        
+        const steerStrength = Math.max(0.1, 0.4 - (depth * 0.03));
+        let newAngle = angle + (angleToTarget - angle) * steerStrength;
+        newAngle += (Math.random() * 0.3 - 0.15); // Wobble
+
+        // --- LENGTH ---
+        // Intermediate branches (depth 3-6) are slightly longer to fill space
+        let lenMult = 70;
+        if (depth >= 3 && depth <= 5) lenMult = 85; // Boost mid-tree length
+        
+        let length = (lenMult * Math.pow(0.82, depth)) + (Math.random() * 20);
+        if (dist < length) length = dist; 
+
+        const endX = x + Math.cos(newAngle) * length;
+        const endY = y + Math.sin(newAngle) * length;
+
+        // --- DRAW ---
+        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        const midX = (x + endX)/2;
+        const midY = (y + endY)/2;
+        const curveX = midX + (Math.random()*width - width/2);
+        const curveY = midY + (Math.random()*width - width/2);
+        
+        path.setAttribute("d", `M ${x} ${y} Q ${curveX} ${curveY} ${endX} ${endY}`);
+        path.setAttribute("class", "branch");
+        path.setAttribute("stroke", "url(#branchGradient)");
+        path.setAttribute("stroke-width", width);
+        gBranches.appendChild(path);
+        
+        totalSegments++;
+        
+        // --- LEAVES ---
+        if (depth > 2) {
+            // High leaf density
+            const leafChance = 0.3 + (depth * 0.1); 
+            if (Math.random() < leafChance || dist < 25) {
+                drawLeafCluster(endX, endY);
+            }
+        }
+
+        // --- RECURSION ---
+        if (dist < 10) return; 
+
+        const nextWidth = width * 0.72;
+        
+        // 1. Continue Main Stem
+        growBranch(endX, endY, newAngle, nextWidth, depth + 1, targetIdx);
+        
+        // 2. SPLITTING LOGIC (Boosted for Intermediate Layers)
+        
+        let splitChance = 0.0;
+        
+        // DEPTH 2-5: The "Intermediate" Layer. High split chance for density.
+        if (depth >= 2 && depth <= 5) {
+            splitChance = 0.7; // Very high chance to spawn mid-tree branches
+        } 
+        // DEPTH 6+: The "Tip" Layer. High split chance for bushiness.
+        else if (depth > 5) {
+            splitChance = 0.8;
+        }
+        else {
+            splitChance = 0.4; // Base layers split less
+        }
+
+        // Relaxed visual limit to allow density
+        if (totalSegments < config.visualBranchLimit && Math.random() < splitChance) {
+            const dir = Math.random() > 0.5 ? 1 : -1;
+            const splitAngle = newAngle + (dir * 0.45); 
+            
+            // If it's an intermediate branch, make it slightly thinner than the main artery
+            // to preserve structural hierarchy look
+            const branchFactor = (depth >= 2 && depth <= 5) ? 0.6 : 0.8;
+            
+            growBranch(endX, endY, splitAngle, nextWidth * branchFactor, depth + 1, targetIdx);
+        }
+    }
+
+    function drawLeafCluster(x, y) {
+        const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        // Added some "Green" hints back in for vitality mixed with Autumn
+        const colors = ["#d84315", "#ef6c00", "#ffa000", "#ffb300", "#8d6e63", "#558b2f", "#7cb342"];
+        
+        // Denser Clusters: 4 to 8 leaves per point
+        const count = 4 + Math.floor(Math.random() * 5);
+        
+        for(let i=0; i<count; i++) {
+            const leaf = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+            leaf.setAttribute("cx", x + Math.random()*20 - 10);
+            leaf.setAttribute("cy", y + Math.random()*20 - 10);
+            leaf.setAttribute("r", 2 + Math.random()*3);
+            leaf.setAttribute("fill", colors[Math.floor(Math.random()*colors.length)]);
+            leaf.setAttribute("class", "leaf");
+            group.appendChild(leaf);
+        }
+        gLeaves.appendChild(group);
+    }
+
+    // --- MAIN EXECUTION ---
+    drawRoots();
+    const trunkTop = drawTrunk();
+    
+    targets.forEach((t, i) => {
+        const startX = trunkTop.x;
+        const startY = trunkTop.y + 15; 
+        
+        const dx = t.magnetX - startX;
+        const dy = t.magnetY - startY;
+        const angle = Math.atan2(dy, dx);
+        
+        growBranch(startX, startY, angle, 13, 0, i);
+    });
+
+    // Draw Labels
+    targets.forEach(t => {
+        const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        line.setAttribute("x1", t.x);
+        line.setAttribute("y1", t.y + 20);
+        line.setAttribute("x2", t.magnetX);
+        line.setAttribute("y2", t.magnetY);
+        line.setAttribute("class", "connector");
+        gConnectors.appendChild(line);
+
+        const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        g.setAttribute("class", "label-group");
+
+        const w = 110; const h = 30;
+        const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+        rect.setAttribute("x", t.x - w/2);
+        rect.setAttribute("y", t.y - h/2);
+        rect.setAttribute("width", w);
+        rect.setAttribute("height", h);
+        rect.setAttribute("class", "label-pill");
+        g.appendChild(rect);
+
+        const txt = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        txt.setAttribute("x", t.x);
+        txt.setAttribute("y", t.y + 1);
+        txt.setAttribute("class", "label-text");
+        txt.textContent = t.label;
+        g.appendChild(txt);
+
+        gLabels.appendChild(g);
+    });
+
+</script>
+</body>
+</html>

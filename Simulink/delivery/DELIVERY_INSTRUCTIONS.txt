@@ -1,0 +1,74 @@
+==========================================================
+  PFD Signal Generator — Simulink Model
+  Delivery Package
+==========================================================
+
+Date: 25-Apr-2026 01:32:05
+
+--- WHAT IS INCLUDED ---
+
+1. latest/PFD_Signal_Generator.slx
+   -> The Simulink model. Open in MATLAB R2024b.
+
+2. build_simulink_model.m
+   -> Source code that creates the model programmatically.
+   -> Run this to rebuild the model from scratch.
+
+3. run_pfd_simulation.m
+   -> Interactive demo script. Run and follow the menu.
+
+4. README.md
+   -> Full documentation.
+
+5. screenshots/
+   -> All model and simulation screenshots.
+
+--- HOW TO USE (Step by Step) ---
+
+Step 1: Open MATLAB R2024b
+Step 2: Navigate to the Simulink/ folder
+        >> cd path/to/Simulink
+
+Step 3: Open the model
+        >> open_system(fullfile(pwd, 'latest', 'PFD_Signal_Generator.slx'))
+
+Step 4: Change fault type (double-click Fault_Injection,
+        then double-click Fault_Type and change the value)
+        Fault codes:
+          1 = Healthy (sain)
+          2 = Misalignment (desalignement)
+          3 = Imbalance (desequilibre)
+          4 = Clearance (jeu)
+          5 = Lubrication (lubrification)
+          6 = Cavitation
+          7 = Wear (usure)
+          8 = Oil Whirl
+          9 = Mixed: Misalignment + Imbalance
+         10 = Mixed: Wear + Lubrication
+         11 = Mixed: Cavitation + Clearance
+
+Step 5: Click the green "Run" button (or press Ctrl+T)
+        The simulation runs for 5 seconds at 20,480 Hz.
+
+Step 6: Double-click the Scope block to see the waveform.
+
+Step 7: The signal is saved to workspace as "x_sim".
+        You can plot it with:
+        >> plot(x_sim)
+
+--- MODEL ARCHITECTURE ---
+
+Operating_Conditions -> Speed, Load, Temp -> Sommerfeld
+Base_Signal          -> Baseline vibration noise
+Fault_Injection      -> 11 fault types (MATLAB Function)
+Severity_Control     -> Severity 0-1 + optional evolution
+Transient_Behavior   -> Speed ramp / Load step / Thermal
+Noise_Model          -> 8 noise layers
+Signal_Sum           -> Base + Fault*Sev*Trans + Noise
+Quantizer            -> ADC quantization effect
+
+--- VERIFIED RESULTS ---
+
+See screenshots/ folder for proof of correct operation.
+Each fault type produces the expected spectral signature.
+==========================================================

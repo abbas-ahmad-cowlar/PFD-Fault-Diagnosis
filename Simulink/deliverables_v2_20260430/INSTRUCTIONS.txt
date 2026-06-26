@@ -1,0 +1,50 @@
+==========================================================
+  PFD Signal Generator — Simulink Model (v2)
+==========================================================
+
+--- CONTENTS ---
+
+  model/PFD_Signal_Generator.slx   - Simulink model
+  build_simulink_model.m           - Source code (rebuilds model)
+  run_pfd_simulation.m             - Interactive demo script
+  README.md                        - Full documentation
+  screenshots/                     - Model & result screenshots
+
+--- HOW TO RUN ---
+
+Step 1: Open MATLAB R2024b
+Step 2: Navigate to this folder
+        >> cd('path/to/this/folder')
+Step 3: Open the model
+        >> open_system(fullfile(pwd, 'model', 'PFD_Signal_Generator.slx'))
+Step 4: Double-click "Fault_Injection" (red block)
+Step 5: Double-click "Fault_Type" and change the number:
+          1 = Sain (Healthy)
+          2 = Desalignement (Misalignment)
+          3 = Desequilibre (Imbalance)
+          4 = Jeu (Clearance)
+          5 = Lubrification (Lubrication)
+          6 = Cavitation
+          7 = Usure (Wear)
+          8 = Oil Whirl
+          9 = Mixte: Desalignement + Desequilibre
+         10 = Mixte: Usure + Lubrification
+         11 = Mixte: Cavitation + Jeu
+Step 6: Click OK, then click the back arrow to return
+Step 7: Click the green Run button (or Ctrl+T)
+Step 8: Double-click "Scope" to see the time-domain signal
+
+--- FREQUENCY ANALYSIS ---
+
+After running the simulation, paste this in the command window
+to see the frequency spectrum:
+
+[P,f]=pwelch(x_sim,hann(4096),2048,4096,20480); figure; plot(f,10*log10(P)); xlim([0 500]); xlabel('Frequency (Hz)'); ylabel('dB/Hz'); title('Frequency Spectrum'); grid on;
+
+Expected results:
+  - Healthy:      flat, no peaks
+  - Misalignment: peaks at 120 Hz (2X) and 180 Hz (3X)
+  - Imbalance:    peak at 60 Hz (1X)
+  - Oil Whirl:    peak at ~27 Hz (0.45X)
+
+==========================================================
