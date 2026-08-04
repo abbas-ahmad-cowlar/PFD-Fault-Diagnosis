@@ -12,12 +12,12 @@ simulés dans les phases suivantes.
 1. ANALYSE TEMPORELLE
 Le signal présente un aspect aléatoire et de faible amplitude
 (valeur efficace RMS = 0.0421, valeur crête = 0.180). Une lente
-modulation d'amplitude est visible sur la vue complète : c'est la
-dérive environnementale simulée (< 1 Hz), un artefact de mesure.
-Le zoom sur 100 ms ne révèle aucun motif périodique à la période de
-rotation (16.67 ms) ni chocs répétitifs : comportement attendu d'un
-palier hydrodynamique sain, où le film d'huile amortit les
-vibrations de l'arbre.
+ondulation est visible sur la vue complète : c'est la composante
+additive très basse fréquence de la dérive environnementale simulée
+(< 1 Hz), un artefact de mesure. Le zoom sur 100 ms ne révèle aucun
+motif périodique à la période de rotation (16.67 ms) ni chocs
+répétitifs : comportement attendu d'un palier hydrodynamique sain,
+où le film d'huile amortit les vibrations de l'arbre.
 
 2. ANALYSE STATISTIQUE
 Tableau des indicateurs :
@@ -30,19 +30,23 @@ Tableau des indicateurs :
   Kurtosis                       2.9801   (3 = gaussien)
   Facteur de crête               4.2794   (< 5 = normal)
 
-Le kurtosis vaut 2.98, très proche de 3 (distribution gaussienne),
-et le facteur de crête vaut 4.28 (< 5) : aucune impulsivité
-détectable. Les impulsions parasites simulées par le modèle restent
-noyées dans le plancher de bruit. L'asymétrie est quasi nulle
-(-0.008) et la moyenne négligeable (0.0013). L'histogramme et le
-diagramme Q-Q sont compatibles avec une distribution normale.
+Au regard des seuils indicatifs du cadre d'étude (appliqués à
+l'identique à tous les états), le kurtosis vaut 2.98, très proche
+de 3 (distribution gaussienne), et le facteur de crête vaut 4.28
+(< 5) : aucune impulsivité détectable. Les impulsions parasites
+simulées par le modèle restent noyées dans le plancher de bruit.
+L'asymétrie est quasi nulle (-0.008) et la moyenne négligeable
+(0.0013). L'histogramme et le diagramme Q-Q sont compatibles avec
+une distribution normale.
 
 3. ANALYSE FRÉQUENTIELLE
 Le spectre est un plancher de bruit large bande (platitude spectrale
 0.899, entropie 10.56 bits), SANS raie dominante liée à la rotation :
 ni 1X (60 Hz, signature de balourd), ni 2X/3X (120/180 Hz, signature
 de désalignement), ni composante sous-synchrone entre 25 et 29 Hz
-(signature de tourbillonnement d'huile). Trois artefacts de mesure
+(signature de tourbillonnement d'huile) : aux bins correspondants,
+la DSP ne dépasse pas le plancher médian local de plus de 3 dB
+(critère opérationnel retenu). Trois artefacts de mesure
 simulés sont identifiés et ne doivent pas être confondus avec des
 signatures de défaut : (i) la dérive très basse fréquence (< 1 Hz),
 qui constitue le maximum global du spectre ; (ii) l'interférence
@@ -52,22 +56,28 @@ très faible amplitude vers 10.04 kHz. C'est précisément l'ABSENCE
 des raies caractéristiques qui définit la signature de l'état sain
 et en fait la référence de comparaison pour tous les défauts.
 
-4. ANALYSE TEMPS-FRÉQUENCE
-Le spectrogramme (STFT, fenêtre 2048 points, résolution 10 Hz)
-montre un contenu spectral homogène dans le temps : la seule bande
-horizontale persistante est la raie EMI 50 Hz (constante, donc non
-liée à la rotation), et l'énergie de dérive reste confinée sous
-~1 Hz. Aucune colonne verticale (choc) n'apparaît. La transformée
-en ondelettes (CWT, Morlet analytique), plus fine en temps aux
-hautes fréquences, confirme l'absence de transitoires ou de
-bouffées d'énergie. Hormis les dérives lentes simulées, le signal
-est stationnaire à l'échelle des fenêtres d'analyse.
+4. ANALYSE TEMPS-FRÉQUENCE (bande affichée : 0-500 Hz)
+Le spectrogramme (STFT, fenêtre de Hann 2048 points) montre un
+contenu spectral globalement stable dans le temps : la seule bande
+horizontale persistante est la bande d'énergie autour de 50 Hz
+(EMI, constante dans le temps, donc non liée à un phénomène
+tournant ; la distinction fine 50/60 Hz est établie par l'analyse
+fréquentielle, Figures 4 à 6, et non par la STFT dont la fenêtre a
+une largeur effective d'environ 20 Hz). L'énergie de dérive
+apparaît tout en bas de la bande. La transformée en ondelettes
+(CWT, Morlet analytique), plus fine en temps aux hautes fréquences,
+ne révèle aucun transitoire lié à un défaut détectable dans cette
+bande ; les impulsions parasites simulées, de très faible amplitude,
+restent indiscernables du fond. En résumé : aucun transitoire ni
+composante 1X détectable dans la bande affichée, et un contenu
+spectral globalement stable hormis les artefacts modélisés.
 
 CONCLUSION
 Le signal sain issu du modèle Simulink présente toutes les
 caractéristiques attendues de l'état sain tel qu'encodé par le
 modèle : distribution gaussienne (kurtosis proche de 3), spectre
-plat sans signature de défaut, contenu temps-fréquence homogène,
+plat sans signature de défaut, contenu temps-fréquence globalement
+stable dans la bande analysée,
 artefacts de mesure identifiés et expliqués. Il constitue la
 RÉFÉRENCE à laquelle les 7 défauts simples et les 3 défauts mixtes
 seront comparés dans les phases suivantes.
