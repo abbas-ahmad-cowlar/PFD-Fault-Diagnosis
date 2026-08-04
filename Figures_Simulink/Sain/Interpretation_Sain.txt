@@ -1,0 +1,53 @@
+INTERPRETATION DES RESULTATS - ETAT SAIN (REFERENCE)
+=====================================================
+
+Signal analyse : data_signaux_simulink/sain_001.mat
+Produit par le modele Simulink PFD_Signal_Generator
+(3600 tr/min soit 1X = 60 Hz, charge 70 %, temperature 60 C,
+fs = 20480 Hz, duree 5 s).
+
+1. ANALYSE TEMPORELLE
+Le signal presente un aspect aleatoire, stationnaire et de faible
+amplitude (valeur efficace RMS = 0.0421, valeur crete = 0.180).
+Le zoom sur 100 ms ne revele aucun motif periodique a la periode de
+rotation (16.67 ms) ni chocs repetitifs : comportement attendu d'un
+palier hydrodynamique sain, ou le film d'huile amortit les
+vibrations de l'arbre.
+
+2. ANALYSE STATISTIQUE
+Le kurtosis vaut 2.98, tres proche de 3 (distribution gaussienne),
+et le facteur de crete vaut 4.28 (< 5) : aucune impulsivite dans le
+signal, donc pas de chocs metal-metal ni d'evenements transitoires.
+L'asymetrie est quasi nulle (-0.008) et la moyenne negligeable
+(0.0013) : distribution symetrique, pas de biais de mesure notable.
+L'histogramme et le diagramme Q-Q confirment la normalite de la
+distribution d'amplitude.
+
+3. ANALYSE FREQUENTIELLE
+Le spectre est un plancher de bruit large bande (platitude spectrale
+0.899, entropie 10.56 bits), SANS raie dominante liee a la rotation :
+ni 1X (60 Hz, signature de balourd), ni 2X/3X (120/180 Hz, signature
+de desalignement), ni composante sous-synchrone entre 25 et 29 Hz
+(signature de tourbillonnement d'huile). La seule raie visible est
+l'interference secteur a 50 Hz, un artefact de mesure simule
+volontairement (couplage electromagnetique), a ne pas confondre avec
+le 1X. C'est precisement l'ABSENCE des raies caracteristiques qui
+definit la signature de l'etat sain et en fait la reference de
+comparaison pour tous les defauts.
+
+4. ANALYSE TEMPS-FREQUENCE
+Le spectrogramme (STFT) montre un contenu spectral homogene et
+stationnaire sur toute la duree : pas de bande horizontale
+persistante (raie de defaut) ni de colonne verticale (choc).
+La transformee en ondelettes (CWT, Morlet analytique), plus fine en
+temps aux hautes frequences, confirme l'absence de transitoires ou
+de bouffees d'energie. Les deux representations valident la
+stationnarite du signal sain.
+
+CONCLUSION
+Le signal sain issu du modele Simulink presente toutes les
+caracteristiques d'un palier hydrodynamique en bon etat :
+distribution gaussienne (kurtosis proche de 3), spectre plat sans
+signature de defaut, contenu temps-frequence homogene. Il constitue
+la REFERENCE a laquelle les 7 defauts simples et les 3 defauts
+mixtes seront compares dans les phases suivantes.

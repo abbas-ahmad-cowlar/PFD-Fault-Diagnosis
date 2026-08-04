@@ -4,3 +4,8 @@ Archive/**
 Archive/**/**   
 Archive/**/**/**
 Archive/**/**/**/**
+
+# local-only files (never commit)
+PROJECT_STATE.md
+slprj/
+**/slprj/
