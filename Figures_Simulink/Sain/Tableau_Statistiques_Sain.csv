@@ -1,0 +1,9 @@
+Indicateur,Valeur,Reference_sain
+Moyenne,0.0013369010068261,~ 0 (pas de biais)
+Valeur efficace (RMS),0.0420619382384189,-
+Écart-type,0.0420408920460194,-
+Valeur crête,0.18,-
+Crête-à-crête,0.36,-
+Asymétrie (skewness),-0.00765956297601942,0 = symétrique
+Kurtosis,2.98005318483176,3 = gaussien
+Facteur de crête,4.27940336414621,< 5 = normal
