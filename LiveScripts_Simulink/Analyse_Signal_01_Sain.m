@@ -262,8 +262,10 @@ writetable(tableau_stats, fullfile(OUTPUT_DIR, 'Tableau_Statistiques_Sain.csv'),
 fprintf('  Tableau exporté : Tableau_Statistiques_Sain.csv\n');
 
 fprintf('\nINTERPRÉTATION (référence saine ; seuils indicatifs du cadre d''étude) :\n');
-if stat_kurt < 4
-    fprintf('  OK : kurtosis = %.2f, proche de 3 (gaussien) -> pas de chocs detectables\n', stat_kurt);
+if abs(stat_kurt - 3) <= 0.5
+    fprintf('  OK : kurtosis = %.2f, proche de 3 (gaussien) -> pas de chocs détectables\n', stat_kurt);
+elseif stat_kurt < 4
+    fprintf('  NOTE : kurtosis = %.2f, modérément au-dessus de 3\n', stat_kurt);
 else
     fprintf('  ATTENTION : kurtosis = %.2f, élevé pour un état sain\n', stat_kurt);
 end
@@ -381,9 +383,11 @@ masque = f_psd >= f_min;
 f_valides = f_psd(masque);
 [~, i_max] = max(Pxx(masque));
 f_dominante = f_valides(i_max);
-% Maximum global : relevé sur la FFT (grille fine de fs/NFFT = 0.16 Hz),
-% car la grille de Welch (pas de 5 Hz) ne résout pas la dérive < 1 Hz
-% (son énergie tombe dans le bin 0-2.5 Hz).
+% Maximum global : relevé sur la FFT. Le pas de grille fs/NFFT = 0.16 Hz
+% provient du zéro-padding (NFFT = 2^17 > N) ; la résolution physique du
+% relevé reste limitée par la durée d'observation (~1/T = 0.2 Hz). La
+% grille de Welch (pas de 5 Hz) ne résout pas la dérive < 1 Hz (son
+% énergie tombe dans le bin 0-2.5 Hz), d'où l'utilisation de la FFT ici.
 [~, i_glob] = max(X_mag(2:end));
 f_max_globale = f_fft(i_glob + 1);
 
@@ -401,21 +405,29 @@ platitude = exp(mean(log(Pxx + eps))) / (mean(Pxx) + eps);
 [~, i1X] = min(abs(f_psd - Omega));
 [~, i2X] = min(abs(f_psd - 2*Omega));
 [~, i3X] = min(abs(f_psd - 3*Omega));
-[~, iSub] = min(abs(f_psd - 0.45*Omega));
+% Zone sous-synchrone 0.42-0.48X (25.2-28.8 Hz) : on teste TOUS les bins
+% de Welch couvrant la zone (avec le pas de 5 Hz : bins 25 et 30 Hz),
+% et on retient le maximum.
+i_zone = find(f_psd >= 5*floor(0.42*Omega/5) & f_psd <= 5*ceil(0.48*Omega/5));
+[Pxx_sub, i_rel] = max(Pxx(i_zone));
+iSub = i_zone(i_rel);
 niv_1X  = sqrt(Pxx(i1X));
 niv_2X  = sqrt(Pxx(i2X));
 niv_3X  = sqrt(Pxx(i3X));
-niv_sub = sqrt(Pxx(iSub));
+niv_sub = sqrt(Pxx_sub);
 
-% Critère opérationnel d'absence de pic : un bin caractéristique est
-% considéré non significatif si sa DSP ne dépasse pas de plus de 3 dB le
-% plancher médian local (médiane de la DSP entre 10 et 300 Hz).
+% Critère opérationnel d'absence de pic (règle indicative propre à ce
+% cadre d'étude, appliquée à l'identique à tous les états) : un bin
+% caractéristique est considéré non significatif si sa DSP ne dépasse pas
+% de plus de 3 dB le plancher médian local (médiane de la DSP entre 10 et
+% 300 Hz).
 plancher_med = median(Pxx(f_psd >= 10 & f_psd <= 300));
-exces_dB = 10*log10([Pxx(iSub), Pxx(i1X), Pxx(i2X), Pxx(i3X)] / plancher_med);
+exces_dB = 10*log10([Pxx_sub, Pxx(i1X), Pxx(i2X), Pxx(i3X)] / plancher_med);
 
 fprintf('\n--- INDICATEURS SPECTRAUX ---\n');
-fprintf('Maximum global (FFT, grille %.2f Hz) : %.2f Hz (dérive simulée < 1 Hz, artefact)\n', ...
-    fs/NFFT, f_max_globale);
+fprintf(['Maximum global (FFT, pas de grille %.2f Hz par zéro-padding, résolution ' ...
+    'physique ~%.1f Hz) : %.2f Hz (dérive simulée < 1 Hz, artefact)\n'], ...
+    fs/NFFT, 1/T, f_max_globale);
 fprintf('Fréquence dominante (recherche >= %.0f Hz) : %.2f Hz\n', f_min, f_dominante);
 fprintf('Centroïde spectral  : %.1f Hz\n', centroide);
 fprintf('Entropie spectrale  : %.2f bits\n', entropie);
@@ -423,8 +435,8 @@ fprintf('Platitude spectrale : %.4f (1 = bruit large bande, 0 = tonal)\n\n', pla
 fprintf('Niveaux spectraux (racine de DSP) aux fréquences caractéristiques,\n');
 fprintf('relevés au bin de Welch le plus proche, avec l''excès par rapport au\n');
 fprintf('plancher médian local 10-300 Hz (critère : pic significatif si > 3 dB) :\n');
-fprintf('  0.45X, cible %.0f Hz, bin %.0f Hz : %.3e  (%+.1f dB)  tourbillonnement d''huile\n', ...
-    0.45*Omega, f_psd(iSub), niv_sub, exces_dB(1));
+fprintf('  zone 0.42-0.48X (bins %.0f-%.0f Hz), max au bin %.0f Hz : %.3e  (%+.1f dB)  tourbillonnement d''huile\n', ...
+    f_psd(i_zone(1)), f_psd(i_zone(end)), f_psd(iSub), niv_sub, exces_dB(1));
 fprintf('  1X,    cible %.0f Hz, bin %.0f Hz : %.3e  (%+.1f dB)  balourd\n', ...
     Omega, f_psd(i1X), niv_1X, exces_dB(2));
 fprintf('  2X,    cible %.0f Hz, bin %.0f Hz : %.3e  (%+.1f dB)  désalignement\n', ...
@@ -444,10 +456,10 @@ elseif abs(f_dominante - Omega)/Omega < 0.10
 else
     fprintf('  Fréquence dominante : %.1f Hz (à examiner sur le spectre).\n', f_dominante);
 end
-if platitude > 0.5
-    fprintf(['  Platitude spectrale élevée (%.2f) : le spectre est un plancher\n' ...
-             '  de bruit large bande, sans raie dominante -> conforme à un\n' ...
-             '  palier sain dans le cadre du modèle.\n'], platitude);
+if platitude > 0.5   % seuil indicatif du cadre d'étude
+    fprintf(['  Platitude spectrale élevée (%.2f ; seuil indicatif > 0.5) : le\n' ...
+             '  spectre est un plancher de bruit large bande, sans raie\n' ...
+             '  dominante -> conforme à un palier sain dans le cadre du modèle.\n'], platitude);
 end
 if all(exces_dB < 3)
     fprintf(['  Aucun pic significatif à 1X, 2X, 3X ni en zone sous-synchrone\n' ...
@@ -566,12 +578,15 @@ fprintf('  Figure 6 exportée : Fig6_Sain_DSP_Zoom.png\n\n');
 % 1. Spectrogramme (transformée de Fourier à court terme, STFT) :
 %    S(t,f) = |intégrale de x(tau)*w(tau-t)*exp(-j*2*pi*f*tau) dtau|^2
 %    Compromis temps-fréquence fixé par la longueur de la fenêtre.
-%    Fenêtre choisie : 2048 points (100 ms), pas de grille fs/2048 = 10 Hz.
-%    NOTE : la largeur effective de la fenêtre de Hann (~20 Hz) ne permet
-%    pas de résoudre finement deux composantes distantes de 10 Hz ; la
-%    distinction 50 Hz (EMI) / 60 Hz (1X) est établie par l'analyse
-%    fréquentielle (Figures 4 à 6, résolution 0.16 à 5 Hz). Le rôle du
-%    spectrogramme est de montrer l'ÉVOLUTION TEMPORELLE du contenu.
+%    Fenêtre choisie : 2048 points (100 ms), soit des bins de Fourier
+%    espacés de fs/2048 = 10 Hz ; l'affichage est interpolé sur une
+%    grille de 5 Hz (nfft = 4096, zéro-padding, sans gain de résolution
+%    physique). NOTE : la résolution physique est fixée par la fenêtre de
+%    Hann (largeur à -3 dB d'environ 14 Hz, soit ~20 Hz effectifs) : elle
+%    ne permet pas de résoudre finement deux composantes distantes de
+%    10 Hz. La distinction 50 Hz (EMI) / 60 Hz (1X) est donc établie par
+%    l'analyse fréquentielle (Figures 4 à 6). Le rôle du spectrogramme
+%    est de montrer l'ÉVOLUTION TEMPORELLE du contenu.
 %
 % 2. Transformée en ondelettes continue (CWT, ondelette de Morlet
 %    analytique) :
@@ -602,9 +617,9 @@ fig7 = figure('Name', 'Signal sain - Spectrogramme', ...
 tl7 = tiledlayout(fig7, 1, 1, 'Padding', 'compact');
 nexttile(tl7);
 
-fen_spec = 2048;                    % 100 ms -> résolution 10 Hz
+fen_spec = 2048;                    % 100 ms ; bins de Fourier 10 Hz
 rec_spec = round(0.875 * fen_spec); % 87.5 % de recouvrement
-nfft_spec = 4096;
+nfft_spec = 4096;                   % grille d'affichage 5 Hz (zéro-padding)
 [S, F, T_spec] = spectrogram(x, hann(fen_spec), rec_spec, nfft_spec, fs);
 S_dB = 10 * log10(abs(S).^2 + eps);
 
@@ -627,10 +642,9 @@ xlabel('Temps (s)', 'FontSize', 13, 'FontWeight', 'bold');
 ylabel('Fréquence (Hz)', 'FontSize', 13, 'FontWeight', 'bold');
 title(tl7, 'Figure 7 : Spectrogramme (STFT) - État sain', ...
     'FontSize', 15, 'FontWeight', 'bold');
-subtitle(tl7, sprintf(['Fenêtre de Hann %d points (%.0f ms), recouvrement ' ...
-    '%.1f %%. Bande 0-500 Hz : contenu stable dans le temps, bande EMI ' ...
-    '~50 Hz constante, aucun transitoire lié à un défaut détectable.'], ...
-    fen_spec, 1000*fen_spec/fs, 100*rec_spec/fen_spec), 'FontSize', 11);
+subtitle(tl7, sprintf(['Hann %d points (%.0f ms), recouvrement %.1f %%, ' ...
+    'affichage 5 Hz. Bande EMI ~50 Hz constante ; aucun transitoire de défaut.'], ...
+    fen_spec, 1000*fen_spec/fs, 100*rec_spec/fen_spec), 'FontSize', 10);
 set(gca, 'FontSize', 11);
 
 exportgraphics(fig7, fullfile(OUTPUT_DIR, 'Fig7_Sain_Spectrogramme_STFT.png'), ...

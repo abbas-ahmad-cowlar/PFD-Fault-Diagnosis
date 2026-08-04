@@ -32,6 +32,10 @@ Vue d'ensemble du modèle :
 | Transient_Behavior (beige) | Applique un transitoire optionnel (rampe de vitesse, échelon de charge, thermique) | Transient_Type = 1 : aucun |
 | Noise_Model (orange) | 7 sources de bruit de mesure réalistes | Présent : bruit capteur, interférence secteur 50 Hz, bruit rose, dérives, impulsions, repliement |
 
+Détail du sous-système de bruit (les 7 sources sommées) :
+
+![Noise_Model : les 7 sources de bruit](screenshots_sain/05_modele_de_bruit.png)
+
 Le signal final est la somme :
 
 ```
