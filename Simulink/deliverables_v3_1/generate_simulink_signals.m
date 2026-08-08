@@ -57,7 +57,8 @@ end
 %% Step 1: Build the model
 fprintf('Step 1: Building Simulink model...\n');
 
-% Add deliverables_v3 to path temporarily so build_simulink_model is found
+% Add this script's folder to the path so build_simulink_model is found
+% (in the delivery package both scripts sit side by side at the root)
 addpath(scriptDir);
 
 % Build (creates/rebuilds the .slx model)
@@ -192,10 +193,8 @@ fprintf('  Output:     %s\n', outputDir);
 fprintf('  Parameters: %d RPM, %d%% load, %d°C\n', speed_rpm, load_pct, temp_C);
 fprintf('========================================\n\n');
 
-fprintf('Next steps:\n');
-fprintf('  1. Update LiveScript SIGNAL_FILE paths to point to data_signaux_simulink/\n');
-fprintf('  2. Run Signal_Analysis_01_Healthy on sain_001.mat\n');
-fprintf('  3. Run Signal_Analysis_02_Single_Faults on fault signals\n\n');
+fprintf('Etape suivante - analyse de l''etat sain (reference) :\n');
+fprintf('  >> run(''LiveScripts_Simulink/Analyse_Signal_01_Sain.m'')\n\n');
 
 end
 
