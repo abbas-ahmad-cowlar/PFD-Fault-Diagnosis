@@ -45,9 +45,10 @@ Le spectre est un plancher de bruit large bande (platitude spectrale
 ni 1X (60 Hz, signature de balourd), ni 2X/3X (120/180 Hz, signature
 de désalignement), ni composante sous-synchrone entre 25 et 29 Hz
 (signature de tourbillonnement d'huile) : aux bins correspondants,
-la DSP ne dépasse pas le plancher médian local de plus de 3 dB
-(critère opérationnel indicatif retenu pour cette étude, appliqué à
-l'identique à tous les états). Trois artefacts de mesure
+l'excès de DSP au-dessus du plancher médian local reste sous le
+seuil de signification, fixé à au moins 3 dB (critère opérationnel
+indicatif retenu pour cette étude, appliqué à l'identique à tous
+les états). Trois artefacts de mesure
 simulés sont identifiés et ne doivent pas être confondus avec des
 signatures de défaut : (i) la dérive très basse fréquence (< 1 Hz),
 qui constitue le maximum global du spectre ; (ii) l'interférence
@@ -59,8 +60,9 @@ et en fait la référence de comparaison pour tous les défauts.
 
 4. ANALYSE TEMPS-FRÉQUENCE (bande affichée : 0-500 Hz)
 Le spectrogramme (STFT, fenêtre de Hann 2048 points) montre un
-contenu spectral globalement stable dans le temps : la seule bande
-horizontale persistante est la bande d'énergie autour de 50 Hz.
+contenu spectral globalement stable dans le temps : la principale
+bande horizontale persistante, hors de la dérive très basse
+fréquence, est la bande d'énergie autour de 50 Hz.
 Elle est identifiée comme l'interférence secteur simulée (EMI) :
 sa fréquence de 50 Hz ne correspond pas au 1X nominal à 60 Hz, et
 elle provient de la source EMI du modèle de bruit (provenance

@@ -1,0 +1,104 @@
+========================================================================
+  PFD - PHASE 1 : ETUDE DE L'ETAT SAIN (REFERENCE)
+  Livraison du 2026-08-08
+========================================================================
+
+Ce livrable contient l'etude complete de l'etat sain du palier
+hydrodynamique, produit a partir de NOTRE modele Simulink
+PFD_Signal_Generator, avec les quatre familles d'analyse convenues :
+temporelle, statistique, frequentielle (FFT + DSP de Welch) et
+temps-frequence (spectrogramme STFT + ondelettes CWT).
+
+------------------------------------------------------------------------
+1. PREREQUIS
+------------------------------------------------------------------------
+- MATLAB R2024b (ou plus recent)
+- Simulink
+- Signal Processing Toolbox
+- Statistics and Machine Learning Toolbox
+- Wavelet Toolbox (pour la partie CWT)
+
+Verification rapide : taper `ver` dans MATLAB et controler que ces
+toolboxes apparaissent dans la liste.
+
+------------------------------------------------------------------------
+2. CONTENU DU LIVRABLE
+------------------------------------------------------------------------
+INSTRUCTIONS.txt                    Ce fichier
+PFD_Signal_Generator.slx            Le modele Simulink (pret a l'emploi)
+build_simulink_model.m              Reconstruit le modele depuis zero
+generate_simulink_signals.m         Regenere les 11 signaux automatiquement
+run_pfd_simulation.m                Simulation interactive (menu console)
+
+LiveScripts_Simulink/
+  Production_Signal_Sain.html       GUIDE ILLUSTRE : comment le signal
+                                    sain est produit (a ouvrir dans un
+                                    navigateur ; images integrees)
+  Production_Signal_Sain.md         Meme guide au format texte/Markdown
+  Analyse_Signal_01_Sain.m          Script d'analyse de l'etat sain
+  screenshots_sain/                 9 captures d'ecran du modele et de
+                                    l'execution (Run, Scope, Workspace)
+
+data_signaux_simulink/              Les 11 signaux generes par le modele
+                                    (un par etat ; sain_001.mat est la
+                                    reference de la Phase 1)
+
+Figures_Simulink/Sain/              Resultats deja generes :
+  Fig1 a Fig8 (.png, 300 DPI)       Les 8 figures d'analyse en francais
+  Tableau_Statistiques_Sain.csv     Les 8 indicateurs statistiques
+  Interpretation_Sain.txt           Texte d'interpretation pour le rapport
+
+------------------------------------------------------------------------
+3. DEMARRAGE RAPIDE
+------------------------------------------------------------------------
+a) Ouvrir le guide illustre :
+   double-clic sur LiveScripts_Simulink/Production_Signal_Sain.html
+   (il explique la production du signal sain, methodes A et B).
+
+b) Relancer l'analyse complete de l'etat sain :
+   1. Ouvrir MATLAB dans le dossier racine du livrable (celui de ce
+      fichier).
+   2. Executer :
+      >> run('LiveScripts_Simulink/Analyse_Signal_01_Sain.m')
+   3. Les 8 figures, le tableau CSV et le texte d'interpretation sont
+      regeneres dans Figures_Simulink/Sain/.
+
+c) Regenerer les signaux depuis le modele (facultatif) :
+      >> generate_simulink_signals
+   (reconstruit le modele et regenere les 11 fichiers .mat dans
+   data_signaux_simulink/ ; simulation deterministe : les echantillons
+   sont identiques a ceux fournis)
+
+------------------------------------------------------------------------
+4. PARAMETRES DE L'ETAT SAIN
+------------------------------------------------------------------------
+- Vitesse : 3600 tr/min (frequence de rotation 1X = 60 Hz)
+- Charge : 70 % (facteur de charge 0.79)
+- Temperature : 60 degres C
+- Nombre de Sommerfeld : 0.1899
+- Severite : nominale (1.0) - sans effet pour l'etat sain, le defaut
+  injecte etant nul
+- Duree : 5 s a 20 480 Hz, soit 102 401 echantillons (support 0 a 5 s
+  inclus)
+- Fichier de reference : data_signaux_simulink/sain_001.mat
+  (variables : x, fs, fault, metadata)
+
+------------------------------------------------------------------------
+5. NOTES DE VERSION
+------------------------------------------------------------------------
+- Les champs de metadonnees des fichiers .mat ont ete alignes sur les
+  parametres effectifs du modele (facteur de charge 0.79, nombre de
+  Sommerfeld 0.1899, severite nominale 1.0 pour l'etat sain, version du
+  generateur Simulink_v3.1). Les echantillons des signaux sont
+  strictement inchanges.
+- Le script generate_simulink_signals.m ecrit desormais le dossier
+  data_signaux_simulink/ a cote du script (chemin corrige).
+
+------------------------------------------------------------------------
+6. SUITE DU TRAVAIL
+------------------------------------------------------------------------
+Phase 2 : analyse des 7 defauts simples (desalignement, desequilibre,
+jeu, lubrification, cavitation, usure, tourbillonnement d'huile), avec
+les memes quatre familles d'analyse et la comparaison a la reference
+saine etablie ici.
+========================================================================
