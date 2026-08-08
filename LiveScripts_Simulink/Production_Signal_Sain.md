@@ -58,42 +58,45 @@ d'échantillonnage 20 480 Hz, solveur à pas fixe (ode4), soit
 
 ## 2. Méthode A : par l'interface Simulink
 
-1. Ouvrir MATLAB R2024b dans le dossier du projet.
-2. Ouvrir le modèle : double-clic sur `PFD_Signal_Generator.slx`
-   (ou `>> open_system('PFD_Signal_Generator')`).
-3. Double-cliquer sur le sous-système rouge **Fault_Injection**, puis sur
-   la constante **Fault_Type**, et mettre sa valeur à **1** (= Sain).
-   Valider avec OK. La vue obtenue :
+**Étape 1.** Ouvrir MATLAB R2024b dans le dossier du projet.
 
-   ![Fault_Injection configuré pour l'état sain](screenshots_sain/02_fault_injection_sain.png)
+**Étape 2.** Ouvrir le modèle : double-clic sur `PFD_Signal_Generator.slx`
+(ou `>> open_system('PFD_Signal_Generator')`).
 
-4. Dans **Severity_Control**, mettre la constante **Severity_Level** à
-   **1.0** (valeur nominale utilisée pour la génération ; sans effet sur
-   l'état sain puisque le défaut est nul) et vérifier
-   Enable_Evolution = 0 :
+**Étape 3.** Double-cliquer sur le sous-système rouge **Fault_Injection**,
+puis sur la constante **Fault_Type**, et mettre sa valeur à **1** (= Sain).
+Valider avec OK. La vue obtenue :
 
-   ![Severity_Control](screenshots_sain/04_controle_severite.png)
+![Fault_Injection configuré pour l'état sain](screenshots_sain/02_fault_injection_sain.png)
 
-5. (Facultatif, valeurs déjà par défaut) Vérifier dans
-   **Operating_Conditions** : Speed_RPM = 3600, Load_Percent = 70,
-   Temperature_C = 60. Dans **Transient_Behavior** : Transient_Type = 1
-   (aucun).
+**Étape 4.** Dans **Severity_Control**, mettre la constante
+**Severity_Level** à **1.0** (valeur nominale utilisée pour la
+génération ; sans effet sur l'état sain puisque le défaut est nul) et
+vérifier Enable_Evolution = 0 :
 
-   ![Operating_Conditions](screenshots_sain/03_conditions_fonctionnement.png)
+![Severity_Control](screenshots_sain/04_controle_severite.png)
 
-6. Lancer la simulation : bouton vert **Run** de l'onglet SIMULATION
-   (ou Ctrl+T). La simulation couvre 5 secondes de temps simulé.
-7. Observer le signal dans le **Scope** (double-clic sur le bloc Scope).
-   Le signal complet est disponible dans l'espace de travail MATLAB sous
-   la variable **x_sim** (visible dans le panneau Workspace). Le tracé
-   ci-dessous montre le contenu de `x_sim` obtenu par cette procédure,
-   c'est ce que le Scope affiche :
+**Étape 5.** (Facultatif, valeurs déjà par défaut) Vérifier dans
+**Operating_Conditions** : Speed_RPM = 3600, Load_Percent = 70,
+Temperature_C = 60. Dans **Transient_Behavior** : Transient_Type = 1
+(aucun).
 
-   ![Signal obtenu (contenu de x_sim)](screenshots_sain/06_resultat_simulation.png)
+![Operating_Conditions](screenshots_sain/03_conditions_fonctionnement.png)
 
-8. (Facultatif) Sauvegarder ce signal manuel au format .mat. Utiliser un
-   **nom distinct** pour ne pas écraser le fichier de référence
-   `sain_001.mat` du livrable, qui contient les métadonnées complètes :
+**Étape 6.** Lancer la simulation : bouton vert **Run** de l'onglet
+SIMULATION (ou Ctrl+T). La simulation couvre 5 secondes de temps simulé.
+
+**Étape 7.** Observer le signal dans le **Scope** (double-clic sur le
+bloc Scope). Le signal complet est disponible dans l'espace de travail
+MATLAB sous la variable **x_sim** (visible dans le panneau Workspace).
+Le tracé ci-dessous montre le contenu de `x_sim` obtenu par cette
+procédure, c'est ce que le Scope affiche :
+
+![Signal obtenu (contenu de x_sim)](screenshots_sain/06_resultat_simulation.png)
+
+**Étape 8.** (Facultatif) Sauvegarder ce signal manuel au format .mat.
+Utiliser un **nom distinct** pour ne pas écraser le fichier de référence
+`sain_001.mat` du livrable, qui contient les métadonnées complètes :
 
 ```matlab
 x = x_sim(:);
