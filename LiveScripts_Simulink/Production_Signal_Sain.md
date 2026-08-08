@@ -13,7 +13,8 @@ Statistics and Machine Learning Toolbox et Wavelet Toolbox (pour la
 partie CWT de l'analyse).
 
 Les captures ci-dessous montrent le modèle **configuré pour l'état sain**
-(Fault_Type = 1) ; elles se trouvent dans `screenshots_sain/`.
+(Fault_Type = 1), y compris l'exécution réelle dans l'interface Simulink
+(bouton Run, Scope, Workspace) ; elles se trouvent dans `screenshots_sain/`.
 
 ---
 
@@ -85,12 +86,24 @@ Temperature_C = 60. Dans **Transient_Behavior** : Transient_Type = 1
 
 **Étape 6.** Lancer la simulation : bouton vert **Run** de l'onglet
 SIMULATION (ou Ctrl+T). La simulation couvre 5 secondes de temps simulé.
+Vue du modèle prêt à lancer, avec le bouton Run dans la barre d'outils :
+
+![Modèle configuré état sain, bouton Run dans l'onglet SIMULATION](screenshots_sain/07_bouton_run.png)
 
 **Étape 7.** Observer le signal dans le **Scope** (double-clic sur le
-bloc Scope). Le signal complet est disponible dans l'espace de travail
-MATLAB sous la variable **x_sim** (visible dans le panneau Workspace).
-Le tracé ci-dessous montre le contenu de `x_sim` obtenu par cette
-procédure, c'est ce que le Scope affiche :
+bloc Scope). Capture du Scope après la simulation (statut Ready,
+T = 5.000) :
+
+![Fenêtre Scope après la simulation de l'état sain](screenshots_sain/08_scope.png)
+
+Le signal complet est disponible dans l'espace de travail MATLAB sous la
+variable **x_sim** (102 401 x 1, visible dans le panneau Workspace, ici
+ouverte dans l'éditeur de variables) :
+
+![x_sim dans le Workspace MATLAB après la simulation](screenshots_sain/09_workspace_xsim.png)
+
+Le tracé propre ci-dessous montre le même contenu de `x_sim`, exporté
+pour le rapport :
 
 ![Signal obtenu (contenu de x_sim)](screenshots_sain/06_resultat_simulation.png)
 
