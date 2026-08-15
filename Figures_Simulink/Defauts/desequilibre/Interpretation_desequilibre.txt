@@ -1,0 +1,34 @@
+INTERPRÉTATION DES RÉSULTATS - DÉSÉQUILIBRE
+=====================================================
+
+Signal : data_signaux_simulink/desequilibre_001.mat (modèle Simulink, 3600
+tr/min soit 1X = 60 Hz, charge 70 %, température 60 °C, sévérité
+0.7, fs = 20480 Hz, durée 5 s). Comparaison à la référence saine de
+la Phase 1, mêmes méthodes et mêmes critères (significatif à partir
+de 3 dB ; règles indicatives du cadre d'étude).
+
+Physique du défaut : un balourd (répartition inégale des masses)
+crée une force centrifuge tournante qui excite le palier une fois
+par tour. La signature est une raie dominante à la fréquence de
+rotation 1X (60 Hz), visible sur les Figures 4 et 6.
+
+Résultats mesurés :
+  RMS = 0.2002 (sain : 0.0421)
+  Kurtosis = 1.63 (sain : 2.98) ; facteur de crête = 2.16
+  Excès au-dessus du plancher médian local : 1X +45.3 dB,
+  2X +2.2 dB, 3X -0.7 dB, zone sous-synchrone +0.5 dB
+  Écarts par rapport au sain : bande 1500-2500 Hz -0.0 dB,
+  bande 500-2000 Hz -0.0 dB
+
+Note de lecture du kurtosis : lorsqu'une composante périodique
+domine le signal (balourd, tourbillonnement, stick-slip), le
+kurtosis global descend EN DESSOUS de 3 (une sinusoïde pure a un
+kurtosis de 1.5) ; un kurtosis inférieur à 3 signale donc ici une
+composante périodique dominante, et non un signal plus sain. Seuls
+les défauts impulsifs (cavitation) l'élèvent au-dessus de 3.
+
+SIGNATURE CONFIRMÉE : 1X à +45.3 dB au-dessus du plancher.
+
+Les conclusions décrivent le comportement du défaut tel qu'encodé
+par le modèle de simulation ; elles servent de référence interne
+pour la suite de l'étude (défauts mixtes, Phase 3).
