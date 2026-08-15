@@ -21,17 +21,19 @@ Résultats mesurés :
   Kurtosis = 1.60 (sain : 2.98) ; facteur de crête = 4.11
   Excès au-dessus du plancher médian local : 1X +0.3 dB,
   2X +2.1 dB, 3X -0.8 dB, zone sous-synchrone +2.2 dB
-  Écarts par rapport au sain : bande 1500-2500 Hz +0.3 dB,
-  bande 500-2000 Hz +0.2 dB
+  Écarts par rapport au sain : bande 1500-2500 Hz +0.29 dB,
+  bande 500-2000 Hz +0.23 dB
 
 Note de lecture du kurtosis : lorsqu'une composante périodique
 domine le signal (balourd, tourbillonnement, stick-slip), le
 kurtosis global descend EN DESSOUS de 3 (une sinusoïde pure a un
 kurtosis de 1.5) ; un kurtosis inférieur à 3 signale donc ici une
-composante périodique dominante, et non un signal plus sain. Seuls
-les défauts impulsifs (cavitation) l'élèvent au-dessus de 3.
+composante périodique dominante, et non un signal plus sain. Les
+défauts impulsifs (cavitation) l'élèvent nettement au-dessus de 3 ;
+une modulation d'amplitude (usure) peut aussi le porter légèrement
+au-dessus de 3 sans impulsivité.
 
-SIGNATURE CONFIRMÉE : composante ~3.5 Hz à +46.1 dB ; kurtosis 1.60 (sain 2.98).
+SIGNATURE CONFIRMÉE : composante basse fréquence (bin 5 Hz, cible ~3.5 Hz) à +29.1 dB au-dessus du niveau sain au même bin.
 
 Les conclusions décrivent le comportement du défaut tel qu'encodé
 par le modèle de simulation ; elles servent de référence interne
