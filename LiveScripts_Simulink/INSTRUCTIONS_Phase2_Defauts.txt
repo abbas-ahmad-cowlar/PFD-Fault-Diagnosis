@@ -70,9 +70,25 @@ b) Relancer l'analyse complete sur votre machine :
   fs = 20 480 Hz, 102 401 echantillons (0 a 5 s inclus).
 - Memes methodes d'estimation que la Phase 1 (Welch : fenetre de Hann
   4096 points, recouvrement 50 % ; STFT : 2048 points ; CWT : Morlet
-  analytique), mais regles indicatives PROPRES A CHAQUE DEFAUT (exces
-  sur le plancher median local, niveau sain au meme bin, ou comparaison
-  de bandes ; seuil indicatif : au moins 3 dB).
+  analytique), mais regles indicatives PROPRES A CHAQUE DEFAUT.
+  Regles appliquees (seuil indicatif : au moins 3 dB) :
+    Desalignement : exces 2X ET 3X >= 3 dB au-dessus du plancher median
+      local (mediane de la DSP entre 10 et 300 Hz).
+    Desequilibre : exces 1X >= 3 dB ET dominance (1X superieur a 2X et a
+      la zone sous-synchrone).
+    Jeu : exces sous-synchrone (bins de Welch 25-30 Hz), 1X et 2X tous
+      >= 3 dB.
+    Lubrification : ecart au NIVEAU SAIN au bin de Welch le plus proche
+      de 3.5 Hz (bin 5 Hz) >= 3 dB.
+    Cavitation : ecart de la bande 1500-2500 Hz vs sain >= 3 dB ET
+      kurtosis > 4 (impulsivite des bouffees).
+    Usure : ecarts vs sain des 4 bandes DISJOINTES (500-1000, 1000-1500,
+      1500-2000, 2000-2500 Hz) tous >= 3 dB ET etendue (max - min)
+      <= 1.5 dB (tolerance indicative de platitude propre a cette etude).
+    Tourbillonnement d'huile : exces sous-synchrone >= 3 dB ET dominance
+      sur le 1X.
+  Le script echoue explicitement si un signal non conforme aux
+  parametres canoniques (3600 tr/min, fs = 20 480 Hz) lui est fourni.
 - Les indicateurs sont COMPARATIFS et non exclusifs : plusieurs defauts
   peuvent elever un meme indicateur ; l'identification s'appuie sur leur
   combinaison (voir le tableau comparatif), pas sur un indicateur isole.

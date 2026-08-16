@@ -13,7 +13,7 @@
 %%   2. Analyse statistique (8 indicateurs + comparaison au sain)
 %%   3. Analyse fréquentielle (FFT + DSP de Welch + zoom annoté)
 %%   4. Analyse temps-fréquence (spectrogramme STFT + ondelettes CWT)
-%%   5. Vérification de la signature attendue (critère >= 3 dB) et
+%%   5. Vérification des indicateurs attendus (règles documentées) et
 %%      texte d'interprétation
 %% Puis un tableau comparatif global (sain + 7 défauts) et une figure
 %% comparative.
@@ -61,6 +61,12 @@ DEFAUTS = {
 
 fen = 4096;              % fenêtre de Welch (grille 5 Hz)
 SEUIL_DB = 3;            % seuil de signification (au moins 3 dB), identique Phase 1
+% Tolérance indicative propre à cette étude pour l'étendue (max - min) des
+% quatre bandes disjointes du test d'élévation "plate" (règle usure) : le
+% bruit blanc du modèle donne une étendue mesurée d'environ 0.3 dB ; la
+% cavitation, dont l'énergie est concentrée en 1500-2500 Hz, la dépasse
+% largement.
+TOL_PLAT_DB = 1.5;
 
 fprintf('========================================================================\n');
 fprintf('   ANALYSE DES 7 DÉFAUTS SIMPLES - SIGNAUX ISSUS DU MODÈLE SIMULINK\n');
@@ -78,12 +84,18 @@ ref = analyser_signal(fullfile(DATA_DIR, 'sain_001.mat'), fen);
 fprintf('  Sain : RMS = %.4f, kurtosis = %.2f, plancher médian (10-300 Hz) = %.3e\n\n', ...
     ref.rms, ref.kurt, ref.plancher);
 
-% Accumulateur du tableau comparatif (le sain d'abord)
+% Accumulateur du tableau comparatif (le sain d'abord). dBF = écart au
+% sain au bin de Welch le plus proche de 3.5 Hz (indicateur principal de
+% la lubrification) ; dB4 = écarts au sain dans les 4 bandes disjointes.
 comp = struct('nom', {}, 'rms', {}, 'kurt', {}, 'fc', {}, ...
-    'ex1X', {}, 'ex2X', {}, 'ex3X', {}, 'exSub', {}, 'dHF', {}, 'dMid', {});
+    'ex1X', {}, 'ex2X', {}, 'ex3X', {}, 'exSub', {}, 'dHF', {}, 'dMid', {}, ...
+    'dBF', {}, 'dB4', {});
 comp(1) = struct('nom', 'Sain', 'rms', ref.rms, 'kurt', ref.kurt, ...
     'fc', ref.fc, 'ex1X', ref.ex1X, 'ex2X', ref.ex2X, 'ex3X', ref.ex3X, ...
-    'exSub', ref.exSub, 'dHF', 0, 'dMid', 0);
+    'exSub', ref.exSub, 'dHF', 0, 'dMid', 0, 'dBF', 0, 'dB4', zeros(1,4));
+
+% Bin de Welch le plus proche de la cible 3.5 Hz (grille de 5 Hz -> bin 5 Hz)
+i_bin35 = find(abs(ref.f_psd - 3.5) == min(abs(ref.f_psd - 3.5)), 1);
 
 %% ========================================================================
 %% BOUCLE SUR LES 7 DÉFAUTS
@@ -102,7 +114,7 @@ for kd = 1:size(DEFAUTS, 1)
 
     fprintf('========================================================================\n');
     fprintf('DÉFAUT %d/7 : %s\n', kd, upper(nomAff));
-    fprintf('  Signature attendue : %s\n', signat);
+    fprintf('  Indicateur attendu : %s\n', signat);
     fprintf('------------------------------------------------------------------------\n');
 
     outDir = fullfile(OUT_ROOT, code);
@@ -117,7 +129,9 @@ for kd = 1:size(DEFAUTS, 1)
 
     % ---- Écarts par rapport au sain (mêmes bandes, mêmes méthodes) ----
     dHF  = 10*log10(S.p_hf  / ref.p_hf);    % bande cavitation 1500-2500 Hz
-    dMid = 10*log10(S.p_mid / ref.p_mid);   % bande usure 500-2000 Hz
+    dMid = 10*log10(S.p_mid / ref.p_mid);   % bande de mesure 500-2000 Hz
+    dB4  = 10*log10(S.p_b4 ./ ref.p_b4);    % 4 bandes disjointes (règle usure)
+    dBF  = 10*log10(S.Pxx(i_bin35) / ref.Pxx(i_bin35)); % bin 5 Hz vs sain
 
     %% Figure 1 : signal temporel complet
     fig1 = figure('Name', [nomAff ' - Vue complète'], ...
@@ -200,7 +214,7 @@ for kd = 1:size(DEFAUTS, 1)
     ylabel('Amplitude', 'FontSize', 13, 'FontWeight', 'bold');
     title(sprintf('Figure 4 : Spectre d''amplitude (FFT) - %s', nomAff), ...
         'FontSize', 15, 'FontWeight', 'bold');
-    subtitle(sprintf('Zoom %d-%d Hz. Signature attendue : %s.', ...
+    subtitle(sprintf('Zoom %d-%d Hz. Indicateur attendu : %s.', ...
         bande(1), bande(2), signat), 'FontSize', 10);
     grid on; xlim(bande); set(gca, 'FontSize', 11);
     exporter_figure(fig4, fullfile(outDir, sprintf('Fig4_%s_Spectre_FFT.png', code)), EXPORT_DPI);
@@ -245,7 +259,7 @@ for kd = 1:size(DEFAUTS, 1)
     ylabel('DSP (dB)', 'FontSize', 13, 'FontWeight', 'bold');
     title(sprintf('Figure 6 : DSP en zone caractéristique - %s vs sain', nomAff), ...
         'FontSize', 15, 'FontWeight', 'bold');
-    subtitle(sprintf('Bande %d-%d Hz. Signature attendue : %s.', ...
+    subtitle(sprintf('Bande %d-%d Hz. Indicateur attendu : %s.', ...
         bande(1), bande(2), signat), 'FontSize', 10);
     grid on; xlim(bande); set(gca, 'FontSize', 11);
     exporter_figure(fig6, fullfile(outDir, sprintf('Fig6_%s_DSP_Zoom.png', code)), EXPORT_DPI);
@@ -289,17 +303,18 @@ for kd = 1:size(DEFAUTS, 1)
 
     close all;
 
-    %% Vérification de la signature attendue + interprétation
-    fprintf('\n  --- VÉRIFICATION DE LA SIGNATURE (critère : au moins %d dB) ---\n', SEUIL_DB);
+    %% Vérification des indicateurs attendus + interprétation
+    fprintf('\n  --- VÉRIFICATION DES INDICATEURS ATTENDUS (seuil : au moins %d dB) ---\n', SEUIL_DB);
     fprintf('  Excès au-dessus du plancher médian local du défaut :\n');
     fprintf('    zone sous-synchrone : %+.1f dB | 1X : %+.1f dB | 2X : %+.1f dB | 3X : %+.1f dB\n', ...
         S.exSub, S.ex1X, S.ex2X, S.ex3X);
-    fprintf('  Écarts par rapport au sain : bande 1500-2500 Hz : %+.2f dB | bande 500-2000 Hz : %+.2f dB\n', ...
-        dHF, dMid);
+    fprintf('  Écarts par rapport au sain : bin 5 Hz : %+.1f dB | bandes disjointes\n', dBF);
+    fprintf('    500-1000 : %+.2f | 1000-1500 : %+.2f | 1500-2000 : %+.2f | 2000-2500 : %+.2f dB\n', ...
+        dB4(1), dB4(2), dB4(3), dB4(4));
     fprintf('  Kurtosis : %.2f (sain : %.2f) | RMS : %.4f (sain : %.4f)\n', ...
         S.kurt, ref.kurt, S.rms, ref.rms);
 
-    [verdict, resume] = verifier_signature(code, S, ref, dHF, dMid, SEUIL_DB);
+    [verdict, resume, regle] = verifier_signature(code, S, ref, dHF, dBF, dB4, SEUIL_DB, TOL_PLAT_DB);
     if verdict
         fprintf('  INDICATEURS ATTENDUS OBSERVÉS (état simulé connu) : %s\n\n', resume);
         nb_observes = nb_observes + 1;
@@ -309,7 +324,7 @@ for kd = 1:size(DEFAUTS, 1)
     verdicts{kd} = struct('nom', nomAff, 'ok', verdict, 'resume', resume);
 
     % ---- Texte d'interprétation ----
-    interp = interpretation_defaut(code, nomAff, S, ref, dHF, dMid, resume, verdict);
+    interp = interpretation_defaut(code, nomAff, S, ref, dHF, dBF, dB4, resume, regle, verdict);
     fid = fopen(fullfile(outDir, sprintf('Interpretation_%s.txt', code)), 'w', 'n', 'UTF-8');
     fprintf(fid, '%s', interp);
     fclose(fid);
@@ -318,7 +333,8 @@ for kd = 1:size(DEFAUTS, 1)
     % ---- Ligne du tableau comparatif ----
     comp(end+1) = struct('nom', nomAff, 'rms', S.rms, 'kurt', S.kurt, ...
         'fc', S.fc, 'ex1X', S.ex1X, 'ex2X', S.ex2X, 'ex3X', S.ex3X, ...
-        'exSub', S.exSub, 'dHF', dHF, 'dMid', dMid); %#ok<SAGROW>
+        'exSub', S.exSub, 'dHF', dHF, 'dMid', dMid, 'dBF', dBF, ...
+        'dB4', dB4); %#ok<SAGROW>
 end
 
 %% ========================================================================
@@ -329,46 +345,67 @@ fprintf('=======================================================================
 fprintf('SYNTHÈSE COMPARATIVE (sain + 7 défauts)\n');
 fprintf('------------------------------------------------------------------------\n');
 
+dB4mat = vertcat(comp.dB4);
 Tcomp = table({comp.nom}', [comp.rms]', [comp.kurt]', [comp.fc]', ...
     [comp.ex1X]', [comp.ex2X]', [comp.ex3X]', [comp.exSub]', ...
+    [comp.dBF]', dB4mat(:,1), dB4mat(:,2), dB4mat(:,3), dB4mat(:,4), ...
     [comp.dHF]', [comp.dMid]', ...
     'VariableNames', {'Etat', 'RMS', 'Kurtosis', 'Facteur_crete', ...
     'Exces_1X_dB', 'Exces_2X_dB', 'Exces_3X_dB', 'Exces_sous_sync_dB', ...
+    'Bin5Hz_vs_sain_dB', 'B500_1000_vs_sain_dB', 'B1000_1500_vs_sain_dB', ...
+    'B1500_2000_vs_sain_dB', 'B2000_2500_vs_sain_dB', ...
     'Bande_HF_vs_sain_dB', 'Bande_mid_vs_sain_dB'});
 disp(Tcomp);
 writetable(Tcomp, fullfile(OUT_ROOT, 'Tableau_Comparatif_Simples.csv'), ...
     'Encoding', 'UTF-8');
 fprintf('  Tableau comparatif exporté : Tableau_Comparatif_Simples.csv\n');
 
-% Figure comparative : 4 indicateurs discriminants en barres
+% Figure comparative : 6 indicateurs comparatifs en barres (chaque défaut
+% y trouve son indicateur principal, y compris la lubrification)
 figC = figure('Name', 'Comparaison des états', ...
-    'Position', [60, 60, 1400, 800], 'Color', 'white');
+    'Position', [40, 40, 1700, 850], 'Color', 'white');
 etats = {comp.nom};
-subplot(2, 2, 1);
+subplot(2, 3, 1);
 bar([comp.rms], 'FaceColor', [0.3 0.5 0.8]);
-title('Valeur efficace (RMS)', 'FontSize', 13, 'FontWeight', 'bold');
+title('Valeur efficace (RMS)', 'FontSize', 12, 'FontWeight', 'bold');
 ylabel('RMS', 'FontSize', 11, 'FontWeight', 'bold');
-set(gca, 'XTickLabel', etats, 'FontSize', 9); xtickangle(35); grid on;
-subplot(2, 2, 2);
+set(gca, 'XTickLabel', etats, 'FontSize', 8); xtickangle(35); grid on;
+subplot(2, 3, 2);
 bar([comp.kurt], 'FaceColor', [0.85 0.5 0.3]);
-hold on; yline(3, 'k--', 'gaussien = 3', 'FontSize', 9);
-title('Kurtosis', 'FontSize', 13, 'FontWeight', 'bold');
+hold on; yline(3, 'k--', 'gaussien = 3', 'FontSize', 8);
+title('Kurtosis', 'FontSize', 12, 'FontWeight', 'bold');
 ylabel('Kurtosis', 'FontSize', 11, 'FontWeight', 'bold');
-set(gca, 'XTickLabel', etats, 'FontSize', 9); xtickangle(35); grid on;
-subplot(2, 2, 3);
+set(gca, 'XTickLabel', etats, 'FontSize', 8); xtickangle(35); grid on;
+subplot(2, 3, 3);
 bar([comp.ex1X; comp.ex2X]', 'grouped');
-hold on; yline(3, 'k--', 'seuil 3 dB', 'FontSize', 9);
-legend({'1X', '2X'}, 'Location', 'northwest', 'FontSize', 9);
-title('Excès aux harmoniques 1X et 2X (dB)', 'FontSize', 13, 'FontWeight', 'bold');
+hold on; yline(3, 'k--', 'seuil 3 dB', 'FontSize', 8);
+legend({'1X', '2X'}, 'Location', 'northwest', 'FontSize', 8);
+title('Excès aux harmoniques 1X et 2X (dB)', 'FontSize', 12, 'FontWeight', 'bold');
 ylabel('dB au-dessus du plancher', 'FontSize', 11, 'FontWeight', 'bold');
-set(gca, 'XTickLabel', etats, 'FontSize', 9); xtickangle(35); grid on;
-subplot(2, 2, 4);
+set(gca, 'XTickLabel', etats, 'FontSize', 8); xtickangle(35); grid on;
+subplot(2, 3, 4);
 bar([comp.exSub], 'FaceColor', [0.5 0.7 0.4]);
-hold on; yline(3, 'k--', 'seuil 3 dB', 'FontSize', 9);
-title('Excès en zone sous-synchrone (bins de Welch 25-30 Hz) (dB)', ...
-    'FontSize', 13, 'FontWeight', 'bold');
+hold on; yline(3, 'k--', 'seuil 3 dB', 'FontSize', 8);
+title('Excès en zone sous-synchrone (bins 25-30 Hz) (dB)', ...
+    'FontSize', 12, 'FontWeight', 'bold');
 ylabel('dB au-dessus du plancher', 'FontSize', 11, 'FontWeight', 'bold');
-set(gca, 'XTickLabel', etats, 'FontSize', 9); xtickangle(35); grid on;
+set(gca, 'XTickLabel', etats, 'FontSize', 8); xtickangle(35); grid on;
+subplot(2, 3, 5);
+bar([comp.dBF], 'FaceColor', [0.6 0.4 0.7]);
+hold on; yline(3, 'k--', 'seuil 3 dB', 'FontSize', 8);
+title('Écart au sain au bin 5 Hz, cible ~3.5 Hz (dB)', ...
+    'FontSize', 12, 'FontWeight', 'bold');
+ylabel('dB par rapport au sain', 'FontSize', 11, 'FontWeight', 'bold');
+set(gca, 'XTickLabel', etats, 'FontSize', 8); xtickangle(35); grid on;
+subplot(2, 3, 6);
+bar(vertcat(comp.dB4), 'grouped');
+hold on; yline(3, 'k--', 'seuil 3 dB', 'FontSize', 8);
+legend({'500-1000', '1000-1500', '1500-2000', '2000-2500 Hz'}, ...
+    'Location', 'northwest', 'FontSize', 7);
+title('Écarts au sain des 4 bandes disjointes (dB)', ...
+    'FontSize', 12, 'FontWeight', 'bold');
+ylabel('dB par rapport au sain', 'FontSize', 11, 'FontWeight', 'bold');
+set(gca, 'XTickLabel', etats, 'FontSize', 8); xtickangle(35); grid on;
 sgtitle('Figure C1 : Indicateurs comparatifs - sain et 7 défauts simples', ...
     'FontSize', 15, 'FontWeight', 'bold');
 exporter_figure(figC, fullfile(OUT_ROOT, 'FigC1_Comparatif_Indicateurs.png'), EXPORT_DPI);
@@ -468,6 +505,26 @@ function S = analyser_signal(fichier, fen)
     % Puissances de bande (comparaison entre états, méthode identique)
     S.p_hf  = bandpower(S.Pxx, S.f_psd, [1500 2500], 'psd');
     S.p_mid = bandpower(S.Pxx, S.f_psd, [500 2000], 'psd');
+    % Quatre bandes DISJOINTES pour le test d'élévation large bande plate
+    % (règle usure) : elles ne se recouvrent pas, contrairement aux bandes
+    % de mesure 500-2000 / 1500-2500 ci-dessus.
+    bandes4 = [500 1000; 1000 1500; 1500 2000; 2000 2500];
+    S.p_b4 = zeros(1, 4);
+    for kb = 1:4
+        S.p_b4(kb) = bandpower(S.Pxx, S.f_psd, bandes4(kb, :), 'psd');
+    end
+
+    % Validation des entrées canoniques : les textes, repères de fréquence
+    % et bandes de ce script sont calibrés pour les signaux du livrable
+    % (3600 tr/min soit 1X = 60 Hz, fs = 20 480 Hz, 102 401 échantillons).
+    % Échec explicite plutôt que sorties trompeuses si un signal non
+    % conforme est fourni.
+    if fs ~= 20480 || abs(S.Omega - 60) > 1e-6 || N ~= 102401
+        error(['Signal non conforme aux paramètres canoniques du livrable ' ...
+            '(attendu : fs = 20480 Hz, 3600 tr/min, 102401 échantillons ; ' ...
+            'reçu : fs = %g Hz, 1X = %g Hz, N = %d) : %s'], ...
+            fs, S.Omega, N, fichier);
+    end
 end
 
 function tracer_reperes(code, Omega)
@@ -505,25 +562,30 @@ function tracer_reperes(code, Omega)
         'LabelOrientation', 'horizontal', 'LabelVerticalAlignment', 'bottom');
 end
 
-function [ok, resume] = verifier_signature(code, S, ref, dHF, dMid, seuil)
+function [ok, resume, regle] = verifier_signature(code, S, ref, dHF, dBF, dB4, seuil, tol_plat)
 % Vérifie que les INDICATEURS ATTENDUS du défaut sont observés. Mêmes
 % méthodes d'estimation partout, mais règles indicatives PROPRES À CHAQUE
 % DÉFAUT (excès sur le plancher local, niveau sain au même bin, ou
-% comparaison de bandes ; seuil indicatif : au moins 3 dB). Ces règles
-% constatent des indicateurs pour des états simulés CONNUS ; elles ne
-% constituent pas un diagnostic exclusif (plusieurs défauts peuvent
-% élever un même indicateur).
+% comparaison de bandes ; seuil indicatif : au moins 3 dB). Chaque règle
+% est documentée dans la sortie `regle`. Ces règles constatent des
+% indicateurs pour des états simulés CONNUS ; elles ne constituent pas un
+% diagnostic exclusif (plusieurs défauts peuvent élever un même
+% indicateur).
     switch code
         case 'desalignement'
+            regle = sprintf(['excès 2X >= %d dB ET excès 3X >= %d dB ' ...
+                'au-dessus du plancher médian local'], seuil, seuil);
             ok = S.ex2X >= seuil && S.ex3X >= seuil;
             resume = sprintf('2X à %+.1f dB et 3X à %+.1f dB au-dessus du plancher', S.ex2X, S.ex3X);
         case 'desequilibre'
-            % Dominance testée : 1X au-dessus du seuil ET plus élevé que 2X
-            % et que la zone sous-synchrone
+            regle = sprintf(['excès 1X >= %d dB ET dominance : excès 1X ' ...
+                'supérieur aux excès 2X et sous-synchrone'], seuil);
             ok = S.ex1X >= seuil && S.ex1X > S.ex2X && S.ex1X > S.exSub;
             resume = sprintf(['1X à %+.1f dB, dominant sur 2X (%+.1f dB) et ' ...
                 'sur la zone sous-synchrone (%+.1f dB)'], S.ex1X, S.ex2X, S.exSub);
         case 'jeu'
+            regle = sprintf(['excès sous-synchrone (bins 25-30 Hz), 1X et 2X ' ...
+                'tous >= %d dB au-dessus du plancher médian local'], seuil);
             ok = S.exSub >= seuil && S.ex1X >= seuil && S.ex2X >= seuil;
             resume = sprintf(['sous-synchrone (bins 25-30 Hz) à %+.1f dB, ' ...
                 '1X à %+.1f dB et 2X à %+.1f dB'], S.exSub, S.ex1X, S.ex2X);
@@ -534,36 +596,50 @@ function [ok, resume] = verifier_signature(code, S, ref, dHF, dMid, seuil)
             % Le critère est donc référencé au NIVEAU SAIN AU MÊME BIN, qui
             % isole l'énergie propre au défaut. Les impacts déclarés ne sont
             % pas vérifiés par un indicateur global (masqués par la
-            % composante d'adhérence-glissement à cette sévérité).
-            ibf = find(abs(S.f_psd - 3.5) == min(abs(S.f_psd - 3.5)), 1);
-            dBF = 10*log10(S.Pxx(ibf) / ref.Pxx(ibf));
+            % composante d'adhérence-glissement à cette sévérité) ; ils sont
+            % montrés au zoom temporel (Figure 2).
+            regle = sprintf(['écart au NIVEAU SAIN au bin de Welch le plus ' ...
+                'proche de 3.5 Hz (bin 5 Hz) >= %d dB'], seuil);
             ok = dBF >= seuil;
-            resume = sprintf(['composante basse fréquence (bin %.0f Hz, cible ' ...
-                '~3.5 Hz) à %+.1f dB au-dessus du niveau sain au même bin'], ...
-                S.f_psd(ibf), dBF);
+            resume = sprintf(['composante basse fréquence (bin 5 Hz, cible ' ...
+                '~3.5 Hz) à %+.1f dB au-dessus du niveau sain au même bin'], dBF);
         case 'cavitation'
             % Énergie de bande ET impulsivité (bouffées) : distingue d'une
             % élévation large bande continue
+            regle = sprintf(['écart bande 1500-2500 Hz vs sain >= %d dB ET ' ...
+                'kurtosis > 4 (impulsivité des bouffées)'], seuil);
             ok = dHF >= seuil && S.kurt > 4;
             resume = sprintf(['bande 1500-2500 Hz à %+.2f dB au-dessus du sain ' ...
                 'ET kurtosis %.2f (bouffées impulsives)'], dHF, S.kurt);
         case 'usure'
-            % Élévation large bande PLATE : les deux bandes montent ensemble
-            ok = dMid >= seuil && abs(dMid - dHF) < 3;
-            resume = sprintf(['élévation large bande plate : %+.2f dB ' ...
-                '(500-2000 Hz) et %+.2f dB (1500-2500 Hz)'], dMid, dHF);
+            % Élévation large bande PLATE testée sur QUATRE bandes DISJOINTES
+            % (500-1000, 1000-1500, 1500-2000, 2000-2500 Hz) : toutes
+            % élevées d'au moins `seuil` ET étendue (max - min) sous la
+            % tolérance indicative `tol_plat` propre à cette étude. La
+            % cavitation, concentrée en 1500-2500 Hz, échoue nettement à ce
+            % test de platitude.
+            etendue = max(dB4) - min(dB4);
+            regle = sprintf(['écarts vs sain des 4 bandes disjointes ' ...
+                '(500-1000/1000-1500/1500-2000/2000-2500 Hz) tous >= %d dB ' ...
+                'ET étendue (max - min) <= %.1f dB (tolérance indicative de ' ...
+                'platitude propre à cette étude)'], seuil, tol_plat);
+            ok = all(dB4 >= seuil) && etendue <= tol_plat;
+            resume = sprintf(['élévation large bande plate : %+.2f / %+.2f / ' ...
+                '%+.2f / %+.2f dB sur les 4 bandes disjointes, étendue ' ...
+                '%.2f dB (<= %.1f dB)'], dB4(1), dB4(2), dB4(3), dB4(4), ...
+                etendue, tol_plat);
         case 'oilwhirl'
-            % Dominance testée : sous-synchrone au-dessus du seuil ET plus
-            % élevée que le 1X
+            regle = sprintf(['excès sous-synchrone (bins 25-30 Hz) >= %d dB ' ...
+                'ET dominance : excès sous-synchrone supérieur à l''excès 1X'], seuil);
             ok = S.exSub >= seuil && S.exSub > S.ex1X;
             resume = sprintf(['sous-synchrone (bins 25-30 Hz, ~0.45X) à %+.1f dB, ' ...
                 'dominante sur 1X (%+.1f dB)'], S.exSub, S.ex1X);
         otherwise
-            ok = false; resume = 'défaut inconnu';
+            ok = false; resume = 'défaut inconnu'; regle = 'aucune';
     end
 end
 
-function txt = interpretation_defaut(code, nomAff, S, ref, dHF, dMid, resume, verdict)
+function txt = interpretation_defaut(code, nomAff, S, ref, dHF, dBF, dB4, resume, regle, verdict)
 % Construit le texte d'interprétation du défaut (valeurs calculées +
 % physique du défaut), prêt à adapter pour le rapport.
     switch code
@@ -593,15 +669,18 @@ function txt = interpretation_defaut(code, nomAff, S, ref, dHF, dMid, resume, ve
 'et des contacts métal-métal intermittents. À cette sévérité, la\n' ...
 'composante sinusoïdale de stick-slip domine le signal : elle abaisse\n' ...
 'le kurtosis global en dessous de 3 (une sinusoïde pure a un kurtosis\n' ...
-'de 1.5) et masque, dans cet indicateur global, les impacts localisés\n' ...
-'qui restent visibles dans la vue temporelle (Figure 1). La signature\n' ...
-'spectrale à ~3.5 Hz (Figure 6) est le marqueur principal.\n']);
+'de 1.5) et masque, dans cet indicateur global, les impacts localisés,\n' ...
+'qui sont montrés au zoom temporel (Figure 2, fenêtre 0.70-1.00 s,\n' ...
+'impact modélisé à t = 0.8 s). L''indicateur spectral à ~3.5 Hz\n' ...
+'(Figure 6) est le marqueur principal.\n']);
         case 'cavitation'
             phys = sprintf([ ...
 'Physique du défaut : l''implosion des bulles de cavitation dans le\n' ...
 'film d''huile produit des bouffées d''énergie haute fréquence dans\n' ...
-'la bande 1500-2500 Hz, visibles sur les Figures 5 à 8 (bande élargie\n' ...
-'à 0-3000 Hz) et sous forme de colonnes dans le spectrogramme.\n']);
+'la bande 1500-2500 Hz : la première bouffée est montrée au zoom\n' ...
+'temporel (Figure 2, fenêtre 0.45-0.60 s), l''élévation de bande sur\n' ...
+'les Figures 5-6, et les bouffées apparaissent comme des colonnes\n' ...
+'verticales au spectrogramme (Figure 7).\n']);
         case 'usure'
             phys = sprintf([ ...
 'Physique du défaut : l''usure des surfaces augmente le frottement et\n' ...
@@ -650,8 +729,10 @@ function txt = interpretation_defaut(code, nomAff, S, ref, dHF, dMid, resume, ve
 '  Excès au-dessus du plancher médian local : 1X %+.1f dB,\n' ...
 '  2X %+.1f dB, 3X %+.1f dB, zone sous-synchrone (bins de Welch\n' ...
 '  25-30 Hz, soit ~0.42-0.50X sur cette grille) %+.1f dB\n' ...
-'  Écarts par rapport au sain : bande 1500-2500 Hz %+.2f dB,\n' ...
-'  bande 500-2000 Hz %+.2f dB\n\n' ...
+'  Écarts par rapport au sain : bin 5 Hz (cible ~3.5 Hz) %+.1f dB ;\n' ...
+'  bandes disjointes 500-1000 : %+.2f dB, 1000-1500 : %+.2f dB,\n' ...
+'  1500-2000 : %+.2f dB, 2000-2500 : %+.2f dB ;\n' ...
+'  bande cavitation 1500-2500 Hz : %+.2f dB\n\n' ...
 'Note de lecture du kurtosis (propre à ces signaux simulés) :\n' ...
 'lorsqu''une composante quasi sinusoïdale domine le signal (balourd,\n' ...
 'tourbillonnement, adhérence-glissement), le kurtosis global descend\n' ...
@@ -661,6 +742,7 @@ function txt = interpretation_defaut(code, nomAff, S, ref, dHF, dMid, resume, ve
 'sain. Les défauts impulsifs (cavitation) l''élèvent nettement\n' ...
 'au-dessus de 3 ; une modulation d''amplitude (usure) peut aussi le\n' ...
 'porter légèrement au-dessus de 3 sans impulsivité.\n\n' ...
+'Règle appliquée (indicative, propre à cette étude) : %s\n\n' ...
 '%s\n\n' ...
 'Ces indicateurs sont COMPARATIFS et non exclusifs : plusieurs\n' ...
 'défauts peuvent élever un même indicateur (l''usure élève par\n' ...
@@ -675,7 +757,8 @@ function txt = interpretation_defaut(code, nomAff, S, ref, dHF, dMid, resume, ve
 'séparément.\n'], ...
     upper(nomAff), code, S.Omega*60, S.Omega, S.load_pct, S.temp_C, S.sev, ...
     S.fs, S.T, phys, S.rms, ref.rms, S.kurt, ref.kurt, ...
-    S.fc, S.ex1X, S.ex2X, S.ex3X, S.exSub, dHF, dMid, vtxt);
+    S.fc, S.ex1X, S.ex2X, S.ex3X, S.exSub, dBF, dB4(1), dB4(2), dB4(3), ...
+    dB4(4), dHF, regle, vtxt);
 end
 
 function nv = nomVarValide(code)

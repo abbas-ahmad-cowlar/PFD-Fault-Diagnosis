@@ -20,8 +20,10 @@ Résultats mesurés :
   Excès au-dessus du plancher médian local : 1X +45.3 dB,
   2X +2.2 dB, 3X -0.7 dB, zone sous-synchrone (bins de Welch
   25-30 Hz, soit ~0.42-0.50X sur cette grille) +0.5 dB
-  Écarts par rapport au sain : bande 1500-2500 Hz -0.00 dB,
-  bande 500-2000 Hz -0.00 dB
+  Écarts par rapport au sain : bin 5 Hz (cible ~3.5 Hz) +0.0 dB ;
+  bandes disjointes 500-1000 : -0.00 dB, 1000-1500 : -0.00 dB,
+  1500-2000 : +0.00 dB, 2000-2500 : -0.00 dB ;
+  bande cavitation 1500-2500 Hz : -0.00 dB
 
 Note de lecture du kurtosis (propre à ces signaux simulés) :
 lorsqu'une composante quasi sinusoïdale domine le signal (balourd,
@@ -32,6 +34,8 @@ composante périodique dominante, et non le signe d'un signal plus
 sain. Les défauts impulsifs (cavitation) l'élèvent nettement
 au-dessus de 3 ; une modulation d'amplitude (usure) peut aussi le
 porter légèrement au-dessus de 3 sans impulsivité.
+
+Règle appliquée (indicative, propre à cette étude) : excès 1X >= 3 dB ET dominance : excès 1X supérieur aux excès 2X et sous-synchrone
 
 Indicateurs attendus observés pour cet état simulé connu : 1X à +45.3 dB, dominant sur 2X (+2.2 dB) et sur la zone sous-synchrone (+0.5 dB).
 

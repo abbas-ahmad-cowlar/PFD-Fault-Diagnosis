@@ -14,9 +14,10 @@ d'adhérence-glissement (stick-slip) très basse fréquence (~3.5 Hz)
 et des contacts métal-métal intermittents. À cette sévérité, la
 composante sinusoïdale de stick-slip domine le signal : elle abaisse
 le kurtosis global en dessous de 3 (une sinusoïde pure a un kurtosis
-de 1.5) et masque, dans cet indicateur global, les impacts localisés
-qui restent visibles dans la vue temporelle (Figure 1). La signature
-spectrale à ~3.5 Hz (Figure 6) est le marqueur principal.
+de 1.5) et masque, dans cet indicateur global, les impacts localisés,
+qui sont montrés au zoom temporel (Figure 2, fenêtre 0.70-1.00 s,
+impact modélisé à t = 0.8 s). L'indicateur spectral à ~3.5 Hz
+(Figure 6) est le marqueur principal.
 
 Résultats mesurés :
   RMS = 0.2387 (sain : 0.0421)
@@ -24,8 +25,10 @@ Résultats mesurés :
   Excès au-dessus du plancher médian local : 1X +0.3 dB,
   2X +2.1 dB, 3X -0.8 dB, zone sous-synchrone (bins de Welch
   25-30 Hz, soit ~0.42-0.50X sur cette grille) +2.2 dB
-  Écarts par rapport au sain : bande 1500-2500 Hz +0.29 dB,
-  bande 500-2000 Hz +0.23 dB
+  Écarts par rapport au sain : bin 5 Hz (cible ~3.5 Hz) +29.1 dB ;
+  bandes disjointes 500-1000 : +0.27 dB, 1000-1500 : +0.14 dB,
+  1500-2000 : +0.28 dB, 2000-2500 : +0.30 dB ;
+  bande cavitation 1500-2500 Hz : +0.29 dB
 
 Note de lecture du kurtosis (propre à ces signaux simulés) :
 lorsqu'une composante quasi sinusoïdale domine le signal (balourd,
@@ -36,6 +39,8 @@ composante périodique dominante, et non le signe d'un signal plus
 sain. Les défauts impulsifs (cavitation) l'élèvent nettement
 au-dessus de 3 ; une modulation d'amplitude (usure) peut aussi le
 porter légèrement au-dessus de 3 sans impulsivité.
+
+Règle appliquée (indicative, propre à cette étude) : écart au NIVEAU SAIN au bin de Welch le plus proche de 3.5 Hz (bin 5 Hz) >= 3 dB
 
 Indicateurs attendus observés pour cet état simulé connu : composante basse fréquence (bin 5 Hz, cible ~3.5 Hz) à +29.1 dB au-dessus du niveau sain au même bin.
 
