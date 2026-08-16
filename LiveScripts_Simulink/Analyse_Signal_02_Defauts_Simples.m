@@ -685,13 +685,22 @@ end
 
 function exporter_figure(figH, chemin, dpi)
 % Exporte une figure en supprimant d'abord la barre d'outils de chaque
-% axe (elle peut sinon être incrustée dans le PNG en export sans
-% affichage, de façon non déterministe).
+% axe. En mode sans affichage, MATLAB peut malgré tout incruster la
+% barre d'outils dans les premiers exports d'une session (avertissement
+% "Exported image displays axes toolbar") ; le remède documenté est de
+% réexporter. On détecte donc cet avertissement et on réexporte
+% automatiquement, ce qui garantit un PNG propre.
+    drawnow;
     for axh = reshape(findall(figH, 'Type', 'axes'), 1, [])
         try
             delete(axh.Toolbar);
         catch
         end
     end
-    exportgraphics(figH, chemin, 'Resolution', dpi);
+    lastwarn('');
+    evalc('exportgraphics(figH, chemin, ''Resolution'', dpi)');
+    if contains(lower(lastwarn), 'toolbar')
+        lastwarn('');
+        evalc('exportgraphics(figH, chemin, ''Resolution'', dpi)');
+    end
 end
