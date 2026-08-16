@@ -1,0 +1,90 @@
+========================================================================
+  PFD - PHASE 2 : ETUDE DES 7 DEFAUTS SIMPLES
+  Livraison du 2026-08
+========================================================================
+
+Ce livrable contient l'etude complete des sept defauts simples du palier
+hydrodynamique, a partir des signaux produits par notre modele Simulink
+PFD_Signal_Generator (livre en Phase 1), avec les quatre familles
+d'analyse convenues : temporelle, statistique, frequentielle (FFT + DSP
+de Welch) et temps-frequence (spectrogramme STFT + ondelettes CWT).
+Chaque defaut est compare a la reference saine etablie en Phase 1.
+
+Defauts couverts : desalignement, desequilibre, jeu, lubrification,
+cavitation, usure, tourbillonnement d'huile.
+
+IMPORTANT : cette livraison Phase 2 couvre uniquement les sept defauts
+simples. L'analyse des trois defauts mixtes n'est pas incluse dans cette
+archive et reste a confirmer separement.
+
+------------------------------------------------------------------------
+1. PREREQUIS
+------------------------------------------------------------------------
+- MATLAB R2024b (ou plus recent)
+- Signal Processing Toolbox
+- Statistics and Machine Learning Toolbox
+- Wavelet Toolbox (pour la partie CWT)
+(Simulink n'est pas necessaire pour cette archive : les signaux sont
+fournis ; le modele et les scripts de generation sont dans le livrable
+de la Phase 1.)
+
+------------------------------------------------------------------------
+2. CONTENU DU LIVRABLE
+------------------------------------------------------------------------
+INSTRUCTIONS.txt                     Ce fichier
+LiveScripts_Simulink/
+  Analyse_Signal_02_Defauts_Simples.m   Script d'analyse des 7 defauts
+
+data_signaux_simulink/               Les signaux analyses :
+  sain_001.mat                       Reference saine (Phase 1)
+  desalignement_001.mat ... oilwhirl_001.mat   Les 7 defauts simples
+
+Figures_Simulink/Defauts/            Resultats deja generes :
+  <defaut>/Fig1 a Fig8 (.png, 300 DPI)   8 figures par defaut, en francais
+  <defaut>/Tableau_Statistiques_<defaut>.csv   Indicateurs + colonne saine
+  <defaut>/Interpretation_<defaut>.txt   Texte d'interpretation (physique
+                                         du defaut + valeurs mesurees)
+  Tableau_Comparatif_Simples.csv     Tableau comparatif : sain + 7 defauts
+  FigC1_Comparatif_Indicateurs.png   Figure comparative (4 indicateurs)
+
+------------------------------------------------------------------------
+3. DEMARRAGE RAPIDE
+------------------------------------------------------------------------
+a) Consulter directement les resultats : ouvrir Figures_Simulink/Defauts/
+   (un dossier par defaut ; commencer par l'interpretation .txt puis les
+   figures, et finir par le tableau et la figure comparatifs).
+
+b) Relancer l'analyse complete sur votre machine :
+   1. Ouvrir MATLAB dans le dossier racine du livrable (celui de ce
+      fichier).
+   2. Executer :
+      >> run('LiveScripts_Simulink/Analyse_Signal_02_Defauts_Simples.m')
+   3. Les 72 fichiers de resultats sont regeneres dans
+      Figures_Simulink/Defauts/ (duree : 5 a 6 minutes environ).
+
+------------------------------------------------------------------------
+4. METHODE
+------------------------------------------------------------------------
+- Parametres de generation (identiques pour les 7 defauts) : 3600 tr/min
+  (1X = 60 Hz), charge 70 %, temperature 60 degres C, severite 0.7,
+  fs = 20 480 Hz, 102 401 echantillons (0 a 5 s inclus).
+- Memes methodes d'estimation que la Phase 1 (Welch : fenetre de Hann
+  4096 points, recouvrement 50 % ; STFT : 2048 points ; CWT : Morlet
+  analytique), mais regles indicatives PROPRES A CHAQUE DEFAUT (exces
+  sur le plancher median local, niveau sain au meme bin, ou comparaison
+  de bandes ; seuil indicatif : au moins 3 dB).
+- Les indicateurs sont COMPARATIFS et non exclusifs : plusieurs defauts
+  peuvent elever un meme indicateur ; l'identification s'appuie sur leur
+  combinaison (voir le tableau comparatif), pas sur un indicateur isole.
+- Chaque interpretation precise la physique du defaut telle qu'encodee
+  par le modele et les valeurs mesurees correspondantes.
+
+------------------------------------------------------------------------
+5. NOTE SUR LES FICHIERS CSV
+------------------------------------------------------------------------
+Les CSV sont encodes en UTF-8 avec separateur virgule. Dans Excel en
+francais, si les colonnes ne se separent pas automatiquement : onglet
+Donnees > A partir d'un fichier texte/CSV, choisir "UTF-8" et le
+separateur "virgule". Les CSV s'ouvrent aussi directement dans MATLAB
+(readtable) ou dans un editeur de texte.
+========================================================================

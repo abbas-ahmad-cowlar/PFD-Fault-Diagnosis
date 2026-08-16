@@ -2,42 +2,58 @@ INTERPRÉTATION DES RÉSULTATS - USURE
 =====================================================
 
 Signal : data_signaux_simulink/usure_001.mat (modèle Simulink, 3600
-tr/min soit 1X = 60 Hz, charge 70 %, température 60 °C, sévérité
-0.7, fs = 20480 Hz, durée 5 s). Comparaison à la référence saine de
-la Phase 1, mêmes méthodes et mêmes critères (significatif à partir
-de 3 dB ; règles indicatives du cadre d'étude).
+tr/min soit 1X = 60 Hz, charge 70 %, température 60 °C,
+sévérité 0.7, fs = 20480 Hz, durée 5 s). Comparaison à la référence
+saine de la Phase 1 : mêmes méthodes d'estimation, mais règles
+indicatives PROPRES À CHAQUE DÉFAUT (excès sur le plancher médian
+local, niveau sain au même bin, ou comparaison de bandes ; seuil
+indicatif : au moins 3 dB).
 
 Physique du défaut : l'usure des surfaces augmente le frottement et
 produit, tel qu'encodé par le modèle, un bruit blanc LARGE BANDE
 qui élève le plancher sur toute la bande analysée (mesuré ici dans
 la bande de référence 500-2000 Hz), ainsi que des harmoniques de
-rotation modulés en amplitude (~1 Hz), visibles sur les Figures 5
-et 6. L'élévation étant plate et large bande, elle touche aussi la
-bande 1500-2500 Hz utilisée pour la cavitation : la distinction se
-fait par la FORME de l'élévation (plancher plat en continu pour
-l'usure ; bouffées localisées dans le temps pour la cavitation,
-visibles au spectrogramme). Les bandes du critère sont des bandes de
-MESURE, pas des signatures exclusives.
+rotation (1X, 2X, visibles sur les Figures 4 et 6) modulés en
+amplitude à ~1 Hz. Cette modulation lente est visible dans
+l'enveloppe du signal temporel (Figure 1) ; ses bandes latérales à
+±1 Hz ne sont pas résolues par la grille de Welch de 5 Hz des
+Figures 5-6. L'élévation étant plate et large bande, elle touche
+aussi la bande 1500-2500 Hz utilisée pour la cavitation : la
+distinction se fait par la FORME de l'élévation (plancher plat en
+continu pour l'usure ; bouffées localisées dans le temps pour la
+cavitation, visibles au spectrogramme). Les bandes du critère sont
+des bandes de MESURE, pas des signatures exclusives.
 
 Résultats mesurés :
   RMS = 0.1780 (sain : 0.0421)
   Kurtosis = 3.41 (sain : 2.98) ; facteur de crête = 5.06
   Excès au-dessus du plancher médian local : 1X +22.5 dB,
-  2X +16.9 dB, 3X -0.9 dB, zone sous-synchrone -0.7 dB
+  2X +16.9 dB, 3X -0.9 dB, zone sous-synchrone (bins de Welch
+  25-30 Hz, soit ~0.42-0.50X sur cette grille) -0.7 dB
   Écarts par rapport au sain : bande 1500-2500 Hz +12.30 dB,
   bande 500-2000 Hz +12.26 dB
 
-Note de lecture du kurtosis : lorsqu'une composante périodique
-domine le signal (balourd, tourbillonnement, stick-slip), le
-kurtosis global descend EN DESSOUS de 3 (une sinusoïde pure a un
-kurtosis de 1.5) ; un kurtosis inférieur à 3 signale donc ici une
-composante périodique dominante, et non un signal plus sain. Les
-défauts impulsifs (cavitation) l'élèvent nettement au-dessus de 3 ;
-une modulation d'amplitude (usure) peut aussi le porter légèrement
-au-dessus de 3 sans impulsivité.
+Note de lecture du kurtosis (propre à ces signaux simulés) :
+lorsqu'une composante quasi sinusoïdale domine le signal (balourd,
+tourbillonnement, adhérence-glissement), le kurtosis global descend
+EN DESSOUS de 3 (une sinusoïde pure a un kurtosis de 1.5) ; dans ce
+cadre, un kurtosis inférieur à 3 est donc cohérent avec une
+composante périodique dominante, et non le signe d'un signal plus
+sain. Les défauts impulsifs (cavitation) l'élèvent nettement
+au-dessus de 3 ; une modulation d'amplitude (usure) peut aussi le
+porter légèrement au-dessus de 3 sans impulsivité.
 
-SIGNATURE CONFIRMÉE : bande 500-2000 Hz à +12.3 dB au-dessus du sain.
+Indicateurs attendus observés pour cet état simulé connu : élévation large bande plate : +12.26 dB (500-2000 Hz) et +12.30 dB (1500-2500 Hz).
+
+Ces indicateurs sont COMPARATIFS et non exclusifs : plusieurs
+défauts peuvent élever un même indicateur (l'usure élève par
+exemple la bande 1500-2500 Hz davantage que la cavitation).
+L'identification d'un état inconnu s'appuierait sur leur
+combinaison (voir le tableau comparatif), pas sur un indicateur
+isolé.
 
 Les conclusions décrivent le comportement du défaut tel qu'encodé
-par le modèle de simulation ; elles servent de référence interne
-pour la suite de l'étude (défauts mixtes, Phase 3).
+par le modèle de simulation. Cette livraison Phase 2 couvre
+uniquement les sept défauts simples ; l'analyse des trois défauts
+mixtes n'est pas incluse dans cette archive et reste à confirmer
+séparément.

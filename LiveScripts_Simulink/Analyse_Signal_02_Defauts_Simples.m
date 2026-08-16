@@ -25,6 +25,11 @@
 
 clear; clc; close all;
 
+% Désactive la barre d'outils des axes pour tous les exports (elle peut
+% sinon apparaître dans les PNG exportés en mode sans affichage)
+set(groot, 'DefaultAxesCreateFcn', @(ax, ~) set(ax.Toolbar, 'Visible', 'off'));
+nettoyage = onCleanup(@() set(groot, 'DefaultAxesCreateFcn', ''));
+
 scriptPath = fileparts(mfilename('fullpath'));
 projectRoot = fileparts(scriptPath);
 cd(projectRoot);
@@ -39,17 +44,19 @@ EXPORT_DPI = 300;
 if ~exist(OUT_ROOT, 'dir'), mkdir(OUT_ROOT); end
 
 % Les 7 défauts simples : code fichier, nom affiché (accentué), bande
-% d'affichage fréquentielle [Hz], et description courte de la signature
-% attendue (issue de la physique du modèle).
+% d'affichage fréquentielle [Hz], description courte de l'indicateur
+% attendu (issue de la physique du modèle), fenêtre du zoom temporel [s]
+% (choisie pour montrer un événement caractéristique du défaut), et note
+% de zoom pour le sous-titre.
 DEFAUTS = {
-% code            nom affiché                 bande     signature attendue
- 'desalignement', 'Désalignement',            [0 500],  'harmoniques 2X (120 Hz) et 3X (180 Hz)'
- 'desequilibre',  'Déséquilibre',             [0 500],  'composante 1X dominante (60 Hz)'
- 'jeu',           'Jeu',                      [0 500],  'composante sous-synchrone ~0.43X + 1X + 2X'
- 'lubrification', 'Lubrification',            [0 500],  'adhérence-glissement très basse fréquence (~3.5 Hz) + impacts métal-métal'
- 'cavitation',    'Cavitation',               [0 3000], 'bouffées haute fréquence 1500-2500 Hz'
- 'usure',         'Usure',                    [0 3000], 'bruit blanc large bande (mesuré sur 500-2000 Hz) + harmoniques modulés'
- 'oilwhirl',      'Tourbillonnement d''huile', [0 500],  'composante sous-synchrone ~0.45X (~27 Hz) dominante'
+% code            nom affiché                  bande     indicateur attendu                                                          zoom [s]      note de zoom
+ 'desalignement', 'Désalignement',             [0 500],  'harmoniques 2X (120 Hz) et 3X (180 Hz)',                                   [0 0.100],    ''
+ 'desequilibre',  'Déséquilibre',              [0 500],  'composante 1X dominante (60 Hz)',                                          [0 0.100],    ''
+ 'jeu',           'Jeu',                       [0 500],  'composante sous-synchrone ~0.43X + 1X + 2X',                               [0 0.100],    ''
+ 'lubrification', 'Lubrification',             [0 500],  'adhérence-glissement très basse fréquence (~3.5 Hz) + impacts métal-métal', [0.70 1.00],  'Fenêtre 0.70-1.00 s : impact métal-métal modélisé à t = 0.8 s + ondulation d''adhérence-glissement.'
+ 'cavitation',    'Cavitation',                [0 3000], 'bouffées haute fréquence 1500-2500 Hz',                                    [0.45 0.60],  'Fenêtre 0.45-0.60 s : première bouffée de cavitation modélisée à t = 0.5 s.'
+ 'usure',         'Usure',                     [0 3000], 'bruit blanc large bande (mesuré sur 500-2000 Hz) + harmoniques modulés',   [0 0.100],    ''
+ 'oilwhirl',      'Tourbillonnement d''huile', [0 500],  'composante sous-synchrone ~0.45X (~27 Hz) dominante',                      [0 0.100],    ''
 };
 
 fen = 4096;              % fenêtre de Welch (grille 5 Hz)
@@ -82,11 +89,16 @@ comp(1) = struct('nom', 'Sain', 'rms', ref.rms, 'kurt', ref.kurt, ...
 %% BOUCLE SUR LES 7 DÉFAUTS
 %% ========================================================================
 
+nb_observes = 0;
+verdicts = cell(size(DEFAUTS, 1), 1);
+
 for kd = 1:size(DEFAUTS, 1)
     code   = DEFAUTS{kd, 1};
     nomAff = DEFAUTS{kd, 2};
     bande  = DEFAUTS{kd, 3};
     signat = DEFAUTS{kd, 4};
+    zoomw  = DEFAUTS{kd, 5};
+    znote  = DEFAUTS{kd, 6};
 
     fprintf('========================================================================\n');
     fprintf('DÉFAUT %d/7 : %s\n', kd, upper(nomAff));
@@ -118,28 +130,30 @@ for kd = 1:size(DEFAUTS, 1)
     subtitle(sprintf('Durée : %.0f s, fs = %d Hz. RMS = %.4f (sain : %.4f)', ...
         T, fs, S.rms, ref.rms), 'FontSize', 11);
     grid on; xlim([0, T]); set(gca, 'FontSize', 11);
-    exportgraphics(fig1, fullfile(outDir, sprintf('Fig1_%s_Temporel_Complet.png', code)), ...
-        'Resolution', EXPORT_DPI);
+    exporter_figure(fig1, fullfile(outDir, sprintf('Fig1_%s_Temporel_Complet.png', code)), EXPORT_DPI);
 
-    %% Figure 2 : zoom temporel (100 ms, repères de rotation)
-    zoom_dur = 0.100;
-    idxz = t <= zoom_dur;
+    %% Figure 2 : zoom temporel (fenêtre caractéristique du défaut)
+    idxz = t >= zoomw(1) & t <= zoomw(2);
     fig2 = figure('Name', [nomAff ' - Zoom'], ...
         'Position', [100, 100, 1200, 500], 'Color', 'white');
     plot(t(idxz)*1000, x(idxz), 'b-', 'LineWidth', 0.8);
     hold on;
-    for kk = 0:floor(zoom_dur / T_rot)
+    for kk = ceil(zoomw(1) / T_rot):floor(zoomw(2) / T_rot)
         xline(kk * T_rot * 1000, 'r--', 'LineWidth', 1.0);
     end
     xlabel('Temps (ms)', 'FontSize', 13, 'FontWeight', 'bold');
     ylabel('Amplitude', 'FontSize', 13, 'FontWeight', 'bold');
-    title(sprintf('Figure 2 : Zoom temporel (100 ms) - %s', nomAff), ...
-        'FontSize', 15, 'FontWeight', 'bold');
-    subtitle(sprintf('Traits rouges : période de rotation T = %.2f ms (1X = %.0f Hz)', ...
-        T_rot*1000, Omega), 'FontSize', 11);
-    grid on; xlim([0, zoom_dur*1000]); set(gca, 'FontSize', 11);
-    exportgraphics(fig2, fullfile(outDir, sprintf('Fig2_%s_Temporel_Zoom.png', code)), ...
-        'Resolution', EXPORT_DPI);
+    title(sprintf('Figure 2 : Zoom temporel (%.0f-%.0f ms) - %s', ...
+        zoomw(1)*1000, zoomw(2)*1000, nomAff), 'FontSize', 15, 'FontWeight', 'bold');
+    if isempty(znote)
+        subtitle(sprintf('Traits rouges : période de rotation T = %.2f ms (1X = %.0f Hz)', ...
+            T_rot*1000, Omega), 'FontSize', 11);
+    else
+        subtitle(sprintf('%s Traits rouges : période de rotation (%.2f ms).', ...
+            znote, T_rot*1000), 'FontSize', 10);
+    end
+    grid on; xlim([zoomw(1)*1000, zoomw(2)*1000]); set(gca, 'FontSize', 11);
+    exporter_figure(fig2, fullfile(outDir, sprintf('Fig2_%s_Temporel_Zoom.png', code)), EXPORT_DPI);
 
     %% Figure 3 : distribution d'amplitude
     fig3 = figure('Name', [nomAff ' - Distribution'], ...
@@ -163,8 +177,7 @@ for kd = 1:size(DEFAUTS, 1)
     grid on; set(gca, 'FontSize', 11);
     sgtitle(sprintf('Figure 3 : Analyse statistique de la distribution - %s', nomAff), ...
         'FontSize', 15, 'FontWeight', 'bold');
-    exportgraphics(fig3, fullfile(outDir, sprintf('Fig3_%s_Distribution_Amplitude.png', code)), ...
-        'Resolution', EXPORT_DPI);
+    exporter_figure(fig3, fullfile(outDir, sprintf('Fig3_%s_Distribution_Amplitude.png', code)), EXPORT_DPI);
 
     % ---- Tableau statistique (avec référence saine) ----
     noms = {'Moyenne'; 'Valeur efficace (RMS)'; 'Écart-type'; 'Valeur crête'; ...
@@ -190,8 +203,7 @@ for kd = 1:size(DEFAUTS, 1)
     subtitle(sprintf('Zoom %d-%d Hz. Signature attendue : %s.', ...
         bande(1), bande(2), signat), 'FontSize', 10);
     grid on; xlim(bande); set(gca, 'FontSize', 11);
-    exportgraphics(fig4, fullfile(outDir, sprintf('Fig4_%s_Spectre_FFT.png', code)), ...
-        'Resolution', EXPORT_DPI);
+    exporter_figure(fig4, fullfile(outDir, sprintf('Fig4_%s_Spectre_FFT.png', code)), EXPORT_DPI);
 
     %% Figure 5 : DSP de Welch (bande complète, échelle log)
     fig5 = figure('Name', [nomAff ' - DSP Welch'], ...
@@ -201,7 +213,8 @@ for kd = 1:size(DEFAUTS, 1)
     semilogy(ref.f_psd, ref.Pxx, '-', 'Color', [0.5 0.5 0.5], 'LineWidth', 0.7);
     % Raie de repliement simulée (artefact, présent dans tous les états)
     xline(10040, 'k:', 'repliement ~10.04 kHz', 'LineWidth', 1.0, 'FontSize', 9, ...
-        'LabelOrientation', 'horizontal', 'LabelVerticalAlignment', 'top');
+        'LabelOrientation', 'horizontal', 'LabelVerticalAlignment', 'top', ...
+        'LabelHorizontalAlignment', 'left');
     legend({nomAff, 'Sain (référence)'}, 'Location', 'northeast', 'FontSize', 10);
     xlabel('Fréquence (Hz)', 'FontSize', 13, 'FontWeight', 'bold');
     ylabel('DSP (unité^2/Hz)', 'FontSize', 13, 'FontWeight', 'bold');
@@ -218,8 +231,7 @@ for kd = 1:size(DEFAUTS, 1)
         S.fdom, S.entropie, S.platitude, ref.platitude), ...
         'FontSize', 9, 'BackgroundColor', 'white', 'EdgeColor', 'black', ...
         'FitBoxToText', 'on');
-    exportgraphics(fig5, fullfile(outDir, sprintf('Fig5_%s_DSP_Welch.png', code)), ...
-        'Resolution', EXPORT_DPI);
+    exporter_figure(fig5, fullfile(outDir, sprintf('Fig5_%s_DSP_Welch.png', code)), EXPORT_DPI);
 
     %% Figure 6 : DSP zoom (bande du défaut, en dB, annotée)
     fig6 = figure('Name', [nomAff ' - DSP zoom'], ...
@@ -236,8 +248,7 @@ for kd = 1:size(DEFAUTS, 1)
     subtitle(sprintf('Bande %d-%d Hz. Signature attendue : %s.', ...
         bande(1), bande(2), signat), 'FontSize', 10);
     grid on; xlim(bande); set(gca, 'FontSize', 11);
-    exportgraphics(fig6, fullfile(outDir, sprintf('Fig6_%s_DSP_Zoom.png', code)), ...
-        'Resolution', EXPORT_DPI);
+    exporter_figure(fig6, fullfile(outDir, sprintf('Fig6_%s_DSP_Zoom.png', code)), EXPORT_DPI);
 
     %% Figure 7 : spectrogramme STFT
     fig7 = figure('Name', [nomAff ' - Spectrogramme'], ...
@@ -258,8 +269,7 @@ for kd = 1:size(DEFAUTS, 1)
         'affichage 5 Hz, bande %d-%d Hz.'], fen_spec, 1000*fen_spec/fs, ...
         100*rec_spec/fen_spec, bande(1), bande(2)), 'FontSize', 10);
     set(gca, 'FontSize', 11);
-    exportgraphics(fig7, fullfile(outDir, sprintf('Fig7_%s_Spectrogramme_STFT.png', code)), ...
-        'Resolution', EXPORT_DPI);
+    exporter_figure(fig7, fullfile(outDir, sprintf('Fig7_%s_Spectrogramme_STFT.png', code)), EXPORT_DPI);
 
     %% Figure 8 : transformée en ondelettes continue (CWT)
     fig8 = figure('Name', [nomAff ' - CWT'], ...
@@ -269,15 +279,13 @@ for kd = 1:size(DEFAUTS, 1)
     axis tight; shading interp; view(0, 90); colormap('parula');
     cb = colorbar; cb.Label.String = 'Module'; cb.Label.FontSize = 11;
     ylim(bande);
-    ax8 = gca; ax8.Toolbar = [];   % évite la barre d'outils dans l'export
     xlabel('Temps (s)', 'FontSize', 13, 'FontWeight', 'bold');
     ylabel('Fréquence (Hz)', 'FontSize', 13, 'FontWeight', 'bold');
     title(sprintf('Figure 8 : Transformée en ondelettes continue (Morlet analytique) - %s', nomAff), ...
         'FontSize', 15, 'FontWeight', 'bold');
     subtitle(sprintf('Bande %d-%d Hz.', bande(1), bande(2)), 'FontSize', 11);
     set(gca, 'FontSize', 11, 'YScale', 'linear');
-    exportgraphics(fig8, fullfile(outDir, sprintf('Fig8_%s_CWT.png', code)), ...
-        'Resolution', EXPORT_DPI);
+    exporter_figure(fig8, fullfile(outDir, sprintf('Fig8_%s_CWT.png', code)), EXPORT_DPI);
 
     close all;
 
@@ -293,10 +301,12 @@ for kd = 1:size(DEFAUTS, 1)
 
     [verdict, resume] = verifier_signature(code, S, ref, dHF, dMid, SEUIL_DB);
     if verdict
-        fprintf('  SIGNATURE CONFIRMÉE : %s\n\n', resume);
+        fprintf('  INDICATEURS ATTENDUS OBSERVÉS (état simulé connu) : %s\n\n', resume);
+        nb_observes = nb_observes + 1;
     else
-        fprintf('  ATTENTION : signature non confirmée (%s)\n\n', resume);
+        fprintf('  ATTENTION : indicateurs attendus NON observés (%s)\n\n', resume);
     end
+    verdicts{kd} = struct('nom', nomAff, 'ok', verdict, 'resume', resume);
 
     % ---- Texte d'interprétation ----
     interp = interpretation_defaut(code, nomAff, S, ref, dHF, dMid, resume, verdict);
@@ -355,21 +365,33 @@ set(gca, 'XTickLabel', etats, 'FontSize', 9); xtickangle(35); grid on;
 subplot(2, 2, 4);
 bar([comp.exSub], 'FaceColor', [0.5 0.7 0.4]);
 hold on; yline(3, 'k--', 'seuil 3 dB', 'FontSize', 9);
-title('Excès en zone sous-synchrone 0.42-0.48X (dB)', 'FontSize', 13, 'FontWeight', 'bold');
+title('Excès en zone sous-synchrone (bins de Welch 25-30 Hz) (dB)', ...
+    'FontSize', 13, 'FontWeight', 'bold');
 ylabel('dB au-dessus du plancher', 'FontSize', 11, 'FontWeight', 'bold');
 set(gca, 'XTickLabel', etats, 'FontSize', 9); xtickangle(35); grid on;
-sgtitle('Figure C1 : Indicateurs discriminants - sain et 7 défauts simples', ...
+sgtitle('Figure C1 : Indicateurs comparatifs - sain et 7 défauts simples', ...
     'FontSize', 15, 'FontWeight', 'bold');
-exportgraphics(figC, fullfile(OUT_ROOT, 'FigC1_Comparatif_Indicateurs.png'), ...
-    'Resolution', EXPORT_DPI);
+exporter_figure(figC, fullfile(OUT_ROOT, 'FigC1_Comparatif_Indicateurs.png'), EXPORT_DPI);
 close all;
 fprintf('  Figure comparative exportée : FigC1_Comparatif_Indicateurs.png\n\n');
 
 fprintf('========================================================================\n');
-fprintf('   ANALYSE TERMINÉE - 7 défauts x (8 figures + tableau + interprétation)\n');
-fprintf('   + tableau comparatif global + figure comparative dans %s\n', OUT_ROOT);
+if nb_observes == size(DEFAUTS, 1)
+    fprintf('   ANALYSE TERMINÉE - indicateurs attendus observés pour les %d défauts\n', nb_observes);
+else
+    fprintf('   ANALYSE TERMINÉE AVEC RÉSERVES : indicateurs observés pour %d/%d défauts.\n', ...
+        nb_observes, size(DEFAUTS, 1));
+    for kv = 1:numel(verdicts)
+        if ~verdicts{kv}.ok
+            fprintf('   NON OBSERVÉ - %s : %s\n', verdicts{kv}.nom, verdicts{kv}.resume);
+        end
+    end
+end
+fprintf('   7 défauts x (8 figures + tableau + interprétation) + tableau et\n');
+fprintf('   figure comparatifs dans %s\n', OUT_ROOT);
 fprintf('========================================================================\n');
-fprintf('Prochaine étape : analyse des 3 défauts mixtes (Phase 3).\n\n');
+fprintf(['Cette analyse couvre uniquement les sept défauts simples ; les trois\n' ...
+    'défauts mixtes ne sont pas inclus et restent à confirmer séparément.\n\n']);
 
 %% ========================================================================
 %% FONCTIONS LOCALES
@@ -389,6 +411,15 @@ function S = analyser_signal(fichier, fen)
         S.Omega = d.metadata.speed_rpm / 60;
     else
         S.Omega = 60;
+    end
+    % Paramètres de génération lus dans les métadonnées (les textes de
+    % sortie en dérivent ; valeurs par défaut du livrable v3.1 sinon)
+    S.load_pct = 70; S.temp_C = 60; S.sev = 0.7;
+    if isfield(d, 'metadata')
+        m = d.metadata;
+        if isfield(m, 'load_percent'),    S.load_pct = double(m.load_percent); end
+        if isfield(m, 'temperature_C'),   S.temp_C = double(m.temperature_C); end
+        if isfield(m, 'severity_factor'), S.sev = double(m.severity_factor); end
     end
 
     % Statistiques
@@ -463,50 +494,70 @@ function tracer_reperes(code, Omega)
                 'LabelOrientation', 'horizontal', 'LabelVerticalAlignment', 'bottom');
         case 'usure'
             xline(Omega,   'r-', '1X', 'LineWidth', 1.4, 'FontSize', 10, 'LabelOrientation', 'horizontal');
-            xline(2*Omega, 'g-', '2X', 'LineWidth', 1.4, 'FontSize', 10, 'LabelOrientation', 'horizontal');
+            xline(2*Omega, 'g-', '2X', 'LineWidth', 1.4, 'FontSize', 10, ...
+                'LabelOrientation', 'horizontal', 'LabelVerticalAlignment', 'middle');
         case 'oilwhirl'
-            xline(0.45*Omega, 'c-', '~0.45X = 27 Hz', 'LineWidth', 1.8, 'FontSize', 10, 'LabelOrientation', 'horizontal');
+            xline(0.45*Omega, 'c-', '0.45X', 'LineWidth', 1.8, 'FontSize', 10, 'LabelOrientation', 'horizontal');
             xline(Omega, 'r--', '1X', 'LineWidth', 1.2, 'FontSize', 10, ...
-                'LabelOrientation', 'horizontal', 'LabelVerticalAlignment', 'bottom');
+                'LabelOrientation', 'horizontal', 'LabelVerticalAlignment', 'middle');
     end
     xline(50, 'k:', 'EMI 50 Hz', 'LineWidth', 1.0, 'FontSize', 9, ...
         'LabelOrientation', 'horizontal', 'LabelVerticalAlignment', 'bottom');
 end
 
 function [ok, resume] = verifier_signature(code, S, ref, dHF, dMid, seuil)
-% Vérifie la signature attendue du défaut (règles indicatives du cadre
-% d'étude, appliquées à l'identique : significatif si au moins 3 dB).
+% Vérifie que les INDICATEURS ATTENDUS du défaut sont observés. Mêmes
+% méthodes d'estimation partout, mais règles indicatives PROPRES À CHAQUE
+% DÉFAUT (excès sur le plancher local, niveau sain au même bin, ou
+% comparaison de bandes ; seuil indicatif : au moins 3 dB). Ces règles
+% constatent des indicateurs pour des états simulés CONNUS ; elles ne
+% constituent pas un diagnostic exclusif (plusieurs défauts peuvent
+% élever un même indicateur).
     switch code
         case 'desalignement'
             ok = S.ex2X >= seuil && S.ex3X >= seuil;
             resume = sprintf('2X à %+.1f dB et 3X à %+.1f dB au-dessus du plancher', S.ex2X, S.ex3X);
         case 'desequilibre'
-            ok = S.ex1X >= seuil;
-            resume = sprintf('1X à %+.1f dB au-dessus du plancher', S.ex1X);
+            % Dominance testée : 1X au-dessus du seuil ET plus élevé que 2X
+            % et que la zone sous-synchrone
+            ok = S.ex1X >= seuil && S.ex1X > S.ex2X && S.ex1X > S.exSub;
+            resume = sprintf(['1X à %+.1f dB, dominant sur 2X (%+.1f dB) et ' ...
+                'sur la zone sous-synchrone (%+.1f dB)'], S.ex1X, S.ex2X, S.exSub);
         case 'jeu'
-            ok = S.exSub >= seuil && S.ex1X >= seuil;
-            resume = sprintf('sous-synchrone à %+.1f dB et 1X à %+.1f dB', S.exSub, S.ex1X);
+            ok = S.exSub >= seuil && S.ex1X >= seuil && S.ex2X >= seuil;
+            resume = sprintf(['sous-synchrone (bins 25-30 Hz) à %+.1f dB, ' ...
+                '1X à %+.1f dB et 2X à %+.1f dB'], S.exSub, S.ex1X, S.ex2X);
         case 'lubrification'
             % Le bin de Welch le plus proche de 3.5 Hz est le bin 5 Hz (grille
             % de 5 Hz), contaminé par la dérive < 1 Hz via le lobe de la
             % fenêtre : l'état sain y mesure déjà +17 dB au-dessus du plancher.
             % Le critère est donc référencé au NIVEAU SAIN AU MÊME BIN, qui
-            % isole l'énergie propre au défaut.
+            % isole l'énergie propre au défaut. Les impacts déclarés ne sont
+            % pas vérifiés par un indicateur global (masqués par la
+            % composante d'adhérence-glissement à cette sévérité).
             ibf = find(abs(S.f_psd - 3.5) == min(abs(S.f_psd - 3.5)), 1);
             dBF = 10*log10(S.Pxx(ibf) / ref.Pxx(ibf));
-            ok = dBF >= seuil || S.kurt > ref.kurt + 0.5;
+            ok = dBF >= seuil;
             resume = sprintf(['composante basse fréquence (bin %.0f Hz, cible ' ...
                 '~3.5 Hz) à %+.1f dB au-dessus du niveau sain au même bin'], ...
                 S.f_psd(ibf), dBF);
         case 'cavitation'
-            ok = dHF >= seuil;
-            resume = sprintf('bande 1500-2500 Hz à %+.1f dB au-dessus du sain', dHF);
+            % Énergie de bande ET impulsivité (bouffées) : distingue d'une
+            % élévation large bande continue
+            ok = dHF >= seuil && S.kurt > 4;
+            resume = sprintf(['bande 1500-2500 Hz à %+.2f dB au-dessus du sain ' ...
+                'ET kurtosis %.2f (bouffées impulsives)'], dHF, S.kurt);
         case 'usure'
-            ok = dMid >= seuil;
-            resume = sprintf('bande 500-2000 Hz à %+.1f dB au-dessus du sain', dMid);
+            % Élévation large bande PLATE : les deux bandes montent ensemble
+            ok = dMid >= seuil && abs(dMid - dHF) < 3;
+            resume = sprintf(['élévation large bande plate : %+.2f dB ' ...
+                '(500-2000 Hz) et %+.2f dB (1500-2500 Hz)'], dMid, dHF);
         case 'oilwhirl'
-            ok = S.exSub >= seuil;
-            resume = sprintf('sous-synchrone (~0.45X) à %+.1f dB au-dessus du plancher', S.exSub);
+            % Dominance testée : sous-synchrone au-dessus du seuil ET plus
+            % élevée que le 1X
+            ok = S.exSub >= seuil && S.exSub > S.ex1X;
+            resume = sprintf(['sous-synchrone (bins 25-30 Hz, ~0.45X) à %+.1f dB, ' ...
+                'dominante sur 1X (%+.1f dB)'], S.exSub, S.ex1X);
         otherwise
             ok = false; resume = 'défaut inconnu';
     end
@@ -557,13 +608,16 @@ function txt = interpretation_defaut(code, nomAff, S, ref, dHF, dMid, resume, ve
 'produit, tel qu''encodé par le modèle, un bruit blanc LARGE BANDE\n' ...
 'qui élève le plancher sur toute la bande analysée (mesuré ici dans\n' ...
 'la bande de référence 500-2000 Hz), ainsi que des harmoniques de\n' ...
-'rotation modulés en amplitude (~1 Hz), visibles sur les Figures 5\n' ...
-'et 6. L''élévation étant plate et large bande, elle touche aussi la\n' ...
-'bande 1500-2500 Hz utilisée pour la cavitation : la distinction se\n' ...
-'fait par la FORME de l''élévation (plancher plat en continu pour\n' ...
-'l''usure ; bouffées localisées dans le temps pour la cavitation,\n' ...
-'visibles au spectrogramme). Les bandes du critère sont des bandes de\n' ...
-'MESURE, pas des signatures exclusives.\n']);
+'rotation (1X, 2X, visibles sur les Figures 4 et 6) modulés en\n' ...
+'amplitude à ~1 Hz. Cette modulation lente est visible dans\n' ...
+'l''enveloppe du signal temporel (Figure 1) ; ses bandes latérales à\n' ...
+'±1 Hz ne sont pas résolues par la grille de Welch de 5 Hz des\n' ...
+'Figures 5-6. L''élévation étant plate et large bande, elle touche\n' ...
+'aussi la bande 1500-2500 Hz utilisée pour la cavitation : la\n' ...
+'distinction se fait par la FORME de l''élévation (plancher plat en\n' ...
+'continu pour l''usure ; bouffées localisées dans le temps pour la\n' ...
+'cavitation, visibles au spectrogramme). Les bandes du critère sont\n' ...
+'des bandes de MESURE, pas des signatures exclusives.\n']);
         case 'oilwhirl'
             phys = sprintf([ ...
 'Physique du défaut : le tourbillonnement d''huile est une instabilité\n' ...
@@ -574,43 +628,70 @@ function txt = interpretation_defaut(code, nomAff, S, ref, dHF, dMid, resume, ve
             phys = '';
     end
     if verdict
-        vtxt = sprintf('SIGNATURE CONFIRMÉE : %s.', resume);
+        vtxt = sprintf(['Indicateurs attendus observés pour cet état simulé ' ...
+            'connu : %s.'], resume);
     else
-        vtxt = sprintf('Signature à examiner : %s.', resume);
+        vtxt = sprintf('Indicateurs à examiner : %s.', resume);
     end
     txt = sprintf([ ...
 'INTERPRÉTATION DES RÉSULTATS - %s\n' ...
 '=====================================================\n\n' ...
-'Signal : data_signaux_simulink/%s_001.mat (modèle Simulink, 3600\n' ...
-'tr/min soit 1X = 60 Hz, charge 70 %%, température 60 °C, sévérité\n' ...
-'0.7, fs = %d Hz, durée %.0f s). Comparaison à la référence saine de\n' ...
-'la Phase 1, mêmes méthodes et mêmes critères (significatif à partir\n' ...
-'de 3 dB ; règles indicatives du cadre d''étude).\n\n' ...
+'Signal : data_signaux_simulink/%s_001.mat (modèle Simulink, %.0f\n' ...
+'tr/min soit 1X = %.0f Hz, charge %.0f %%, température %.0f °C,\n' ...
+'sévérité %.1f, fs = %d Hz, durée %.0f s). Comparaison à la référence\n' ...
+'saine de la Phase 1 : mêmes méthodes d''estimation, mais règles\n' ...
+'indicatives PROPRES À CHAQUE DÉFAUT (excès sur le plancher médian\n' ...
+'local, niveau sain au même bin, ou comparaison de bandes ; seuil\n' ...
+'indicatif : au moins 3 dB).\n\n' ...
 '%s\n' ...
 'Résultats mesurés :\n' ...
 '  RMS = %.4f (sain : %.4f)\n' ...
 '  Kurtosis = %.2f (sain : %.2f) ; facteur de crête = %.2f\n' ...
 '  Excès au-dessus du plancher médian local : 1X %+.1f dB,\n' ...
-'  2X %+.1f dB, 3X %+.1f dB, zone sous-synchrone %+.1f dB\n' ...
+'  2X %+.1f dB, 3X %+.1f dB, zone sous-synchrone (bins de Welch\n' ...
+'  25-30 Hz, soit ~0.42-0.50X sur cette grille) %+.1f dB\n' ...
 '  Écarts par rapport au sain : bande 1500-2500 Hz %+.2f dB,\n' ...
 '  bande 500-2000 Hz %+.2f dB\n\n' ...
-'Note de lecture du kurtosis : lorsqu''une composante périodique\n' ...
-'domine le signal (balourd, tourbillonnement, stick-slip), le\n' ...
-'kurtosis global descend EN DESSOUS de 3 (une sinusoïde pure a un\n' ...
-'kurtosis de 1.5) ; un kurtosis inférieur à 3 signale donc ici une\n' ...
-'composante périodique dominante, et non un signal plus sain. Les\n' ...
-'défauts impulsifs (cavitation) l''élèvent nettement au-dessus de 3 ;\n' ...
-'une modulation d''amplitude (usure) peut aussi le porter légèrement\n' ...
-'au-dessus de 3 sans impulsivité.\n\n' ...
+'Note de lecture du kurtosis (propre à ces signaux simulés) :\n' ...
+'lorsqu''une composante quasi sinusoïdale domine le signal (balourd,\n' ...
+'tourbillonnement, adhérence-glissement), le kurtosis global descend\n' ...
+'EN DESSOUS de 3 (une sinusoïde pure a un kurtosis de 1.5) ; dans ce\n' ...
+'cadre, un kurtosis inférieur à 3 est donc cohérent avec une\n' ...
+'composante périodique dominante, et non le signe d''un signal plus\n' ...
+'sain. Les défauts impulsifs (cavitation) l''élèvent nettement\n' ...
+'au-dessus de 3 ; une modulation d''amplitude (usure) peut aussi le\n' ...
+'porter légèrement au-dessus de 3 sans impulsivité.\n\n' ...
 '%s\n\n' ...
+'Ces indicateurs sont COMPARATIFS et non exclusifs : plusieurs\n' ...
+'défauts peuvent élever un même indicateur (l''usure élève par\n' ...
+'exemple la bande 1500-2500 Hz davantage que la cavitation).\n' ...
+'L''identification d''un état inconnu s''appuierait sur leur\n' ...
+'combinaison (voir le tableau comparatif), pas sur un indicateur\n' ...
+'isolé.\n\n' ...
 'Les conclusions décrivent le comportement du défaut tel qu''encodé\n' ...
-'par le modèle de simulation ; elles servent de référence interne\n' ...
-'pour la suite de l''étude (défauts mixtes, Phase 3).\n'], ...
-    upper(nomAff), code, S.fs, S.T, phys, S.rms, ref.rms, S.kurt, ref.kurt, ...
+'par le modèle de simulation. Cette livraison Phase 2 couvre\n' ...
+'uniquement les sept défauts simples ; l''analyse des trois défauts\n' ...
+'mixtes n''est pas incluse dans cette archive et reste à confirmer\n' ...
+'séparément.\n'], ...
+    upper(nomAff), code, S.Omega*60, S.Omega, S.load_pct, S.temp_C, S.sev, ...
+    S.fs, S.T, phys, S.rms, ref.rms, S.kurt, ref.kurt, ...
     S.fc, S.ex1X, S.ex2X, S.ex3X, S.exSub, dHF, dMid, vtxt);
 end
 
 function nv = nomVarValide(code)
 % Nom de variable de table valide à partir du code du défaut
     nv = matlab.lang.makeValidName(code);
+end
+
+function exporter_figure(figH, chemin, dpi)
+% Exporte une figure en supprimant d'abord la barre d'outils de chaque
+% axe (elle peut sinon être incrustée dans le PNG en export sans
+% affichage, de façon non déterministe).
+    for axh = reshape(findall(figH, 'Type', 'axes'), 1, [])
+        try
+            delete(axh.Toolbar);
+        catch
+        end
+    end
+    exportgraphics(figH, chemin, 'Resolution', dpi);
 end
