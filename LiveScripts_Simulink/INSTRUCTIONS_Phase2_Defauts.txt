@@ -45,7 +45,7 @@ Figures_Simulink/Defauts/            Resultats deja generes :
   <defaut>/Interpretation_<defaut>.txt   Texte d'interpretation (physique
                                          du defaut + valeurs mesurees)
   Tableau_Comparatif_Simples.csv     Tableau comparatif : sain + 7 defauts
-  FigC1_Comparatif_Indicateurs.png   Figure comparative (4 indicateurs)
+  FigC1_Comparatif_Indicateurs.png   Figure comparative (6 panneaux comparatifs)
 
 ------------------------------------------------------------------------
 3. DEMARRAGE RAPIDE

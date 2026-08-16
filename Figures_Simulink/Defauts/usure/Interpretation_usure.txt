@@ -11,8 +11,9 @@ indicatif : au moins 3 dB).
 
 Physique du défaut : l'usure des surfaces augmente le frottement et
 produit, tel qu'encodé par le modèle, un bruit blanc LARGE BANDE
-qui élève le plancher sur toute la bande analysée (mesuré ici dans
-la bande de référence 500-2000 Hz), ainsi que des harmoniques de
+qui élève le plancher sur toute la bande analysée (mesuré ici sur
+les quatre bandes disjointes 500-1000, 1000-1500, 1500-2000 et
+2000-2500 Hz de la règle de platitude), ainsi que des harmoniques de
 rotation (1X, 2X, visibles sur les Figures 4 et 6) modulés en
 amplitude à ~1 Hz. Cette modulation lente est visible dans
 l'enveloppe du signal temporel (Figure 1) ; ses bandes latérales à

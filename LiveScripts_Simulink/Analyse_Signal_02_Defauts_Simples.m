@@ -55,7 +55,7 @@ DEFAUTS = {
  'jeu',           'Jeu',                       [0 500],  'composante sous-synchrone ~0.43X + 1X + 2X',                               [0 0.100],    ''
  'lubrification', 'Lubrification',             [0 500],  'adhérence-glissement très basse fréquence (~3.5 Hz) + impacts métal-métal', [0.70 1.00],  'Fenêtre 0.70-1.00 s : impact métal-métal modélisé à t = 0.8 s + ondulation d''adhérence-glissement.'
  'cavitation',    'Cavitation',                [0 3000], 'bouffées haute fréquence 1500-2500 Hz',                                    [0.45 0.60],  'Fenêtre 0.45-0.60 s : première bouffée de cavitation modélisée à t = 0.5 s.'
- 'usure',         'Usure',                     [0 3000], 'bruit blanc large bande (mesuré sur 500-2000 Hz) + harmoniques modulés',   [0 0.100],    ''
+ 'usure',         'Usure',                     [0 3000], 'bruit blanc large bande (4 bandes disjointes 500-2500 Hz) + harmoniques modulés', [0 0.100],   ''
  'oilwhirl',      'Tourbillonnement d''huile', [0 500],  'composante sous-synchrone ~0.45X (~27 Hz) dominante',                      [0 0.100],    ''
 };
 
@@ -377,10 +377,10 @@ title('Kurtosis', 'FontSize', 12, 'FontWeight', 'bold');
 ylabel('Kurtosis', 'FontSize', 11, 'FontWeight', 'bold');
 set(gca, 'XTickLabel', etats, 'FontSize', 8); xtickangle(35); grid on;
 subplot(2, 3, 3);
-bar([comp.ex1X; comp.ex2X]', 'grouped');
+bar([comp.ex1X; comp.ex2X; comp.ex3X]', 'grouped');
 hold on; yline(3, 'k--', 'seuil 3 dB', 'FontSize', 8);
-legend({'1X', '2X'}, 'Location', 'northwest', 'FontSize', 8);
-title('Excès aux harmoniques 1X et 2X (dB)', 'FontSize', 12, 'FontWeight', 'bold');
+legend({'1X', '2X', '3X'}, 'Location', 'northwest', 'FontSize', 8);
+title('Excès aux harmoniques 1X, 2X et 3X (dB)', 'FontSize', 12, 'FontWeight', 'bold');
 ylabel('dB au-dessus du plancher', 'FontSize', 11, 'FontWeight', 'bold');
 set(gca, 'XTickLabel', etats, 'FontSize', 8); xtickangle(35); grid on;
 subplot(2, 3, 4);
@@ -444,20 +444,21 @@ function S = analyser_signal(fichier, fen)
     S.x = x; S.fs = fs; S.N = N;
     S.T = (N-1) / fs;
     S.t = (0:N-1)' / fs;
-    if isfield(d, 'metadata') && isfield(d.metadata, 'speed_rpm')
-        S.Omega = d.metadata.speed_rpm / 60;
-    else
-        S.Omega = 60;
+    % Paramètres de génération lus dans les métadonnées : les textes de
+    % sortie en dérivent, et les champs requis sont EXIGÉS (pas de valeur
+    % par défaut silencieuse - cohérent avec la validation canonique
+    % ci-dessous).
+    champs = {'speed_rpm', 'load_percent', 'temperature_C', 'severity_factor'};
+    if ~isfield(d, 'metadata') || ~all(isfield(d.metadata, champs))
+        error(['Métadonnées absentes ou incomplètes dans %s : les champs ' ...
+            'speed_rpm, load_percent, temperature_C et severity_factor ' ...
+            'sont requis (fichiers du livrable v3.1).'], fichier);
     end
-    % Paramètres de génération lus dans les métadonnées (les textes de
-    % sortie en dérivent ; valeurs par défaut du livrable v3.1 sinon)
-    S.load_pct = 70; S.temp_C = 60; S.sev = 0.7;
-    if isfield(d, 'metadata')
-        m = d.metadata;
-        if isfield(m, 'load_percent'),    S.load_pct = double(m.load_percent); end
-        if isfield(m, 'temperature_C'),   S.temp_C = double(m.temperature_C); end
-        if isfield(m, 'severity_factor'), S.sev = double(m.severity_factor); end
-    end
+    m = d.metadata;
+    S.Omega    = double(m.speed_rpm) / 60;
+    S.load_pct = double(m.load_percent);
+    S.temp_C   = double(m.temperature_C);
+    S.sev      = double(m.severity_factor);
 
     % Statistiques
     S.moy   = mean(x);
@@ -685,8 +686,9 @@ function txt = interpretation_defaut(code, nomAff, S, ref, dHF, dBF, dB4, resume
             phys = sprintf([ ...
 'Physique du défaut : l''usure des surfaces augmente le frottement et\n' ...
 'produit, tel qu''encodé par le modèle, un bruit blanc LARGE BANDE\n' ...
-'qui élève le plancher sur toute la bande analysée (mesuré ici dans\n' ...
-'la bande de référence 500-2000 Hz), ainsi que des harmoniques de\n' ...
+'qui élève le plancher sur toute la bande analysée (mesuré ici sur\n' ...
+'les quatre bandes disjointes 500-1000, 1000-1500, 1500-2000 et\n' ...
+'2000-2500 Hz de la règle de platitude), ainsi que des harmoniques de\n' ...
 'rotation (1X, 2X, visibles sur les Figures 4 et 6) modulés en\n' ...
 'amplitude à ~1 Hz. Cette modulation lente est visible dans\n' ...
 'l''enveloppe du signal temporel (Figure 1) ; ses bandes latérales à\n' ...
