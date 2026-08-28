@@ -1,0 +1,51 @@
+INTERPRÉTATION DES RÉSULTATS - USURE + LUBRIFICATION
+=====================================================
+
+Signal : data_signaux_simulink/mixed_wear_lube_001.mat (modèle Simulink, 3600
+tr/min soit 1X = 60 Hz, charge 70 %, température 60 °C,
+sévérité 0.7, fs = 20480 Hz, durée 5 s). Comparaison à la référence
+saine ET aux deux défauts simples constitutifs (Usure, Lubrification), avec les
+mêmes méthodes d'estimation que les Phases 1 et 2 et des règles
+indicatives propres à chaque défaut mixte.
+
+Physique du défaut : le modèle superpose le bruit blanc large bande
+de l'usure (amplitude réduite par rapport au défaut simple) et la
+composante d'adhérence-glissement à ~3.5 Hz de la lubrification,
+avec des impacts métal-métal (le premier modélisé à t = 1.0 s,
+montré au zoom temporel, Figure 2). Le plancher s'élève de façon
+plate sur les quatre bandes disjointes (part usure) ET le bin basse
+fréquence monte nettement au-dessus du niveau sain (part
+lubrification) - voir la superposition en Figure 9.
+
+Résultats mesurés :
+  RMS = 0.2020 (constituants : 0.1780 et 0.2387 ; sain : 0.0421)
+  Kurtosis = 2.44 (constituants : 3.41 et 1.60 ; sain : 2.98)
+  Excès au-dessus du plancher médian local : 1X +21.8 dB,
+  2X +16.0 dB, 3X -1.0 dB, zone sous-synchrone (bins de Welch
+  25-30 Hz) -0.1 dB
+  Écarts par rapport au sain : bin 5 Hz +25.6 dB ; bandes disjointes
+  500-1000 : +9.67 dB, 1000-1500 : +9.37 dB, 1500-2000 : +9.41 dB,
+  2000-2500 : +9.61 dB ; bande cavitation 1500-2500 Hz : +9.52 dB
+
+Note de lecture du kurtosis (propre à ces signaux simulés) :
+lorsqu'une composante quasi sinusoïdale domine le signal, le
+kurtosis global descend en dessous de 3 (une sinusoïde pure a un
+kurtosis de 1.5) ; dans ce cadre, un kurtosis inférieur à 3 est
+cohérent avec une composante périodique dominante. Pour les défauts
+mixtes, la composante périodique du constituant basse fréquence
+masque en général l'impulsivité de l'autre constituant dans cet
+indicateur global ; l'impulsivité reste visible dans le domaine
+temporel et temps-fréquence.
+
+Règle appliquée (indicative, propre à cette étude) : part usure : écarts vs sain des 4 bandes disjointes tous >= 3 dB ET étendue <= 1.5 dB ; part lubrification : écart au sain au bin 5 Hz >= 3 dB
+
+Indicateurs attendus observés pour cet état simulé connu : bandes disjointes +9.67 / +9.37 / +9.41 / +9.61 dB (étendue 0.29 dB) ET bin 5 Hz à +25.6 dB.
+
+Ces indicateurs sont COMPARATIFS et non exclusifs ; l'identification
+d'un état inconnu s'appuierait sur leur combinaison (voir le
+tableau comparatif et la Figure 9 de superposition), pas sur un
+indicateur isolé. La Figure 9 montre directement que le défaut mixte
+cumule les signatures spectrales de ses deux constituants, avec des
+amplitudes réduites telles qu'encodées par le modèle de simulation :
+c'est l'argument central de l'originalité de l'étude (défauts
+combinés, plus proches des conditions industrielles réelles).

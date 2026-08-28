@@ -1,0 +1,112 @@
+========================================================================
+  PFD - PHASE 3 : ETUDE DES 3 DEFAUTS MIXTES
+  Livraison du 2026-08
+========================================================================
+
+Ce livrable contient l'etude complete des trois defauts mixtes du palier
+hydrodynamique, a partir des signaux produits par notre modele Simulink
+PFD_Signal_Generator (livre en Phase 1), avec les quatre familles
+d'analyse convenues : temporelle, statistique, frequentielle (FFT + DSP
+de Welch) et temps-frequence (spectrogramme STFT + ondelettes CWT).
+
+Defauts mixtes couverts :
+- Desalignement + Desequilibre (mixed_misalign_imbalance)
+- Usure + Lubrification (mixed_wear_lube)
+- Cavitation + Jeu (mixed_cavit_jeu)
+
+Chaque defaut mixte est compare a la reference saine (Phase 1) ET a ses
+deux defauts simples constitutifs (Phase 2). La Figure 9 de chaque
+defaut superpose les quatre spectres (mixte, les deux constituants, le
+sain) : elle montre directement que le defaut mixte cumule les
+signatures de ses constituants - l'argument central de l'originalite de
+l'etude (defauts combines, plus proches des conditions industrielles
+reelles).
+
+------------------------------------------------------------------------
+1. PREREQUIS
+------------------------------------------------------------------------
+- MATLAB R2024b (ou plus recent)
+- Signal Processing Toolbox
+- Statistics and Machine Learning Toolbox
+- Wavelet Toolbox (pour la partie CWT)
+(Simulink n'est pas necessaire : les signaux sont fournis ; le modele et
+les scripts de generation sont dans le livrable de la Phase 1.)
+
+------------------------------------------------------------------------
+2. CONTENU DU LIVRABLE
+------------------------------------------------------------------------
+INSTRUCTIONS.txt                     Ce fichier
+LiveScripts_Simulink/
+  Analyse_Signal_03_Defauts_Mixtes.m   Script d'analyse des 3 defauts mixtes
+
+data_signaux_simulink/               Les signaux analyses :
+  sain_001.mat                       Reference saine
+  desalignement_001.mat, desequilibre_001.mat, usure_001.mat,
+  lubrification_001.mat, cavitation_001.mat, jeu_001.mat
+                                     Les 6 defauts simples constitutifs
+  mixed_misalign_imbalance_001.mat, mixed_wear_lube_001.mat,
+  mixed_cavit_jeu_001.mat            Les 3 defauts mixtes
+
+Figures_Simulink/Mixtes/             Resultats deja generes :
+  <defaut>/Fig1 a Fig9 (.png, 300 DPI)   9 figures par defaut mixte, en
+                                     francais (la Figure 9 est la
+                                     superposition mixte / constituants /
+                                     sain)
+  <defaut>/Tableau_Statistiques_<defaut>.csv   Indicateurs du mixte, de
+                                     ses deux constituants et du sain
+  <defaut>/Interpretation_<defaut>.txt   Texte d'interpretation (physique
+                                     de la superposition + valeurs
+                                     mesurees + regle appliquee)
+  Tableau_Comparatif_Mixtes.csv      Tableau comparatif : sain + 3 mixtes
+  FigC2_Comparatif_Mixtes.png        Figure comparative (3 panneaux)
+
+------------------------------------------------------------------------
+3. DEMARRAGE RAPIDE
+------------------------------------------------------------------------
+a) Consulter directement les resultats : Figures_Simulink/Mixtes/
+   (commencer par l'interpretation .txt de chaque defaut, puis la
+   Figure 9 de superposition).
+
+b) Relancer l'analyse complete sur votre machine :
+   1. Ouvrir MATLAB dans le dossier racine du livrable.
+   2. Executer :
+      >> run('LiveScripts_Simulink/Analyse_Signal_03_Defauts_Mixtes.m')
+   3. Les resultats sont regeneres dans Figures_Simulink/Mixtes/
+      (duree : 4 a 5 minutes environ).
+
+------------------------------------------------------------------------
+4. METHODE
+------------------------------------------------------------------------
+- Parametres de generation identiques aux Phases 1-2 : 3600 tr/min
+  (1X = 60 Hz), charge 70 %, temperature 60 degres C, severite 0.7,
+  fs = 20 480 Hz, 102 401 echantillons. Le script exige les metadonnees
+  et echoue explicitement sur tout signal non conforme.
+- Memes methodes d'estimation que les Phases 1-2 (Welch : Hann 4096,
+  recouvrement 50 % ; STFT : 2048 points ; CWT : Morlet analytique).
+- Regles appliquees (seuil indicatif : au moins 3 dB) - pour un defaut
+  mixte, les indicateurs principaux de ses DEUX constituants doivent
+  etre observes :
+    Desalignement + Desequilibre : exces 2X ET 3X >= 3 dB (part
+      desalignement) ET exces 1X >= 3 dB (part desequilibre) ; pas de
+      condition de dominance, les deux constituants coexistent.
+    Usure + Lubrification : ecarts vs sain des 4 bandes disjointes
+      (500-1000, 1000-1500, 1500-2000, 2000-2500 Hz) tous >= 3 dB avec
+      etendue <= 1.5 dB (part usure) ET ecart au sain au bin 5 Hz
+      >= 3 dB (part lubrification).
+    Cavitation + Jeu : ecart bande 1500-2500 Hz vs sain >= 3 dB (part
+      cavitation) ET exces sous-synchrone et 1X >= 3 dB (part jeu).
+  Note : le kurtosis n'est pas utilise dans les regles des deux derniers
+  defauts mixtes, car la composante periodique basse frequence du
+  constituant domine la statistique globale ; l'impulsivite reste
+  visible aux zooms temporels (Figure 2) et aux spectrogrammes.
+- Ces indicateurs sont COMPARATIFS et non exclusifs ; l'identification
+  s'appuie sur leur combinaison (tableau comparatif et Figure 9).
+
+------------------------------------------------------------------------
+5. NOTE SUR LES FICHIERS CSV
+------------------------------------------------------------------------
+Les CSV sont encodes en UTF-8 avec separateur virgule. Dans Excel en
+francais, si les colonnes ne se separent pas automatiquement : onglet
+Donnees > A partir d'un fichier texte/CSV, choisir "UTF-8" et le
+separateur "virgule".
+========================================================================
