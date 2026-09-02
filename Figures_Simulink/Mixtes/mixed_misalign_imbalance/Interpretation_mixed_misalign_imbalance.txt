@@ -9,12 +9,16 @@ mêmes méthodes d'estimation que les Phases 1 et 2 et des règles
 indicatives propres à chaque défaut mixte.
 
 Physique du défaut : le modèle superpose les signatures du
-désalignement (harmoniques 2X et 3X, amplitudes réduites par rapport
-au défaut simple) et du déséquilibre (composante 1X). Le spectre
-combine donc les trois raies 1X, 2X et 3X (Figures 4, 6 et 9), là où
-chaque défaut simple n'en présente qu'une partie : c'est la
-coexistence des deux familles de raies qui caractérise ce défaut
-mixte.
+désalignement (harmoniques 2X et 3X) et du déséquilibre (composante
+1X). Le spectre combine donc les trois raies 1X, 2X et 3X
+(Figures 4, 6 et 9), là où chaque défaut simple n'en présente
+qu'une partie : c'est la coexistence des deux familles de raies
+qui caractérise ce défaut mixte.
+Bilan de la superposition encodée par le modèle : toutes les
+composantes des deux constituants sont reprises, avec des
+coefficients réduits (2X : 0.25 contre 0.35 ; 3X : 0.15 contre
+0.20 ; 1X : 0.35 contre 0.50) ; les trois raies restent très
+au-dessus du seuil de 3 dB.
 
 Résultats mesurés :
   RMS = 0.2036 (constituants : 0.2041 et 0.2002 ; sain : 0.0421)
@@ -23,18 +27,18 @@ Résultats mesurés :
   2X +41.2 dB, 3X +36.7 dB, zone sous-synchrone (bins de Welch
   25-30 Hz) +0.5 dB
   Écarts par rapport au sain : bin 5 Hz +0.0 dB ; bandes disjointes
-  500-1000 : -0.00 dB, 1000-1500 : -0.00 dB, 1500-2000 : +0.00 dB,
-  2000-2500 : -0.00 dB ; bande cavitation 1500-2500 Hz : +0.00 dB
+  500-1000 : +0.00 dB, 1000-1500 : +0.00 dB, 1500-2000 : +0.00 dB,
+  2000-2500 : +0.00 dB ; bande cavitation 1500-2500 Hz : +0.00 dB
 
 Note de lecture du kurtosis (propre à ces signaux simulés) :
 lorsqu'une composante quasi sinusoïdale domine le signal, le
 kurtosis global descend en dessous de 3 (une sinusoïde pure a un
 kurtosis de 1.5) ; dans ce cadre, un kurtosis inférieur à 3 est
 cohérent avec une composante périodique dominante. Pour les défauts
-mixtes, la composante périodique du constituant basse fréquence
-masque en général l'impulsivité de l'autre constituant dans cet
-indicateur global ; l'impulsivité reste visible dans le domaine
-temporel et temps-fréquence.
+mixtes, le kurtosis global reflète le mélange des contributions des
+deux constituants ; il n'est utilisé dans aucune règle de cette
+phase. La visibilité éventuelle des événements impulsifs est
+discutée au cas par cas dans le paragraphe de physique ci-dessus.
 
 Règle appliquée (indicative, propre à cette étude) : part désalignement : excès 2X ET 3X >= 3 dB ; part déséquilibre : excès 1X >= 3 dB (pas de condition de dominance : les deux constituants coexistent)
 
@@ -43,8 +47,10 @@ Indicateurs attendus observés pour cet état simulé connu : 2X à +41.2 dB, 3X
 Ces indicateurs sont COMPARATIFS et non exclusifs ; l'identification
 d'un état inconnu s'appuierait sur leur combinaison (voir le
 tableau comparatif et la Figure 9 de superposition), pas sur un
-indicateur isolé. La Figure 9 montre directement que le défaut mixte
-cumule les signatures spectrales de ses deux constituants, avec des
-amplitudes réduites telles qu'encodées par le modèle de simulation :
-c'est l'argument central de l'originalité de l'étude (défauts
-combinés, plus proches des conditions industrielles réelles).
+indicateur isolé. La Figure 9 montre directement comment le défaut
+mixte reprend les signatures de ses constituants - avec les
+réductions et, le cas échéant, les omissions détaillées dans le
+bilan de superposition ci-dessus - telles qu'encodées par le modèle
+de simulation : c'est l'argument central de l'originalité de
+l'étude (défauts combinés, plus proches des conditions
+industrielles réelles).

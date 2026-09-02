@@ -8,14 +8,22 @@ saine ET aux deux défauts simples constitutifs (Usure, Lubrification), avec les
 mêmes méthodes d'estimation que les Phases 1 et 2 et des règles
 indicatives propres à chaque défaut mixte.
 
-Physique du défaut : le modèle superpose le bruit blanc large bande
-de l'usure (amplitude réduite par rapport au défaut simple) et la
-composante d'adhérence-glissement à ~3.5 Hz de la lubrification,
-avec des impacts métal-métal (le premier modélisé à t = 1.0 s,
-montré au zoom temporel, Figure 2). Le plancher s'élève de façon
-plate sur les quatre bandes disjointes (part usure) ET le bin basse
-fréquence monte nettement au-dessus du niveau sain (part
-lubrification) - voir la superposition en Figure 9.
+Physique du défaut : le modèle superpose la part usure - bruit blanc
+large bande ET harmoniques d'aspérités 1X + 2X (ce sont elles qui
+produisent les raies annotées à 60 et 120 Hz sur les Figures 4 et
+6) - et la part lubrification : composante d'adhérence-glissement à
+~3.5 Hz et impacts métal-métal. Le plancher s'élève de façon plate
+sur les quatre bandes disjointes ET le bin basse fréquence monte
+nettement au-dessus du niveau sain - voir la superposition en
+Figure 9.
+Bilan de la superposition encodée par le modèle : bruit d'usure
+réduit (0.18 contre 0.25), harmoniques d'aspérités réduits (0.08
+contre 0.12) et SANS la modulation ~1 Hz du défaut simple ;
+adhérence-glissement réduit (0.20 contre 0.30). Les impacts
+modélisés (1 ms, le premier à t = 1.0 s) restent noyés dans le
+bruit large bande de la part usure à cette sévérité : ils ne sont
+pas discernables au zoom temporel (Figure 2), contrairement au
+défaut simple de lubrification où le fond est plus faible.
 
 Résultats mesurés :
   RMS = 0.2020 (constituants : 0.1780 et 0.2387 ; sain : 0.0421)
@@ -32,10 +40,10 @@ lorsqu'une composante quasi sinusoïdale domine le signal, le
 kurtosis global descend en dessous de 3 (une sinusoïde pure a un
 kurtosis de 1.5) ; dans ce cadre, un kurtosis inférieur à 3 est
 cohérent avec une composante périodique dominante. Pour les défauts
-mixtes, la composante périodique du constituant basse fréquence
-masque en général l'impulsivité de l'autre constituant dans cet
-indicateur global ; l'impulsivité reste visible dans le domaine
-temporel et temps-fréquence.
+mixtes, le kurtosis global reflète le mélange des contributions des
+deux constituants ; il n'est utilisé dans aucune règle de cette
+phase. La visibilité éventuelle des événements impulsifs est
+discutée au cas par cas dans le paragraphe de physique ci-dessus.
 
 Règle appliquée (indicative, propre à cette étude) : part usure : écarts vs sain des 4 bandes disjointes tous >= 3 dB ET étendue <= 1.5 dB ; part lubrification : écart au sain au bin 5 Hz >= 3 dB
 
@@ -44,8 +52,10 @@ Indicateurs attendus observés pour cet état simulé connu : bandes disjointes 
 Ces indicateurs sont COMPARATIFS et non exclusifs ; l'identification
 d'un état inconnu s'appuierait sur leur combinaison (voir le
 tableau comparatif et la Figure 9 de superposition), pas sur un
-indicateur isolé. La Figure 9 montre directement que le défaut mixte
-cumule les signatures spectrales de ses deux constituants, avec des
-amplitudes réduites telles qu'encodées par le modèle de simulation :
-c'est l'argument central de l'originalité de l'étude (défauts
-combinés, plus proches des conditions industrielles réelles).
+indicateur isolé. La Figure 9 montre directement comment le défaut
+mixte reprend les signatures de ses constituants - avec les
+réductions et, le cas échéant, les omissions détaillées dans le
+bilan de superposition ci-dessus - telles qu'encodées par le modèle
+de simulation : c'est l'argument central de l'originalité de
+l'étude (défauts combinés, plus proches des conditions
+industrielles réelles).

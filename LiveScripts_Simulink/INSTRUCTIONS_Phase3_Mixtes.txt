@@ -17,10 +17,12 @@ Defauts mixtes couverts :
 Chaque defaut mixte est compare a la reference saine (Phase 1) ET a ses
 deux defauts simples constitutifs (Phase 2). La Figure 9 de chaque
 defaut superpose les quatre spectres (mixte, les deux constituants, le
-sain) : elle montre directement que le defaut mixte cumule les
-signatures de ses constituants - l'argument central de l'originalite de
-l'etude (defauts combines, plus proches des conditions industrielles
-reelles).
+sain) : elle montre comment le defaut mixte reprend les signatures de
+ses constituants, avec des amplitudes reduites et, pour Cavitation +
+Jeu, sans la composante 2X du jeu simple (le bilan precis des
+composantes reprises, reduites ou omises figure dans chaque
+interpretation) - l'argument central de l'originalite de l'etude
+(defauts combines, plus proches des conditions industrielles reelles).
 
 ------------------------------------------------------------------------
 1. PREREQUIS
@@ -95,10 +97,13 @@ b) Relancer l'analyse complete sur votre machine :
       >= 3 dB (part lubrification).
     Cavitation + Jeu : ecart bande 1500-2500 Hz vs sain >= 3 dB (part
       cavitation) ET exces sous-synchrone et 1X >= 3 dB (part jeu).
-  Note : le kurtosis n'est pas utilise dans les regles des deux derniers
-  defauts mixtes, car la composante periodique basse frequence du
-  constituant domine la statistique globale ; l'impulsivite reste
-  visible aux zooms temporels (Figure 2) et aux spectrogrammes.
+  Note : le kurtosis n'est pas utilise dans les regles de cette phase,
+  car il reflete le melange des contributions des deux constituants.
+  La visibilite des evenements impulsifs depend du defaut : les
+  bouffees de cavitation restent visibles au zoom temporel et au
+  spectrogramme (Cavitation + Jeu) ; les impacts de lubrification
+  restent noyes dans le bruit large bande de la part usure
+  (Usure + Lubrification) - chaque interpretation le precise.
 - Ces indicateurs sont COMPARATIFS et non exclusifs ; l'identification
   s'appuie sur leur combinaison (tableau comparatif et Figure 9).
 

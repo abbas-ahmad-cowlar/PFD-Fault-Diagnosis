@@ -11,10 +11,19 @@ indicatives propres à chaque défaut mixte.
 Physique du défaut : le modèle superpose les bouffées haute
 fréquence de la cavitation (5 bouffées, la première à t = 0.6 s,
 montrée au zoom temporel, Figure 2, et visibles comme des colonnes
-au spectrogramme, Figure 7) et la signature du jeu (composante
-sous-synchrone ~0.43X + 1X). Le spectre combine donc l'élévation de
-la bande 1500-2500 Hz et les raies basse fréquence du jeu
-(Figures 4, 6 et 9).
+au spectrogramme, Figure 7) et une partie de la signature du jeu
+(composante sous-synchrone ~0.43X + 1X). Le spectre combine donc
+l'élévation de la bande 1500-2500 Hz et les raies basse fréquence
+du jeu (Figures 4, 6 et 9).
+Bilan de la superposition encodée par le modèle : bouffées de
+cavitation réduites (amplitude 0.4, 5 bouffées : écart de bande
++3.75 dB contre +5.31 dB pour le défaut simple) ; sous-synchrone
+réduite (0.22 contre 0.25) et 1X réduit (0.15 contre 0.18). En
+revanche, le modèle mixte N'INCLUT PAS la composante 2X du jeu
+simple : le 2X mesure +2.0 dB (niveau sain), et la Figure 9
+(panneau gauche) montre la raie 2X du constituant jeu à 120 Hz sans
+équivalent sur le défaut mixte. La superposition est donc PARTIELLE
+pour la part jeu, telle qu'encodée par le modèle.
 
 Résultats mesurés :
   RMS = 0.1390 (constituants : 0.0454 et 0.1658 ; sain : 0.0421)
@@ -31,10 +40,10 @@ lorsqu'une composante quasi sinusoïdale domine le signal, le
 kurtosis global descend en dessous de 3 (une sinusoïde pure a un
 kurtosis de 1.5) ; dans ce cadre, un kurtosis inférieur à 3 est
 cohérent avec une composante périodique dominante. Pour les défauts
-mixtes, la composante périodique du constituant basse fréquence
-masque en général l'impulsivité de l'autre constituant dans cet
-indicateur global ; l'impulsivité reste visible dans le domaine
-temporel et temps-fréquence.
+mixtes, le kurtosis global reflète le mélange des contributions des
+deux constituants ; il n'est utilisé dans aucune règle de cette
+phase. La visibilité éventuelle des événements impulsifs est
+discutée au cas par cas dans le paragraphe de physique ci-dessus.
 
 Règle appliquée (indicative, propre à cette étude) : part cavitation : écart bande 1500-2500 Hz vs sain >= 3 dB ; part jeu : excès sous-synchrone ET 1X >= 3 dB
 
@@ -43,8 +52,10 @@ Indicateurs attendus observés pour cet état simulé connu : bande 1500-2500 Hz
 Ces indicateurs sont COMPARATIFS et non exclusifs ; l'identification
 d'un état inconnu s'appuierait sur leur combinaison (voir le
 tableau comparatif et la Figure 9 de superposition), pas sur un
-indicateur isolé. La Figure 9 montre directement que le défaut mixte
-cumule les signatures spectrales de ses deux constituants, avec des
-amplitudes réduites telles qu'encodées par le modèle de simulation :
-c'est l'argument central de l'originalité de l'étude (défauts
-combinés, plus proches des conditions industrielles réelles).
+indicateur isolé. La Figure 9 montre directement comment le défaut
+mixte reprend les signatures de ses constituants - avec les
+réductions et, le cas échéant, les omissions détaillées dans le
+bilan de superposition ci-dessus - telles qu'encodées par le modèle
+de simulation : c'est l'argument central de l'originalité de
+l'étude (défauts combinés, plus proches des conditions
+industrielles réelles).
